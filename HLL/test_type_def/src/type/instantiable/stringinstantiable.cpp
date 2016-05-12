@@ -1,0 +1,1 @@
+#include "stringinstantiable.h"

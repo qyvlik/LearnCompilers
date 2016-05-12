@@ -1,0 +1,1 @@
+#include "stackinstantiable.h"
