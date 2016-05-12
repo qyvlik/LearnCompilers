@@ -61,13 +61,6 @@ TypeName
 namespace qyvlik {
 namespace typer {
 
-class ISymbol {
-public:
-    static QStringList baseTemplateTypeName;
-    static QStringList baseTypeName ;
-    static QSet<QString> customType;
-};
-
 
 class TypeTable
 {
