@@ -186,9 +186,54 @@ public:
     { }
 };
 
+class TypeSystemHelper {
+
+public:
+    void newCurrentTemplateTypeName() {
+        thizTemplateTypeNameStack.push("");
+    }
+
+    void pushTypeToken(const QString& typeToken) {
+        fullTypeName.push_back(typeToken);
+        thizTemplateTypeNameStack.top().push_back(typeToken);
+    }
+
+    QString takeCurrentTemplateFullTypeName() {
+        return thizTemplateTypeNameStack.pop();
+    }
+
+    void fillTemplateArgument(const QString& thizTemplateFullTypeName) {
+        if(!thizTemplateTypeNameStack.isEmpty()) {
+            thizTemplateTypeNameStack.top().push_back(thizTemplateFullTypeName);
+        }
+    }
+
+    void pushArgumentTypeMetaData(TypeMetaData* argType) {
+        typeBuffer.push(argType);
+    }
+
+    TypeMetaData* takeCurrentArgumentTypeMetaData() {
+        // TODO
+        qDebug() << Q_FUNC_INFO;
+        return typeBuffer.pop();
+    }
+
+    QString takeFullTypeName() {
+        QString t = fullTypeName;
+        fullTypeName.clear();
+        return t;
+    }
+
+private:
+    QStack<TypeMetaData*> typeBuffer;
+    QString fullTypeName;
+    QStack<QString> thizTemplateTypeNameStack;
+};
+
 class TypeSystem {
 public:
-    TypeSystem()
+    TypeSystem():
+        helper(new TypeSystemHelper)
     {
         unCompleteType.insert("stack", new StackTypeFactory());
         completeType.insert("int", new IntType);
@@ -198,6 +243,8 @@ public:
 
     virtual ~TypeSystem() {
         qDebug() << Q_FUNC_INFO;
+
+        delete helper;
 
         //        qDebug() << "unCompleteType:";
         //        auto i = unCompleteType.constBegin();
@@ -221,12 +268,14 @@ public:
         //        }
     }
 
+
     void registerType(const QString &name, TypeMetaData* metaData) {
         completeType.insert(name, metaData);
     }
 
     TemplateTypeMetaDataFactory* getTemplateTypeMetaData(const QString& templateName) {
         auto find = unCompleteType.find(templateName);
+
         Q_ASSERT(find != unCompleteType.end());
         if(find != unCompleteType.end()) {
             return find.value();
@@ -278,11 +327,19 @@ public:
         }
     }
 
+    TypeSystemHelper *getHelper() const
+    {
+        return helper;
+    }
+
 protected:
     QMap<QString, TemplateTypeMetaDataFactory*> unCompleteType;
     QMap<QString, TypeMetaData*> completeType;
     QMap<QString, QString> typeNameMap;
+    TypeSystemHelper* helper;
 };
+
+
 
 class TypeTable
 {
@@ -428,15 +485,27 @@ public:
 
         if(lexerStream->current().value() == "as") {
             lexerStream->next();
+            //! [0]
+//            if(__typeSystem->isRegisterType(lexerStream->current().value())) {
+//                __typeSystem->registerType(lexerStream->current().value(),
+//                                           __typeSystem->getHelper()->takeCurrentArgumentTypeMetaData());
+//                __typeSystem->mapTypeName(lexerStream->current().value(),
+//                                          __typeSystem->getHelper()->takeFullTypeName());
+
+//            }
+            //! [0]
+
+            //! [0]
             if( typeTable.isRegisterType(lexerStream->current().value()) )
             {
                 TypeMetaData* m = this->takeCurrentArgumentTypeMetaData();
 
                 typeTable.registerType(lexerStream->current().value(), m);
-                typeTable.nameMap(lexerStream->current().value(), fullTypeName);
-                fullTypeName.clear();
+                typeTable.nameMap(lexerStream->current().value(), this->takeFullTypeName());
+            }
+            //! [0]
 
-            } else {
+            else {
                 // qDebug() << "Type " << lexerStream->current().value() << " Already exist";
                 throw ParserError(-1, "Type "+lexerStream->current().value()+" Already exist.");
             }
@@ -453,15 +522,19 @@ public:
             // get type entity
         } else if( !typeTable.isRegisterType(lexerStream->current().value())) {
             TypeName(lexerStream, __typeSystem);
-            // get type entity
 
-//            typeBuffer.push(typeTable.getTypeMetaData(lexerStream->current().value()));
+            //! [1]
+            //  __typeSystem->getHelper()->pushArgumentTypeMetaData(__typeSystem->getTypeMetaData(lexerStream->current().value()));
+            //  __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
+            //! [1]
+
+            //! [1]
+            // typeBuffer.push(typeTable.getTypeMetaData(lexerStream->current().value()));
             this->pushArgumentTypeMetaData(typeTable.getTypeMetaData(lexerStream->current().value()));
-
-//            thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
-//            fullTypeName.push_back(lexerStream->current().value());
-
+            // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
+            // fullTypeName.push_back(lexerStream->current().value());
             this->pushTypeToken(typeTable.getFullTypeName(lexerStream->current().value()));
+            //! [1]
 
         } else {
             throw ParserError(-1, "Type "+lexerStream->current().value()+" not exist.");
@@ -477,41 +550,58 @@ public:
 
         Q_ASSERT(templateArgsCount > 0);
 
-        //        thizTemplateTypeNameStack.push("");
+        //! [2]
+        // __typeSystem->getHelper()->newCurrentTemplateTypeName();
+        //! [2]
+
+        //! [2]
+        // thizTemplateTypeNameStack.push("");
         this->newCurrentTemplateTypeName();
+        //! [2]
+
+
+
         QVector<TypeMetaData *> thizTemplateArguments;
 
-        //        fullTypeName.push_back(templateTypeName);
-        //        thizTemplateTypeNameStack.top().push_back(templateTypeName);
+        //! [3]
+        // __typeSystem->getHelper()->pushTypeToken(templateTypeName);
+        //! [3]
 
+        //! [3]
+        // fullTypeName.push_back(templateTypeName);
+        // thizTemplateTypeNameStack.top().push_back(templateTypeName);
         this->pushTypeToken(templateTypeName);
-
+        //! [3]
 
         lexerStream->next();
         if(lexerStream->current().value() == "<") {
 
-            //            fullTypeName.push_back(lexerStream->current().value());
-            //            thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
+            //! [4]
+            // __typeSystem->getHelper()->pushTypeToken(lexerStream->current().value());
+            //! [4]
 
+            //! [4]
+            // fullTypeName.push_back(lexerStream->current().value());
+            // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
             this->pushTypeToken(lexerStream->current().value());
-
+            //! [4]
 
             lexerStream->next();
             TypeSpecifier(lexerStream, __typeSystem);     // `, or `>,
 
-            // ERROR
-            //            fullTypeName.push_back(typeTable.getFullTypeName(lexerStream->current().value()));
-            //            thizTemplateTypeFullName.push_back(typeTable.getFullTypeName(lexerStream->current().value()));
-
             lexerStream->next();            // `, or `>, read next
-
-
         } else {
             throw ParserError(-1, "Template Type " + templateTypeName+ " lost `< is ");
         }
 
-        //        thizTemplateArguments.push_back(typeBuffer.pop());
+        //! [5]
+        // thizTemplateArguments.push_back(__typeSystem->getHelper()->takeCurrentArgumentTypeMetaData());
+        //! [5]
+
+        //! [5]
+        // thizTemplateArguments.push_back(typeBuffer.pop());
         thizTemplateArguments.push_back(this->takeCurrentArgumentTypeMetaData());
+        //! [5]
 
         switch(templateArgsCount)
         {
@@ -522,10 +612,15 @@ public:
                                   " templateArgsCount is "+templateArgsCount);
             } else {
 
-                //                fullTypeName.push_back(lexerStream->current().value());
-                //                thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
+                //! [6]
+                // __typeSystem->getHelper()->pushTypeToken(lexerStream->current().value());
+                //! [6]
 
+                //! [6]
+                // fullTypeName.push_back(lexerStream->current().value());
+                // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
                 this->pushTypeToken(lexerStream->current().value());
+                //! [6]
 
                 break;
             }
@@ -537,23 +632,31 @@ public:
             // (,TypeSpecifier)*
             if(lexerStream->current().value() == ",") {
 
-                //                fullTypeName.push_back(lexerStream->current().value());
-                //                thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
+                //! [7]
+                // __typeSystem->getHelper()->pushTypeToken(lexerStream->current().value());
+                //! [7]
 
+                //! [7]
+                // fullTypeName.push_back(lexerStream->current().value());
+                // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
                 this->pushTypeToken(lexerStream->current().value());
+                //! [7]
 
                 commaCount = 1;
                 do {
                     lexerStream->next();
                     TypeSpecifier(lexerStream, __typeSystem);
 
-                    //                    fullTypeName.push_back(typeTable.getFullTypeName(lexerStream->current().value()));
-                    //                    thizTemplateTypeNameStack.top().push_back(typeTable.getFullTypeName(lexerStream->current().value()));
+                    //! [8]
+                    // __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
+                    //! [8]
 
+                    //! [8]
+                    // fullTypeName.push_back(typeTable.getFullTypeName(lexerStream->current().value()));
+                    // thizTemplateTypeNameStack.top().push_back(typeTable.getFullTypeName(lexerStream->current().value()));
                     this->pushTypeToken(typeTable.getFullTypeName(lexerStream->current().value()));
+                    //! [8]
 
-                    // TODO
-                    // get type entity
                     lexerStream->next();                // `, or `>
 
                     commaCount++;
@@ -567,12 +670,17 @@ public:
 
                 if(lexerStream->current().value() == ">") {
 
-                    //                    fullTypeName.push_back(lexerStream->current().value());
-                    //                    thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
+                    //! [9]
+                    // __typeSystem->getHelper()->pushTypeToken(lexerStream->current().value());
+                    //! [9]
 
+                    //! [9]
+                    // fullTypeName.push_back(lexerStream->current().value());
+                    // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
                     this->pushTypeToken(lexerStream->current().value());
+                    //! [9]
 
-                    break ;
+                    break;
                 }
             }
             throw ParserError(-2, "Template Type "+
@@ -584,10 +692,30 @@ public:
         // push
 
         //        QString thizTemplateFullTypeName = thizTemplateTypeNameStack.pop();
-        QString thizTemplateFullTypeName = this->takeCurrentTemplateFullTypeName();
 
-        TemplateTypeMetaDataFactory* templateTypeMetaData = nullptr;
+
+
+
+        //! [10]
+//        TypeMetaData* templateTypeMeta = nullptr;
+//        TemplateTypeMetaDataFactory* templateTypeMetaData = nullptr;
+//        QString thizTemplateFullTypeName = __typeSystem->getHelper()->takeCurrentTemplateFullTypeName();
+//        if(__typeSystem->isRegisterType(thizTemplateFullTypeName)) {
+//            templateTypeMetaData = __typeSystem->getTemplateTypeMetaData(templateTypeName);
+//            templateTypeMeta =
+//                    templateTypeMetaData->templateTypeMetaData(thizTemplateArguments);
+//            __typeSystem->registerType(thizTemplateFullTypeName, templateTypeMeta);
+//        } else {
+//            templateTypeMeta = __typeSystem->getTypeMetaData(thizTemplateFullTypeName);
+//        }
+//        __typeSystem->getHelper()->pushArgumentTypeMetaData(templateTypeMeta);
+//        __typeSystem->getHelper()->fillTemplateArgument(thizTemplateFullTypeName);
+        //! [10]
+
+        //! [10]
         TypeMetaData* templateTypeMeta = nullptr;
+        TemplateTypeMetaDataFactory* templateTypeMetaData = nullptr;
+        QString thizTemplateFullTypeName = this->takeCurrentTemplateFullTypeName();
 
         if(typeTable.isRegisterType(thizTemplateFullTypeName)) {
             // 还没有注册过
@@ -605,13 +733,15 @@ public:
                      << "templateTypeMeta: " << templateTypeMeta;
         }
 
-        //        typeBuffer.push(templateTypeMeta);
+        // typeBuffer.push(templateTypeMeta);
         this->pushArgumentTypeMetaData(templateTypeMeta);
 
-        //        if(!thizTemplateTypeNameStack.isEmpty()) {
-        //            thizTemplateTypeNameStack.top().push_back(thizTemplateFullTypeName);
-        //        }
+        // if(!thizTemplateTypeNameStack.isEmpty()) {
+        //    thizTemplateTypeNameStack.top().push_back(thizTemplateFullTypeName);
+        // }
         this->fillTemplateArgument(thizTemplateFullTypeName);
+        //! [10]
+
     }
 
     void TypeName(TokenStream* lexerStream, TypeSystem* __typeSystem = nullptr) throw(ParserError)
@@ -633,10 +763,15 @@ public:
     }
 
 private:
-
     QStack<TypeMetaData*> typeBuffer;
     QString fullTypeName;
     QStack<QString> thizTemplateTypeNameStack;
+
+    QString takeFullTypeName() {
+        QString t = fullTypeName;
+        fullTypeName.clear();
+        return t;
+    }
 
     void newCurrentTemplateTypeName() {
         thizTemplateTypeNameStack.push("");
@@ -666,7 +801,6 @@ private:
         qDebug() << Q_FUNC_INFO;
         return typeBuffer.pop();
     }
-
 };
 
 }
