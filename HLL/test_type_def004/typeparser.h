@@ -485,27 +485,14 @@ public:
 
         if(lexerStream->current().value() == "as") {
             lexerStream->next();
-            //! [0]
+
             if(__typeSystem->isRegisterType(lexerStream->current().value())) {
                 __typeSystem->registerType(lexerStream->current().value(),
                                            __typeSystem->getHelper()->takeCurrentArgumentTypeMetaData());
                 __typeSystem->mapTypeName(lexerStream->current().value(),
                                           __typeSystem->getHelper()->takeFullTypeName());
-            }
-            //! [0]
 
-            //! [0]
-//            if( typeTable.isRegisterType(lexerStream->current().value()) )
-//            {
-//                TypeMetaData* m = this->takeCurrentArgumentTypeMetaData();
-
-//                typeTable.registerType(lexerStream->current().value(), m);
-//                typeTable.nameMap(lexerStream->current().value(), this->takeFullTypeName());
-//            }
-            //! [0]
-
-            else {
-                // qDebug() << "Type " << lexerStream->current().value() << " Already exist";
+            } else {
                 throw ParserError(-1, "Type "+lexerStream->current().value()+" Already exist.");
             }
             TypeName(lexerStream, __typeSystem);
@@ -518,22 +505,11 @@ public:
     {
         if( typeTable.isTemplate(lexerStream->current().value())) {
             TemplateTypeSpecifier(lexerStream, __typeSystem);
-            // get type entity
         } else if( !typeTable.isRegisterType(lexerStream->current().value())) {
             TypeName(lexerStream, __typeSystem);
 
-            //! [1]
               __typeSystem->getHelper()->pushArgumentTypeMetaData(__typeSystem->getTypeMetaData(lexerStream->current().value()));
               __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
-            //! [1]
-
-            //! [1]
-//            // typeBuffer.push(typeTable.getTypeMetaData(lexerStream->current().value()));
-//            this->pushArgumentTypeMetaData(typeTable.getTypeMetaData(lexerStream->current().value()));
-//            // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
-//            // fullTypeName.push_back(lexerStream->current().value());
-//            this->pushTypeToken(typeTable.getFullTypeName(lexerStream->current().value()));
-            //! [1]
 
         } else {
             throw ParserError(-1, "Type "+lexerStream->current().value()+" not exist.");
@@ -549,41 +525,16 @@ public:
 
         Q_ASSERT(templateArgsCount > 0);
 
-        //! [2]
          __typeSystem->getHelper()->newCurrentTemplateTypeName();
-        //! [2]
-
-        //! [2]
-        // thizTemplateTypeNameStack.push("");
-//        this->newCurrentTemplateTypeName();
-        //! [2]
-
-
 
         QVector<TypeMetaData *> thizTemplateArguments;
 
-        //! [3]
          __typeSystem->getHelper()->pushTypeToken(templateTypeName);
-        //! [3]
-
-        //! [3]
-        // fullTypeName.push_back(templateTypeName);
-        // thizTemplateTypeNameStack.top().push_back(templateTypeName);
-//        this->pushTypeToken(templateTypeName);
-        //! [3]
 
         lexerStream->next();
         if(lexerStream->current().value() == "<") {
 
-            //! [4]
              __typeSystem->getHelper()->pushTypeToken(lexerStream->current().value());
-            //! [4]
-
-            //! [4]
-            // fullTypeName.push_back(lexerStream->current().value());
-            // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
-//            this->pushTypeToken(lexerStream->current().value());
-            //! [4]
 
             lexerStream->next();
             TypeSpecifier(lexerStream, __typeSystem);     // `, or `>,
@@ -593,14 +544,7 @@ public:
             throw ParserError(-1, "Template Type " + templateTypeName+ " lost `< is ");
         }
 
-        //! [5]
          thizTemplateArguments.push_back(__typeSystem->getHelper()->takeCurrentArgumentTypeMetaData());
-        //! [5]
-
-        //! [5]
-        // thizTemplateArguments.push_back(typeBuffer.pop());
-//        thizTemplateArguments.push_back(this->takeCurrentArgumentTypeMetaData());
-        //! [5]
 
         switch(templateArgsCount)
         {
@@ -611,15 +555,7 @@ public:
                                   " templateArgsCount is "+templateArgsCount);
             } else {
 
-                //! [6]
                  __typeSystem->getHelper()->pushTypeToken(lexerStream->current().value());
-                //! [6]
-
-                //! [6]
-                // fullTypeName.push_back(lexerStream->current().value());
-                // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
-//                this->pushTypeToken(lexerStream->current().value());
-                //! [6]
 
                 break;
             }
@@ -631,30 +567,14 @@ public:
             // (,TypeSpecifier)*
             if(lexerStream->current().value() == ",") {
 
-                //! [7]
                  __typeSystem->getHelper()->pushTypeToken(lexerStream->current().value());
-                //! [7]
-
-                //! [7]
-                // fullTypeName.push_back(lexerStream->current().value());
-                // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
-//                this->pushTypeToken(lexerStream->current().value());
-                //! [7]
 
                 commaCount = 1;
                 do {
                     lexerStream->next();
                     TypeSpecifier(lexerStream, __typeSystem);
 
-                    //! [8]
                      __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
-                    //! [8]
-
-                    //! [8]
-                    // fullTypeName.push_back(typeTable.getFullTypeName(lexerStream->current().value()));
-                    // thizTemplateTypeNameStack.top().push_back(typeTable.getFullTypeName(lexerStream->current().value()));
-//                    this->pushTypeToken(typeTable.getFullTypeName(lexerStream->current().value()));
-                    //! [8]
 
                     lexerStream->next();                // `, or `>
 
@@ -669,15 +589,7 @@ public:
 
                 if(lexerStream->current().value() == ">") {
 
-                    //! [9]
                      __typeSystem->getHelper()->pushTypeToken(lexerStream->current().value());
-                    //! [9]
-
-                    //! [9]
-                    // fullTypeName.push_back(lexerStream->current().value());
-                    // thizTemplateTypeNameStack.top().push_back(lexerStream->current().value());
-//                    this->pushTypeToken(lexerStream->current().value());
-                    //! [9]
 
                     break;
                 }
@@ -688,14 +600,7 @@ public:
 
         }       // two or more templte type arguemnts
         }   // switch
-        // push
 
-        //        QString thizTemplateFullTypeName = thizTemplateTypeNameStack.pop();
-
-
-
-
-        //! [10]
         TypeMetaData* templateTypeMeta = nullptr;
         TemplateTypeMetaDataFactory* templateTypeMetaData = nullptr;
         QString thizTemplateFullTypeName = __typeSystem->getHelper()->takeCurrentTemplateFullTypeName();
@@ -709,37 +614,6 @@ public:
         }
         __typeSystem->getHelper()->pushArgumentTypeMetaData(templateTypeMeta);
         __typeSystem->getHelper()->fillTemplateArgument(thizTemplateFullTypeName);
-        //! [10]
-
-        //! [10]
-//        TypeMetaData* templateTypeMeta = nullptr;
-//        TemplateTypeMetaDataFactory* templateTypeMetaData = nullptr;
-//        QString thizTemplateFullTypeName = this->takeCurrentTemplateFullTypeName();
-
-//        if(typeTable.isRegisterType(thizTemplateFullTypeName)) {
-//            // 还没有注册过
-//            templateTypeMetaData = typeTable.getTemplateTypeMetaData(templateTypeName);
-//            templateTypeMeta =
-//                    templateTypeMetaData->templateTypeMetaData(thizTemplateArguments);
-//            typeTable.registerType(thizTemplateFullTypeName, templateTypeMeta);
-
-//            qDebug() << "thizTemplateFullTypeName:" << thizTemplateFullTypeName << " not exist";
-//        } else {
-//            // 已经注册过了
-//            templateTypeMeta = typeTable.getTypeMetaData(thizTemplateFullTypeName);
-
-//            qDebug() << "thizTemplateFullTypeName:" << thizTemplateFullTypeName << " Already exist. "
-//                     << "templateTypeMeta: " << templateTypeMeta;
-//        }
-
-//        // typeBuffer.push(templateTypeMeta);
-//        this->pushArgumentTypeMetaData(templateTypeMeta);
-
-//        // if(!thizTemplateTypeNameStack.isEmpty()) {
-//        //    thizTemplateTypeNameStack.top().push_back(thizTemplateFullTypeName);
-//        // }
-//        this->fillTemplateArgument(thizTemplateFullTypeName);
-        //! [10]
 
     }
 
