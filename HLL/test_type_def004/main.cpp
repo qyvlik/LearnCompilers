@@ -108,9 +108,10 @@ void test(){
     ;
 
     TokenStream* lexerStream = TokenStream::getLexerStream(lexers);
-
+    TypeSystem* typeSystem = new TypeSystem();
     ITypeParser typeParser;
-    typeParser.start(lexerStream);
+    typeParser.start(lexerStream, typeSystem);
 
+    delete typeSystem;
     delete lexerStream;
 }
