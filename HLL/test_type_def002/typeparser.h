@@ -195,6 +195,8 @@ public:
     {
         unCompleteType.insert("stack", new StackTypeFactory());
         completeType.insert("int", new IntType);
+        typeNameMap.insert("int", "int");
+        typeNameMap.insert("stack", "stack");
     }
 
     ~TypeTable() {
@@ -224,6 +226,19 @@ public:
         } else {
             qDebug() << Q_FUNC_INFO << ": templateName " << templateName << " not found!";
             return nullptr;
+        }
+    }
+
+    void nameMap(const QString& name, const QString& fullName) {
+        typeNameMap.insert(name, fullName);
+    }
+
+    QString getFullTypeName(const QString& name) {
+        auto find = typeNameMap.find(name);
+        if(find != typeNameMap.end()) {
+            return find.value();
+        } else {
+            return name;
         }
     }
 
@@ -259,6 +274,7 @@ public:
     // 第二参数是有几个参数的意思
     QMap<QString, TemplateTypeMetaDataFactory*> unCompleteType;
     QMap<QString, TypeMetaData*> completeType;
+    QMap<QString, QString> typeNameMap;
 };
 
 
@@ -266,8 +282,8 @@ class ITypeParser
 {
 public:
     TypeTable typeTable;
-
     QStack<TypeMetaData*> typeBuffer;
+    QString fullTypeName;
 
     bool start(TokenStream* lexerStream) {
         try {
@@ -308,6 +324,7 @@ public:
             lexerStream->next();
             if( typeTable.typeNotExist(lexerStream->current().value()) )
             {
+
                 TypeMetaData* m = 0;
                 if(!typeBuffer.isEmpty()) {
                     m = typeBuffer.pop();
@@ -315,6 +332,11 @@ public:
                     qDebug() << "typeBuffer is empty";
                 }
                 typeTable.registerType(lexerStream->current().value(), m);
+                typeTable.registerType(fullTypeName, m);
+                typeTable.nameMap(lexerStream->current().value(), fullTypeName);
+                qDebug() << "fullTypeName:" << fullTypeName;
+                fullTypeName.clear();
+
             } else {
 
                 // qDebug() << "Type " << lexerStream->current().value() << " Already exist";
@@ -343,6 +365,7 @@ public:
     // template < name (,name)* >
     void TemplateTypeSpecifier(TokenStream* lexerStream) throw(ParserError)
     {
+
         QString templateTypeName = lexerStream->current().value();
         const int templateArgsCount = typeTable.templateArgsCount(templateTypeName);
 
@@ -351,20 +374,31 @@ public:
 
         TypeMetaData* templateTypeMeta = 0;
 
+        fullTypeName.push_back(templateTypeName);
+
+
         lexerStream->next();
         if(lexerStream->current().value() == "<") {
+
+            fullTypeName.push_back(lexerStream->current().value());
+
             lexerStream->next();
             TypeSpecifier(lexerStream);
+
+            fullTypeName.push_back(typeTable.getFullTypeName(lexerStream->current().value()));
+
             lexerStream->next();            // `, or `>
+
+
         } else {
-            throw ParserError(-1, "Template Type " + templateTypeName+
-                              " lost `< is ");
+            throw ParserError(-1, "Template Type " + templateTypeName+ " lost `< is ");
         }
 
         TemplateTypeMetaDataFactory* templateTypeMetaData = typeTable.getTemplateTypeMetaData(templateTypeName);
 
         templateTypeMeta =
                 templateTypeMetaData->templateTypeMetaData(QVector<TypeMetaData *>(1, typeBuffer.pop()));
+
         switch(templateArgsCount)
         {
         case 1: {
@@ -373,6 +407,9 @@ public:
                                   templateTypeName+
                                   " templateArgsCount is "+templateArgsCount);
             } else {
+
+                fullTypeName.push_back(lexerStream->current().value());
+
                 break;
             }
         }       // one template type argument
@@ -382,10 +419,14 @@ public:
             // templateArgsCount-1 个 `,
             // (,TypeSpecifier)*
             if(lexerStream->current().value() == ",") {
+                fullTypeName.push_back(lexerStream->current().value());
+
                 commaCount = 1;
                 do {
                     lexerStream->next();
                     TypeSpecifier(lexerStream);
+                    fullTypeName.push_back(typeTable.getFullTypeName(lexerStream->current().value()));
+
                     // TODO
                     // get type entity
                     lexerStream->next();                // `, or `>
@@ -400,6 +441,8 @@ public:
                 } while(lexerStream->current().value() == ",");
 
                 if(lexerStream->current().value() == ">") {
+                    fullTypeName.push_back(lexerStream->current().value());
+
                     break ;
                 }
             }
@@ -411,6 +454,7 @@ public:
         }
         // push
         typeBuffer.push(templateTypeMeta);
+
     }
 
     void TypeName(TokenStream* lexerStream) throw(ParserError)
