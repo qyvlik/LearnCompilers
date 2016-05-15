@@ -29,45 +29,13 @@ public:
 class TemplateTypeInstanciable : public TypeInstanciable
 {
 public:
-    TemplateTypeInstanciable(const QVector<TypeInstanciable*>& instanciableArgs):
-        instanciableArguments(instanciableArgs)
-    {}
-    ~TemplateTypeInstanciable()
-    {}
+    TemplateTypeInstanciable(const QVector<TypeInstanciable*>& instanciableArgs);
+    ~TemplateTypeInstanciable();
 protected:
     QVector<TypeInstanciable*> instanciableArguments;
 };
 
 
-class StackInstanciable : public TemplateTypeInstanciable
-{
-public:
-    StackInstanciable(const QVector<TypeInstanciable*>& instanciableArgs):
-        TemplateTypeInstanciable(instanciableArgs)
-    {}
-
-    int newInstance() override
-    {
-        this->instanciableArguments.at(0)->newInstance();
-        qDebug() << Q_FUNC_INFO ;
-        return 0;
-    }
-};
-
-class MapInstanciable : public TemplateTypeInstanciable
-{
-public:
-    MapInstanciable(const QVector<TypeInstanciable*>& instanciableArgs):
-        TemplateTypeInstanciable(instanciableArgs)
-    {}
-    int newInstance() override
-    {
-        instanciableArguments.at(0)->newInstance();
-        instanciableArguments.at(1)->newInstance();
-        qDebug() << Q_FUNC_INFO;
-        return 0;
-    }
-};
 
 }
 }

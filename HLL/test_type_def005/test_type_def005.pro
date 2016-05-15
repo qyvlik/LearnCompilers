@@ -14,7 +14,10 @@ SOURCES += main.cpp \
     types/templatetypemetadatafactory.cpp \
     types/typeinstanciable.cpp \
     types/typemetadata.cpp \
-    context/typesystem.cpp
+    context/typesystem.cpp \
+    types/buildin/stacktype.cpp \
+    types/buildin/maptype.cpp \
+    context/typesystemhelper.cpp
 
 CONFIG += C++11
 
@@ -25,6 +28,10 @@ HEADERS += \
     types/templatetypemetadatafactory.h \
     types/typeinstanciable.h \
     types/typemetadata.h \
-    context/typesystem.h
+    context/typesystem.h \
+    types/buildin/stacktype.h \
+    types/buildin/maptype.h \
+    types/buildintype.h \
+    context/typesystemhelper_p.h
 
 

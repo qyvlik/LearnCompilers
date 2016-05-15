@@ -2,3 +2,10 @@
 
 
 
+namespace qyvlik {
+namespace typer {
+
+
+
+}
+}

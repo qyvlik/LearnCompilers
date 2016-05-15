@@ -2,6 +2,7 @@
 #include <QtDebug>
 
 #include "typeparser.h"
+#include "context/typesystem.h"
 
 using namespace qyvlik::typer;
 
@@ -66,7 +67,7 @@ int main(int
     TokenStream* lexerStream = TokenStream::getLexerStream(lexers);
 
     TypeSystem* typeSystem = new TypeSystem();
-    ITypeParser typeParser;
+    TypeParser typeParser;
     typeParser.start(lexerStream, typeSystem);
 
 
@@ -126,7 +127,7 @@ void test(){
 
     TokenStream* lexerStream = TokenStream::getLexerStream(lexers);
     TypeSystem* typeSystem = new TypeSystem();
-    ITypeParser typeParser;
+    TypeParser typeParser;
     typeParser.start(lexerStream, typeSystem);
 
     delete typeSystem;
