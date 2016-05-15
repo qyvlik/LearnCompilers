@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     token.cpp \
     types/templatetypemetadatafactory.cpp \
     types/typeinstanciable.cpp \
-    types/typemetadata.cpp
+    types/typemetadata.cpp \
+    context/typesystem.cpp
 
 CONFIG += C++11
 
@@ -23,6 +24,7 @@ HEADERS += \
     token.h \
     types/templatetypemetadatafactory.h \
     types/typeinstanciable.h \
-    types/typemetadata.h
+    types/typemetadata.h \
+    context/typesystem.h
 
 
