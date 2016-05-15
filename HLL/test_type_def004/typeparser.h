@@ -110,17 +110,17 @@ class StackInstanciable : public TypeInstanciable
 
 public:
     StackInstanciable(TypeInstanciable* typeArg0):
-        templateTypeArg0(typeArg0)
+        instanciableArg0(typeArg0)
     {}
 
     int newInstance() override
     {
-        templateTypeArg0->newInstance();
+        instanciableArg0->newInstance();
         qDebug() << Q_FUNC_INFO ;
         return 0;
     }
-
-    TypeInstanciable* templateTypeArg0;
+private:
+    TypeInstanciable* instanciableArg0;
 };
 
 class StackType : public TypeMetaData
@@ -146,6 +146,50 @@ private:
     TypeMetaData* templateArg0;
 };
 
+class MapInstanciable : public TypeInstanciable
+{
+public:
+    MapInstanciable(TypeInstanciable* typeArg0, TypeInstanciable* typeArg1) :
+        instanciableArg0(typeArg0),
+        instanciableArg1(typeArg1)
+    {}
+    int newInstance() override
+    {
+        instanciableArg0->newInstance();
+        instanciableArg1->newInstance();
+        qDebug() << Q_FUNC_INFO;
+        return 0;
+    }
+private:
+    TypeInstanciable* instanciableArg0;
+    TypeInstanciable* instanciableArg1;
+};
+
+class MapType : public TypeMetaData
+{
+public:
+    MapType(TypeMetaData* arg0, TypeMetaData* arg1):
+        templateArg0(arg0),
+        templateArg1(arg1)
+    {}
+    int templateArgsCount() const override
+    {
+        return 2;
+    }
+    bool isTemplate() const override
+    {
+        return true;
+    }
+    TypeInstanciable *instanciable() const override
+    {
+        return new MapInstanciable(templateArg0->instanciable(), templateArg1->instanciable());
+    }
+
+private:
+    TypeMetaData* templateArg0;
+    TypeMetaData* templateArg1;
+};
+
 class TemplateTypeMetaDataFactory
 {
 public:
@@ -156,7 +200,7 @@ public:
     virtual int templateArgumentsCount() const = 0;
 };
 
-class StackTypeFactory: public TemplateTypeMetaDataFactory
+class StackTypeFactory : public TemplateTypeMetaDataFactory
 {
 public:
     ~StackTypeFactory(){}
@@ -173,6 +217,26 @@ public:
 
     int templateArgumentsCount()const override {
         return 1;
+    }
+};
+
+class MapTypeFactory : public TemplateTypeMetaDataFactory
+{
+public:
+    ~MapTypeFactory(){}
+    QString templateTypeName() const override
+    {
+        return "map";
+    }
+    TypeMetaData *templateTypeMetaData(const QVector<TypeMetaData *> &templateArgs) override
+    {
+        Q_ASSERT(templateArgs.size() > 0 && templateArgs.size() == templateArgumentsCount());
+        return new MapType(templateArgs.at(0), templateArgs.at(1));
+
+    }
+    int templateArgumentsCount() const override
+    {
+        return 2;
     }
 };
 
@@ -236,9 +300,14 @@ public:
         helper(new TypeSystemHelper)
     {
         unCompleteType.insert("stack", new StackTypeFactory());
+        unCompleteType.insert("map", new MapTypeFactory());
+
         completeType.insert("int", new IntType);
+
         typeNameMap.insert("int", "int");
         typeNameMap.insert("stack", "stack");
+        typeNameMap.insert("map", "map");
+
     }
 
     virtual ~TypeSystem() {
@@ -469,7 +538,7 @@ protected:
                     lexerStream->next();
                     TypeSpecifier(lexerStream, __typeSystem);
 
-                    __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
+                    // __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
 
                     lexerStream->next();                // `, or `>
 
@@ -479,6 +548,8 @@ protected:
                                           templateTypeName+
                                           " templateArgsCount is "+templateArgsCount);
                     }
+
+                    thizTemplateArguments.push_back(__typeSystem->getHelper()->takeCurrentArgumentTypeMetaData());
 
                 } while(lexerStream->current().value() == ",");
 
