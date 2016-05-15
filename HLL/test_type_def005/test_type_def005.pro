@@ -10,12 +10,19 @@ TEMPLATE = app
 SOURCES += main.cpp \
     typeparser.cpp \
     throwable.cpp \
-    token.cpp
+    token.cpp \
+    types/templatetypemetadatafactory.cpp \
+    types/typeinstanciable.cpp \
+    types/typemetadata.cpp
 
 CONFIG += C++11
 
 HEADERS += \
     typeparser.h \
     throwable.h \
-    token.h
+    token.h \
+    types/templatetypemetadatafactory.h \
+    types/typeinstanciable.h \
+    types/typemetadata.h
+
 

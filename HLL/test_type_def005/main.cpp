@@ -69,6 +69,10 @@ int main(int
     ITypeParser typeParser;
     typeParser.start(lexerStream, typeSystem);
 
+
+    TypeMetaData* map2 = typeSystem->getTypeMetaData("map2");
+    map2->instanciable()->newInstance();
+
     delete lexerStream;
     delete typeSystem;
 

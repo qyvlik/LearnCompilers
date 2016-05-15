@@ -55,207 +55,14 @@ TypeName
 
 #include "token.h"
 #include "throwable.h"
-#include <type_traits>
+#include "types/typeinstanciable.h"
+#include "types/typemetadata.h"
+#include "types/templatetypemetadatafactory.h"
 
 // 类型的元数据
 
 namespace qyvlik {
 namespace typer {
-
-
-class TypeInstanciable {
-public:
-    virtual ~TypeInstanciable(){}
-    virtual int newInstance() = 0;
-};
-
-class TypeMetaData
-{
-public:
-    virtual ~TypeMetaData() {}
-    virtual int templateArgsCount() const = 0;
-    virtual bool isTemplate() const = 0;
-    virtual TypeInstanciable* instanciable() const = 0;
-};
-
-template<typename T>
-class BaseTypeInstanciable : public TypeInstanciable
-{
-public:
-    ~BaseTypeInstanciable(){}
-    int newInstance() {
-        qDebug() << Q_FUNC_INFO;
-        return 0;
-    }
-};
-
-template<typename T>
-class BaseTypeMetaData : public TypeMetaData
-{
-public:
-    ~BaseTypeMetaData(){}
-    int templateArgsCount() const
-    { return 0; }
-    bool isTemplate() const
-    { return false; }
-    TypeInstanciable* instanciable() const {
-        return new BaseTypeInstanciable<T>();
-    }
-};
-
-class TemplateTypeMetaData : public TypeMetaData
-{
-public:
-    TemplateTypeMetaData(const QVector<TypeMetaData*>& templateArgs):
-        templateTypeArguments(templateArgs)
-    {}
-
-    ~TemplateTypeMetaData()
-    {}
-    bool isTemplate() const override
-    { return true; }
-
-protected:
-    QVector<TypeInstanciable*> getInstanciables() const {
-        QVector<TypeInstanciable*> instanciableArgs;
-        QVector<TypeMetaData*>::ConstIterator ii = templateTypeArguments.begin();
-        QVector<TypeMetaData*>::ConstIterator end = templateTypeArguments.end();
-        while(ii != end) {
-            instanciableArgs.push_back((*ii)->instanciable());
-            ii++;
-        }
-        return instanciableArgs;
-    }
-    QVector<TypeMetaData*> templateTypeArguments;
-};
-
-class TemplateTypeInstanciable : public TypeInstanciable
-{
-public:
-    TemplateTypeInstanciable(const QVector<TypeInstanciable*>& instanciableArgs):
-        instanciableArguments(instanciableArgs)
-    {}
-    ~TemplateTypeInstanciable()
-    {}
-protected:
-    QVector<TypeInstanciable*> instanciableArguments;
-};
-
-
-class TemplateTypeMetaDataFactory
-{
-public:
-    virtual ~TemplateTypeMetaDataFactory()
-    {}
-    virtual TypeMetaData* templateTypeMetaData(const QVector<TypeMetaData*>& templateArgs) = 0 ;
-    virtual int templateArgumentsCount() const = 0;
-};
-
-class StackInstanciable : public TemplateTypeInstanciable
-{
-public:
-    StackInstanciable(const QVector<TypeInstanciable*>& instanciableArgs):
-        TemplateTypeInstanciable(instanciableArgs)
-    {}
-
-    int newInstance() override
-    {
-        this->instanciableArguments.at(0)->newInstance();
-        qDebug() << Q_FUNC_INFO ;
-        return 0;
-    }
-};
-
-class StackType : public TemplateTypeMetaData
-{
-public:
-    StackType(const QVector<TypeMetaData*>& templateArgs):
-        TemplateTypeMetaData(templateArgs)
-    {}
-
-    int templateArgsCount() const override
-    {
-        return 1;
-    }
-    bool isTemplate() const override
-    {
-        return true;
-    }
-
-    TypeInstanciable* instanciable() const {
-        return new StackInstanciable(this->getInstanciables());
-    }
-};
-
-class MapInstanciable : public TemplateTypeInstanciable
-{
-public:
-    MapInstanciable(const QVector<TypeInstanciable*>& instanciableArgs):
-        TemplateTypeInstanciable(instanciableArgs)
-    {}
-    int newInstance() override
-    {
-        instanciableArguments.at(0)->newInstance();
-        instanciableArguments.at(1)->newInstance();
-        qDebug() << Q_FUNC_INFO;
-        return 0;
-    }
-};
-
-class MapType : public TemplateTypeMetaData
-{
-public:
-    MapType(const QVector<TypeMetaData*>& templateArgs):
-        TemplateTypeMetaData(templateArgs)
-    {}
-    int templateArgsCount() const override
-    {
-        return 2;
-    }
-    bool isTemplate() const override
-    {
-        return true;
-    }
-    TypeInstanciable *instanciable() const override
-    {
-        return new MapInstanciable(this->getInstanciables());
-    }
-};
-
-
-class StackTypeFactory : public TemplateTypeMetaDataFactory
-{
-public:
-    ~StackTypeFactory(){}
-    TypeMetaData *templateTypeMetaData(const QVector<TypeMetaData *> &templateArgs) override
-    {
-        Q_ASSERT(templateArgs.size() > 0 && templateArgs.size() == templateArgumentsCount());
-        // qDebug() << Q_FUNC_INFO ;
-        return new StackType(templateArgs);
-    }
-
-    int templateArgumentsCount()const override {
-        return 1;
-    }
-};
-
-class MapTypeFactory : public TemplateTypeMetaDataFactory
-{
-public:
-    ~MapTypeFactory(){}
-    TypeMetaData *templateTypeMetaData(const QVector<TypeMetaData *> &templateArgs) override
-    {
-        Q_ASSERT(templateArgs.size() > 0 && templateArgs.size() == templateArgumentsCount());
-        return new MapType(templateArgs);
-
-    }
-    int templateArgumentsCount() const override
-    {
-        return 2;
-    }
-};
-
-/////////////////////////
 
 class ParserError : public Error
 {
@@ -325,8 +132,6 @@ public:
 
         completeType.insert("double", new BaseTypeMetaData<double>());
         typeNameMap.insert("double", "double");
-
-
     }
 
     virtual ~TypeSystem() {
@@ -508,9 +313,10 @@ protected:
 
         Q_ASSERT(templateArgsCount > 0);
 
+        QVector<TypeMetaData *> thizTemplateArguments;
+
         __typeSystem->getHelper()->newCurrentTemplateTypeName();
 
-        QVector<TypeMetaData *> thizTemplateArguments;
 
         __typeSystem->getHelper()->pushTypeToken(templateTypeName);
 
