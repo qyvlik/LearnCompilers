@@ -18,35 +18,35 @@ int main(int
 
     QList<Token> lexers;
 
-    //    lexers   << Token(1, "let")
-    //             << Token(1, "stack")
-    //             << Token(1, "<") << Token(1, "int") << Token(1, ">")
-    //             << Token(1, "as")
-    //             << Token(1, "MyIntStack")
-    //             << Token(1, ";") ;
+        lexers   << Token(1, "let")
+                 << Token(1, "stack")
+                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
+                 << Token(1, "as")
+                 << Token(1, "MyIntStack")
+                 << Token(1, ";") ;
 
-    //    lexers   << Token(1, "let")
-    //             << Token(1, "stack")
-    //             << Token(1, "<") << Token(1, "int") << Token(1, ">")
-    //             << Token(1, "as")
-    //             << Token(1, "MyIntStack2")
-    //             << Token(1, ";") ;
+        lexers   << Token(1, "let")
+                 << Token(1, "stack")
+                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
+                 << Token(1, "as")
+                 << Token(1, "MyIntStack2")
+                 << Token(1, ";") ;
 
-    //    lexers   << Token(1, "let")
-    //             << Token(1, "stack")
-    //             << Token(1, "<")
-    //             << Token(1, "stack") << Token(1, "<") << Token(1, "int") << Token(1, ">")
-    //             << Token(1, ">")
-    //             << Token(1, "as")
-    //             << Token(1, "IntStack")
-    //             << Token(1, ";") ;
+        lexers   << Token(1, "let")
+                 << Token(1, "stack")
+                 << Token(1, "<")
+                 << Token(1, "stack") << Token(1, "<") << Token(1, "int") << Token(1, ">")
+                 << Token(1, ">")
+                 << Token(1, "as")
+                 << Token(1, "IntStack")
+                 << Token(1, ";") ;
 
-    //    lexers   << Token(1, "let")
-    //             << Token(1, "stack")
-    //             << Token(1, "<") << Token(1, "int") << Token(1, ">")
-    //             << Token(1, "as")
-    //             << Token(1, "IntStack2")
-    //             << Token(1, ";") ;
+        lexers   << Token(1, "let")
+                 << Token(1, "stack")
+                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
+                 << Token(1, "as")
+                 << Token(1, "IntStack2")
+                 << Token(1, ";") ;
 
     lexers   << Token(1, "let")
              << Token(1, "map")
@@ -123,7 +123,7 @@ void test(){
     //             << Token(1, "as")
     //             << Token(1, "callable")
     //             << Token(1, ";") ;
-    ;
+
 
     TokenStream* lexerStream = TokenStream::getLexerStream(lexers);
     TypeSystem* typeSystem = new TypeSystem();
