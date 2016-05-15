@@ -3,7 +3,6 @@
 
 #include "typeparser.h"
 
-
 using namespace qyvlik::typer;
 
 void test();
