@@ -53,7 +53,7 @@ TypeName
 #include <QStack>
 #include <QMap>
 
-#include "lexer.h"
+#include "token.h"
 #include "throwable.h"
 #include <type_traits>
 
@@ -617,6 +617,6 @@ protected:
 };
 
 }
-} // namespace qyvlik::lexer
+} // namespace qyvlik::typer
 
 #endif // TYPEPARSER_H

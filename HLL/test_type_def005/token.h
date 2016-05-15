@@ -1,5 +1,5 @@
-#ifndef LEXER_H
-#define LEXER_H
+#ifndef TOKEN_H
+#define TOKEN_H
 
 #include <QSharedDataPointer>
 
@@ -74,7 +74,7 @@ public:
 
 
 }
-} // namespace qyvlik::lexer
+} // namespace qyvlik::typer
 
 
-#endif // LEXER_H
+#endif // TOKEN_H

@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "token.h"
 
 namespace qyvlik {
 namespace typer {
@@ -134,4 +134,4 @@ TokenStream *TokenStream::getLexerStream(const QList<Token> &lexers)
 }
 
 }
-} // namespace qyvlik::lexer
+} // namespace qyvlik::typer

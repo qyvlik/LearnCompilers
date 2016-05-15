@@ -8,5 +8,5 @@ namespace typer {
 
 
 }
-} // namespace qyvlik::lexer
+} // namespace qyvlik::typer
 

@@ -9,13 +9,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     typeparser.cpp \
-    lexer.cpp \
-    throwable.cpp
+    throwable.cpp \
+    token.cpp
 
 CONFIG += C++11
 
 HEADERS += \
     typeparser.h \
-    lexer.h \
-    throwable.h
+    throwable.h \
+    token.h
 
