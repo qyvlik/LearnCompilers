@@ -65,51 +65,57 @@ void test3()
 
     QList<Token> lexers;
 
-        lexers   << Token(1, "let")
-                 << Token(1, "stack")
-                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
-                 << Token(1, "as")
-                 << Token(1, "MyIntStack")
-                 << Token(1, ";") ;
+    lexers   << Token(1, "let")
+             << Token(1, "int")
+             << Token(1, "as")
+             << Token(1, "int32")
+             << Token(1, ";") ;
 
-//        lexers   << Token(1, "let")
-//                 << Token(1, "stack")
-//                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
-//                 << Token(1, "as")
-//                 << Token(1, "MyIntStack2")
-//                 << Token(1, ";") ;
+    //        lexers   << Token(1, "let")
+    //                 << Token(1, "stack")
+    //                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
+    //                 << Token(1, "as")
+    //                 << Token(1, "MyIntStack")
+    //                 << Token(1, ";") ;
 
-//        lexers   << Token(1, "let")
-//                 << Token(1, "stack")
-//                 << Token(1, "<")
-//                 << Token(1, "stack") << Token(1, "<") << Token(1, "int") << Token(1, ">")
-//                 << Token(1, ">")
-//                 << Token(1, "as")
-//                 << Token(1, "IntStack")
-//                 << Token(1, ";") ;
+    //        lexers   << Token(1, "let")
+    //                 << Token(1, "stack")
+    //                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
+    //                 << Token(1, "as")
+    //                 << Token(1, "MyIntStack2")
+    //                 << Token(1, ";") ;
 
-//        lexers   << Token(1, "let")
-//                 << Token(1, "stack")
-//                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
-//                 << Token(1, "as")
-//                 << Token(1, "IntStack2")
-//                 << Token(1, ";") ;
+    //        lexers   << Token(1, "let")
+    //                 << Token(1, "stack")
+    //                 << Token(1, "<")
+    //                 << Token(1, "stack") << Token(1, "<") << Token(1, "int") << Token(1, ">")
+    //                 << Token(1, ">")
+    //                 << Token(1, "as")
+    //                 << Token(1, "IntStack")
+    //                 << Token(1, ";") ;
 
-//    lexers   << Token(1, "let")
-//             << Token(1, "map")
-//             << Token(1, "<") << Token(1, "int") << Token(1, ",") << Token(1, "int")  << Token(1, ">")
-//             << Token(1, "as")
-//             << Token(1, "map1")
-//             << Token(1, ";")
-//                ;
+    //        lexers   << Token(1, "let")
+    //                 << Token(1, "stack")
+    //                 << Token(1, "<") << Token(1, "int") << Token(1, ">")
+    //                 << Token(1, "as")
+    //                 << Token(1, "IntStack2")
+    //                 << Token(1, ";") ;
 
-//    lexers   << Token(1, "let")
-//             << Token(1, "map")
-//             << Token(1, "<") << Token(1, "int") << Token(1, ",") << Token(1, "map1")  << Token(1, ">")
-//             << Token(1, "as")
-//             << Token(1, "map2")
-//             << Token(1, ";")
-//                ;
+    //    lexers   << Token(1, "let")
+    //             << Token(1, "map")
+    //             << Token(1, "<") << Token(1, "int") << Token(1, ",") << Token(1, "int")  << Token(1, ">")
+    //             << Token(1, "as")
+    //             << Token(1, "map1")
+    //             << Token(1, ";")
+    //                ;
+
+    //    lexers   << Token(1, "let")
+    //             << Token(1, "map")
+    //             << Token(1, "<") << Token(1, "int") << Token(1, ",") << Token(1, "map1")  << Token(1, ">")
+    //             << Token(1, "as")
+    //             << Token(1, "map2")
+    //             << Token(1, ";")
+    //                ;
 
     TokenStream* lexerStream = TokenStream::getLexerStream(lexers);
 
@@ -118,8 +124,8 @@ void test3()
     typeParser.start(lexerStream, typeSystem);
 
 
-//    TypeMetaData* map2 = typeSystem->getTypeMetaData("map2");
-//    map2->instanciable()->newInstance();
+    //    TypeMetaData* map2 = typeSystem->getTypeMetaData("map2");
+    //    map2->instanciable()->newInstance();
 
     TypeSystemVisitor visitor;
     typeSystem->astNode->accept(&visitor);

@@ -87,11 +87,12 @@ void TypeParser::TypeSpecifier(TokenStream *lexerStream, TypeSystem *__typeSyste
         __typeSystem->getHelper()->pushArgumentTypeMetaData(__typeSystem->getTypeMetaData(lexerStream->current().value()));
         __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
 
-        //! 语法树
 
+        //! 语法树
         TypeNameNode* node = __typeSystem->createTypeName();
         node->typeName = lexerStream->current().value();
         __typeSystem->nodeVar.push(node);
+
 
     } else {
         throw ParserError(-1, "Type "+lexerStream->current().value()+" not exist.");

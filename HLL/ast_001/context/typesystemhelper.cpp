@@ -11,7 +11,11 @@ void TypeSystemHelper::newCurrentTemplateTypeName() {
 
 void TypeSystemHelper::pushTypeToken(const QString &typeToken) {
     fullTypeName.push_back(typeToken);
-    thizTemplateTypeNameStack.top().push_back(typeToken);
+    if(!thizTemplateTypeNameStack.isEmpty()) {
+        thizTemplateTypeNameStack.top().push_back(typeToken);
+    } else {
+        qWarning( ) << __FILE__ << __LINE__;
+    }
 }
 
 QString TypeSystemHelper::takeCurrentTemplateFullTypeName() {
