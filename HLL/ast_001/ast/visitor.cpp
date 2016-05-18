@@ -1,8 +1,9 @@
 #include "visitor.h"
-
 #include "node.h"
 
 #include <QtDebug>
+
+#include "types/buildintype.h"
 
 namespace qyvlik {
 namespace typer {
@@ -54,7 +55,22 @@ void Visitor::visit(TypeNameNode * node)
     qDebug() << "TypeNameNode(" << node << ")";
 }
 
-////////////////////////
+/////////////TypeSystemVisitor///////////
+
+TypeSystemVisitor::TypeSystemVisitor()
+{
+    unCompleteType.insert("stack", new StackTypeFactory());
+    typeNameMap.insert("stack", "stack");
+
+    unCompleteType.insert("map", new MapTypeFactory());
+    typeNameMap.insert("map", "map");
+
+    completeType.insert("int", new BaseTypeMetaData<int>());
+    typeNameMap.insert("int", "int");
+
+    completeType.insert("double", new BaseTypeMetaData<double>());
+    typeNameMap.insert("double", "double");
+}
 
 void TypeSystemVisitor::visit(Node * node)
 {
@@ -62,6 +78,7 @@ void TypeSystemVisitor::visit(Node * node)
     qDebug() << "Node(" << node << ")";
 }
 
+// 定义类型
 void TypeSystemVisitor::visit(TypeDefineNode * node)
 {
     Q_ASSERT(node != nullptr);
@@ -70,6 +87,7 @@ void TypeSystemVisitor::visit(TypeDefineNode * node)
     this->visit(node->typeNameNode);
 }
 
+// 模板类型
 void TypeSystemVisitor::visit(TypeSpecifierNode * node)
 {
     Q_ASSERT(node != nullptr);

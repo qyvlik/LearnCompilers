@@ -80,6 +80,7 @@ public:
 class TypeSystemVisitor : public Visitor
 {
 public:
+    TypeSystemVisitor();
     void visit(Node *) override;
     void visit(TypeDefineNode *) override;
     void visit(TypeSpecifierNode *) override;
