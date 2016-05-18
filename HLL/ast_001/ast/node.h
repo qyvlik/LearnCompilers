@@ -49,7 +49,7 @@ class TemplateTypeSpecifierNode : public TypeSpecifierNode
 public:
     DECLARE_AST_NODE(TemplateTypeSpecifier)
     TemplateTypeSpecifierNode();
-    SourceLocal templateName;
+    QString templateName;
     QList<TypeSpecifierNode*> nodes;
 
     void accept(Visitor *visitor)  override;
@@ -64,6 +64,8 @@ public:
     ~TypeNameNode();
 
     void accept(Visitor *visitor)  override;
+
+    QString typeName;
 };
 
 class TypeDefineNode : public Node

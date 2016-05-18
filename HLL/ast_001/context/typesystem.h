@@ -15,6 +15,7 @@ namespace typer {
 class TypeMetaData;
 class TypeSystemHelper;
 
+//# FixMe? Context or Env
 class TypeSystem {
 public:
     TypeSystem();

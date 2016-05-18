@@ -60,14 +60,18 @@ void TypeParser::TypeDefineStatement(TokenStream *lexerStream, TypeSystem *__typ
             throw ParserError(-1, "Type "+lexerStream->current().value()+" Already exist.");
         }
         TypeName(lexerStream, __typeSystem);
-        lexerStream->next();
+
 
         //! 语法树
         TypeNameNode* typeNameNode = __typeSystem->createTypeName();
+        typeNameNode->typeName = lexerStream->current().value();
+
         TypeDefineNode* node = __typeSystem->createTypeDefineNode(typeSpecifierNode, typeNameNode);
         __typeSystem->nodeVar.push(node);
         // 由于忘记设计 TypeDefinesStatement 了。。。所以直接获取一条定义语句
         __typeSystem->astNode = node;
+
+        lexerStream->next();
 
     }
 
@@ -84,7 +88,10 @@ void TypeParser::TypeSpecifier(TokenStream *lexerStream, TypeSystem *__typeSyste
         __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
 
         //! 语法树
-        __typeSystem->nodeVar.push(__typeSystem->createTypeName());
+
+        TypeNameNode* node = __typeSystem->createTypeName();
+        node->typeName = lexerStream->current().value();
+        __typeSystem->nodeVar.push(node);
 
     } else {
         throw ParserError(-1, "Type "+lexerStream->current().value()+" not exist.");
@@ -202,7 +209,9 @@ void TypeParser::TemplateTypeSpecifier(TokenStream *lexerStream, TypeSystem *__t
 
 
     //! 语法树
-    __typeSystem->nodeVar.push(__typeSystem->createTemplateTypeSpecifierNode(nodes));
+    TemplateTypeSpecifierNode* node = __typeSystem->createTemplateTypeSpecifierNode(nodes);
+    node->templateName = templateTypeName;
+    __typeSystem->nodeVar.push(node);
 }
 
 void TypeParser::TypeName(TokenStream *lexerStream, TypeSystem *__typeSystem)  throw(ParserError)

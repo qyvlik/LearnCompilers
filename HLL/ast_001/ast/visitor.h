@@ -49,6 +49,13 @@ TypeName
     ;
 */
 
+#include <QMap>
+#include <QString>
+#include <QStack>
+
+#include "../types/templatetypemetadatafactory.h"
+#include "../types/typemetadata.h"
+
 namespace qyvlik {
 namespace typer {
 
@@ -68,6 +75,21 @@ public:
     virtual void visit(TypeSpecifierNode*);
     virtual void visit(TemplateTypeSpecifierNode*);
     virtual void visit(TypeNameNode*);
+};
+
+class TypeSystemVisitor : public Visitor
+{
+public:
+    void visit(Node *) override;
+    void visit(TypeDefineNode *) override;
+    void visit(TypeSpecifierNode *) override;
+    void visit(TemplateTypeSpecifierNode *) override;
+    void visit(TypeNameNode *) override;
+
+protected:
+    QMap<QString, TemplateTypeMetaDataFactory*> unCompleteType;
+    QMap<QString, TypeMetaData*> completeType;
+    QMap<QString, QString> typeNameMap;
 };
 
 }

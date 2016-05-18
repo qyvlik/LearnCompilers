@@ -121,7 +121,7 @@ void test3()
 //    TypeMetaData* map2 = typeSystem->getTypeMetaData("map2");
 //    map2->instanciable()->newInstance();
 
-    Visitor visitor;
+    TypeSystemVisitor visitor;
     typeSystem->astNode->accept(&visitor);
 
 
