@@ -169,11 +169,13 @@ void TypeSystemVisitor::visit(TemplateTypeSpecifierNode * node)
             if(iter != 0) {
                 typeSystem->getHelper()->pushTypeToken(",");
             }
-            if(nodeVar->kind == Node::Kind_TypeNameNode) {
-                typeSystem->getHelper()->pushTypeToken(dynamic_cast<TypeNameNode*>(nodeVar)->typeName);
-            } else if (nodeVar->kind == Node::Kind_TemplateTypeSpecifier) {
-                typeSystem->getHelper()->pushTypeToken(dynamic_cast<TemplateTypeSpecifierNode*>(nodeVar)->templateName);
-            }
+
+//            if(nodeVar->kind == Node::Kind_TypeNameNode) {
+//                typeSystem->getHelper()->pushTypeToken(dynamic_cast<TypeNameNode*>(nodeVar)->typeName);
+//            }
+//            else if (nodeVar->kind == Node::Kind_TemplateTypeSpecifier) {
+//                typeSystem->getHelper()->pushTypeToken(dynamic_cast<TemplateTypeSpecifierNode*>(nodeVar)->templateName);
+//            }
 
 
             this->visit(nodeVar);
