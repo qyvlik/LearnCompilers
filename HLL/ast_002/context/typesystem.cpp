@@ -13,11 +13,28 @@ TypeSystem::TypeSystem():
     unCompleteType.insert("map", new MapTypeFactory());
     typeNameMap.insert("map", "map");
 
-    completeType.insert("int", new BaseTypeMetaData<int>());
+    unCompleteType.insert("vector", new VectorTypeFactory());
+    typeNameMap.insert("vector", "vector");
+
+
+    completeType.insert("int8", new Int8TypeMetaData());
+    typeNameMap.insert("int8", "int8");
+
+    completeType.insert("int16", new Int16TypeMetaData());
+    typeNameMap.insert("int16", "int16");
+
+    Int32TypeMetaData* int32TypeMetaData = new Int32TypeMetaData();
+    completeType.insert("int32", int32TypeMetaData);
+    typeNameMap.insert("int32", "int32");
+
+    completeType.insert("int", int32TypeMetaData);
     typeNameMap.insert("int", "int");
 
-    completeType.insert("double", new BaseTypeMetaData<double>());
+    completeType.insert("double", new DoubleTypeMetaData());
     typeNameMap.insert("double", "double");
+
+    completeType.insert("string", new StringTypeMetaData());
+    typeNameMap.insert("string", "string");
 }
 
 TypeSystem::~TypeSystem() {

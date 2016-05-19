@@ -73,12 +73,12 @@ class TypeNameNode;
 class Visitor {
 public:
     virtual ~Visitor();
-    virtual void visit(Node*);
-    virtual void visit(TypeDefinesNode*);
-    virtual void visit(TypeDefineNode*);
-    virtual void visit(TypeSpecifierNode*);
-    virtual void visit(TemplateTypeSpecifierNode*);
-    virtual void visit(TypeNameNode*);
+    virtual void visit(Node*) throw(TypeError, ParserError) ;
+    virtual void visit(TypeDefinesNode*) throw(TypeError, ParserError) ;
+    virtual void visit(TypeDefineNode*) throw(TypeError, ParserError) ;
+    virtual void visit(TypeSpecifierNode*) throw(TypeError, ParserError) ;
+    virtual void visit(TemplateTypeSpecifierNode*) throw(TypeError, ParserError) ;
+    virtual void visit(TypeNameNode*) throw(TypeError, ParserError) ;
 
 };
 
@@ -87,12 +87,12 @@ class TypeSystemVisitor : public Visitor
 public:
     TypeSystemVisitor();
     ~TypeSystemVisitor();
-    void visit(Node *) override;
-    void visit(TypeDefinesNode *) override;
-    void visit(TypeDefineNode *) override;
-    void visit(TypeSpecifierNode *) override;
-    void visit(TemplateTypeSpecifierNode *) override;
-    void visit(TypeNameNode *) override;
+    void visit(Node *) throw(TypeError, ParserError)  override;
+    void visit(TypeDefinesNode *) throw(TypeError, ParserError)  override;
+    void visit(TypeDefineNode *) throw(TypeError, ParserError)  override;
+    void visit(TypeSpecifierNode *) throw(TypeError, ParserError)  override;
+    void visit(TemplateTypeSpecifierNode *) throw(TypeError, ParserError)  override;
+    void visit(TypeNameNode *) throw(TypeError, ParserError)  override;
 
     TypeSystem* typeSystem;
 

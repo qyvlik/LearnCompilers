@@ -14,7 +14,7 @@ void TypeSystemHelper::pushTypeToken(const QString &typeToken) {
     if(!thizTemplateTypeNameStack.isEmpty()) {
         thizTemplateTypeNameStack.top().push_back(typeToken);
     } else {
-        qWarning( ) << __FILE__ << __LINE__;
+        qWarning( ) << __FILE__ << __LINE__<< Q_FUNC_INFO;
     }
 }
 
@@ -34,8 +34,13 @@ void TypeSystemHelper::pushArgumentTypeMetaData(TypeMetaData *argType) {
 
 TypeMetaData *TypeSystemHelper::takeCurrentArgumentTypeMetaData() {
     // TODO
-    qDebug() << Q_FUNC_INFO;
-    return typeBuffer.pop();
+    // qDebug() << Q_FUNC_INFO;
+    if(!typeBuffer.isEmpty()) {
+        return typeBuffer.pop();
+    } else {
+        qWarning() << __FILE__ << __LINE__ << Q_FUNC_INFO;
+        return nullptr;
+    }
 }
 
 QString TypeSystemHelper::takeFullTypeName() {

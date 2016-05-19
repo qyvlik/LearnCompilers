@@ -24,10 +24,6 @@ int MapType::templateArgsCount() const
     return 2;
 }
 
-bool MapType::isTemplate() const
-{
-    return true;
-}
 
 TypeInstanciable *MapType::instanciable() const
 {

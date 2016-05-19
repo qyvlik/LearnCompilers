@@ -19,7 +19,10 @@ SOURCES += main.cpp \
     types/buildin/maptype.cpp \
     types/buildin/stacktype.cpp \
     ast/visitor.cpp \
-    ast/node.cpp
+    ast/node.cpp \
+    error/parsererror.cpp \
+    error/typeerror.cpp \
+    types/buildin/vectortype.cpp
 
 CONFIG += C++11
 
@@ -36,4 +39,7 @@ HEADERS += \
     types/buildin/maptype.h \
     types/buildin/stacktype.h \
     ast/visitor.h \
-    ast/node.h
+    ast/node.h \
+    error/parsererror.h \
+    error/typeerror.h \
+    types/buildin/vectortype.h

@@ -54,20 +54,12 @@ TypeName
 #include <QMap>
 
 #include "token.h"
-#include "throwable.h"
+#include "error/parsererror.h"
 
 // 类型的元数据
 
 namespace qyvlik {
 namespace typer {
-
-class ParserError : public Error
-{
-public:
-    ParserError(int code, const QString& message):
-        Error(code, message)
-    { }
-};
 
 class TypeDefinesNode;
 class TypeDefineNode;
@@ -94,7 +86,6 @@ public:
     QStack<Node*> nodeVar;
 };
 
-class TypeSystem;
 class TypeParser
 {
 public:

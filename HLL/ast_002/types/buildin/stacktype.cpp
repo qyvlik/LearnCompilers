@@ -23,11 +23,6 @@ int StackType::templateArgsCount() const
     return 1;
 }
 
-bool StackType::isTemplate() const
-{
-    return true;
-}
-
 TypeInstanciable *StackType::instanciable() const {
     return new StackInstanciable(this->getInstanciables());
 }

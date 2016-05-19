@@ -3,6 +3,9 @@
 
 #include <QtDebug>
 
+#include "error/typeerror.h"
+#include "error/parsererror.h"
+
 namespace qyvlik {
 namespace typer {
 
@@ -29,7 +32,7 @@ public:
     };
 
     virtual ~Node();
-    virtual void accept(Visitor* visitor) = 0 ;
+    virtual void accept(Visitor* visitor) throw(TypeError, ParserError)  = 0 ;
 
     int kind;
 };
@@ -43,7 +46,7 @@ public:
     TypeSpecifierNode();
 
     ~TypeSpecifierNode();
-    void accept(Visitor *visitor)  override;
+    void accept(Visitor *visitor) throw(TypeError, ParserError)  override;
 };
 
 // TemplateTypeSpecifier : templateName < TypeSpecifierNode (, TypeSpecifierNode)* >
@@ -55,7 +58,7 @@ public:
     QString templateName;
     QList<TypeSpecifierNode*> nodes;
 
-    void accept(Visitor *visitor)  override;
+    void accept(Visitor *visitor) throw(TypeError, ParserError)   override;
 };
 
 // 叶子
@@ -66,7 +69,7 @@ public:
     TypeNameNode();
     ~TypeNameNode();
 
-    void accept(Visitor *visitor)  override;
+    void accept(Visitor *visitor) throw(TypeError, ParserError)  override;
 
     QString typeName;
 };
@@ -78,7 +81,7 @@ public:
     TypeDefineNode();
     ~TypeDefineNode();
 
-    void accept(Visitor *visitor) override;
+    void accept(Visitor *visitor) throw(TypeError, ParserError)  override;
 
     SourceLocal let;
     TypeSpecifierNode* typeSpecifierNode;
@@ -92,7 +95,7 @@ public:
     DECLARE_AST_NODE(TypeDefines)
 
     TypeDefinesNode();
-    void accept(Visitor *visitor) override;
+    void accept(Visitor *visitor) throw(TypeError, ParserError)  override;
 
     QList<TypeDefineNode*> typeDefines;
 };

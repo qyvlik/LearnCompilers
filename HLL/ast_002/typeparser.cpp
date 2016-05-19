@@ -1,7 +1,6 @@
 #include "typeparser.h"
 
-#include "context/typesystem.h"
-#include "context/typesystemhelper_p.h"
+#include "ast/node.h"
 
 namespace qyvlik {
 namespace typer {

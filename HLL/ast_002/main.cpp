@@ -1,23 +1,23 @@
 #include <QCoreApplication>
 
+#include <time.h>
+#include <sys/time.h>
+
 #include "ast/node.h"
 #include "ast/visitor.h"
-
 #include "typeparser.h"
 #include "context/typesystem.h"
 
 using namespace qyvlik::typer;
 
 void test();
-void test2();
-void test3();
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    // test2();
-    test3();
+    test();
+
     return 0;
 
     //return a.exec();
@@ -25,81 +25,38 @@ int main(int argc, char *argv[])
 
 void test()
 {
-    Visitor visitor;
-
-    // let int as int8 ;
-
-    qDebug() << "let int as int8 ;" ;
-
-    TypeNameNode int_type ;
-    TypeNameNode int8_type ;
-
-    TypeDefineNode typeDefineNode;
-    typeDefineNode.typeSpecifierNode = &int_type;
-    typeDefineNode.typeNameNode = &int8_type;
-    typeDefineNode.accept(&visitor);
-}
-
-void test2()
-{
-    Visitor visitor;
-
-    // let stack<int> as IntStack ;
-    qDebug() << "let stack<int> as IntStack ;";
-
-    TemplateTypeSpecifierNode stack_int;
-    TypeNameNode int_type;
-    stack_int.nodes.push_back(&int_type);
-
-    TypeNameNode int_stack_type;
-
-    TypeDefineNode typeDefineNode;
-    typeDefineNode.typeSpecifierNode = &stack_int;
-    typeDefineNode.typeNameNode = &int_stack_type;
-
-    typeDefineNode.accept(&visitor);
-}
-
-void test3()
-{
 
     QList<Token> lexers;
 
-//    lexers   << Token(1, "let")
-//             << Token(1, "int")
-//             << Token(1, "as")
-//             << Token(1, "int32")
-//             << Token(1, ";") ;
+    lexers   << Token(1, "let")
+             << Token(1, "stack")
+             << Token(1, "<") << Token(1, "int") << Token(1, ">")
+             << Token(1, "as")
+             << Token(1, "MyIntStack")
+             << Token(1, ";") ;
 
-//    lexers   << Token(1, "let")
-//             << Token(1, "stack")
-//             << Token(1, "<") << Token(1, "int") << Token(1, ">")
-//             << Token(1, "as")
-//             << Token(1, "MyIntStack")
-//             << Token(1, ";") ;
+    lexers   << Token(1, "let")
+             << Token(1, "stack")
+             << Token(1, "<") << Token(1, "int") << Token(1, ">")
+             << Token(1, "as")
+             << Token(1, "MyIntStack2")
+             << Token(1, ";") ;
 
-//    lexers   << Token(1, "let")
-//             << Token(1, "stack")
-//             << Token(1, "<") << Token(1, "int") << Token(1, ">")
-//             << Token(1, "as")
-//             << Token(1, "MyIntStack2")
-//             << Token(1, ";") ;
+    lexers   << Token(1, "let")
+             << Token(1, "stack")
+             << Token(1, "<")
+             << Token(1, "stack") << Token(1, "<") << Token(1, "int") << Token(1, ">")
+             << Token(1, ">")
+             << Token(1, "as")
+             << Token(1, "IntStack")
+             << Token(1, ";") ;
 
-//    lexers   << Token(1, "let")
-//             << Token(1, "stack")
-//             << Token(1, "<")
-//             << Token(1, "stack") << Token(1, "<") << Token(1, "int") << Token(1, ">")
-//             << Token(1, ">")
-//             << Token(1, "as")
-//             << Token(1, "IntStack")
-//             << Token(1, ";") ;
-
-//    lexers   << Token(1, "let")
-//             << Token(1, "stack")
-//             << Token(1, "<") << Token(1, "int") << Token(1, ">")
-//             << Token(1, "as")
-//             << Token(1, "IntStack2")
-//             << Token(1, ";") ;
+    lexers   << Token(1, "let")
+             << Token(1, "stack")
+             << Token(1, "<") << Token(1, "int") << Token(1, ">")
+             << Token(1, "as")
+             << Token(1, "IntStack2")
+             << Token(1, ";") ;
 
     lexers   << Token(1, "let")
              << Token(1, "map")
@@ -117,6 +74,14 @@ void test3()
              << Token(1, ";")
                 ;
 
+    lexers   << Token(1, "let")
+             << Token(1, "vector")
+             << Token(1, "<") << Token(1, "map2") << Token(1, ">")
+             << Token(1, "as")
+             << Token(1, "map2Vector")
+             << Token(1, ";")
+                ;
+
     ASTTree* astTree = new ASTTree;
     TokenStream* lexerStream = TokenStream::getLexerStream(lexers);
 
@@ -124,18 +89,35 @@ void test3()
     typeParser.start(lexerStream, astTree);
 
 
-    //    TypeMetaData* map2 = typeSystem->getTypeMetaData("map2");
-    //    map2->instanciable()->newInstance();
-
     qDebug() << "=======================";
 
-//    TypeSystemVisitor visitor;
-//    typeSystem->astNode->accept(&visitor);
-
-
-
     TypeSystemVisitor visitor;
-    astTree->astNode->accept(&visitor);
+
+    try {
+        timeval start, end;
+
+        gettimeofday( &start, NULL );
+
+        astTree->astNode->accept(&visitor);
+
+        gettimeofday( &end, NULL );
+
+        //long timeuse = 1000000 * ( end.tv_sec - start.tv_sec ) + end.tv_usec - start.tv_usec;
+        qDebug() << "timeuse" << end.tv_usec - start.tv_usec;
+
+
+        TypeMetaData* map2Vector = visitor.typeSystem->getTypeMetaData("map2Vector");
+        if(map2Vector) {
+            map2Vector->instanciable()->newInstance();
+        } else {
+            qDebug() << "map2Vector not exists";
+        }
+
+    } catch(const ParserError& e) {
+        e.pritf();
+    } catch(const TypeError& e) {
+        e.pritf();
+    }
 
     delete astTree->astNode;
 

@@ -19,7 +19,6 @@ class MapType : public TemplateTypeMetaData
 public:
     MapType(const QVector<TypeMetaData*>& templateArgs);
     int templateArgsCount() const override;
-    bool isTemplate() const override;
     TypeInstanciable *instanciable() const override;
 };
 

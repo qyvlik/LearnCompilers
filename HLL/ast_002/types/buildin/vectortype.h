@@ -1,5 +1,5 @@
-#ifndef STACKTYPE_H
-#define STACKTYPE_H
+#ifndef VECTORTYPE_H
+#define VECTORTYPE_H
 
 #include "../templatetypemetadatafactory.h"
 #include "../typemetadata.h"
@@ -7,28 +7,27 @@
 namespace qyvlik {
 namespace typer {
 
-class StackInstanciable : public TemplateTypeInstanciable
+class VectorInstanciable : public TemplateTypeInstanciable
 {
 public:
-    StackInstanciable(const QVector<TypeInstanciable*>& instanciableArgs);
+    VectorInstanciable(const QVector<TypeInstanciable*>& instanciableArgs);
     int newInstance() override;
 };
 
-class StackType : public TemplateTypeMetaData
+class VectorType : public TemplateTypeMetaData
 {
 public:
-    StackType(const QVector<TypeMetaData*>& templateArgs);
+    VectorType(const QVector<TypeMetaData*>& templateArgs);
 
     int templateArgsCount() const override;
-
     TypeInstanciable* instanciable() const;
 };
 
 
-class StackTypeFactory : public TemplateTypeMetaDataFactory
+class VectorTypeFactory : public TemplateTypeMetaDataFactory
 {
 public:
-    ~StackTypeFactory();
+    ~VectorTypeFactory();
     TypeMetaData *templateTypeMetaData(const QVector<TypeMetaData *> &templateArgs) override;
 
     int templateArgumentsCount()const override;
@@ -38,5 +37,4 @@ public:
 }
 }
 
-
-#endif // STACKTYPE_H
+#endif // VECTORTYPE_H

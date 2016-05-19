@@ -11,13 +11,13 @@ namespace typer {
 Visitor::~Visitor()
 {}
 
-void Visitor::visit(Node * node)
+void Visitor::visit(Node * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
     qDebug() << "Node(" << node << ")";
 }
 
-void Visitor::visit(TypeDefinesNode * node)
+void Visitor::visit(TypeDefinesNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
     qDebug() << "TypeDefinesNode(" << node << ")" ;
@@ -30,7 +30,7 @@ void Visitor::visit(TypeDefinesNode * node)
     }
 }
 
-void Visitor::visit(TypeDefineNode * node)
+void Visitor::visit(TypeDefineNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
     qDebug() << "TypeDefineNode(" << node << ")" ;
@@ -38,7 +38,7 @@ void Visitor::visit(TypeDefineNode * node)
     this->visit(node->typeNameNode);
 }
 
-void Visitor::visit(TypeSpecifierNode * node)
+void Visitor::visit(TypeSpecifierNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
     //    std::cout << "TypeSpecifierNode(" << node << ")" << std::endl;
@@ -47,10 +47,9 @@ void Visitor::visit(TypeSpecifierNode * node)
     } else if(node->kind == Node::Kind_TemplateTypeSpecifier) {
         this->visit(dynamic_cast<TemplateTypeSpecifierNode*>(node));
     }
-
 }
 
-void Visitor::visit(TemplateTypeSpecifierNode * node)
+void Visitor::visit(TemplateTypeSpecifierNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
     qDebug() << "TemplateTypeSpecifierNode(" << node << ")" ;
@@ -62,7 +61,7 @@ void Visitor::visit(TemplateTypeSpecifierNode * node)
     }
 }
 
-void Visitor::visit(TypeNameNode * node)
+void Visitor::visit(TypeNameNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
     qDebug() << "TypeNameNode(" << node << ")";
@@ -80,13 +79,13 @@ TypeSystemVisitor::~TypeSystemVisitor()
    delete typeSystem;
 }
 
-void TypeSystemVisitor::visit(Node * node)
+void TypeSystemVisitor::visit(Node * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
-    qDebug() << "Node(" << node << ")";
+    // qDebug() << "Node(" << node << ")";
 }
 
-void TypeSystemVisitor::visit(TypeDefinesNode *node)
+void TypeSystemVisitor::visit(TypeDefinesNode *node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
     auto iter = node->typeDefines.begin();
@@ -99,10 +98,10 @@ void TypeSystemVisitor::visit(TypeDefinesNode *node)
 
 // 定义类型
 // let xx<xx> as x;
-void TypeSystemVisitor::visit(TypeDefineNode * node)
+void TypeSystemVisitor::visit(TypeDefineNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
-    qDebug() << "TypeDefineNode(" << node << ")" ;
+    // qDebug() << "TypeDefineNode(" << node << ")" ;
 
     this->visit(node->typeSpecifierNode);
 
@@ -116,17 +115,18 @@ void TypeSystemVisitor::visit(TypeDefineNode * node)
                                 typeSystem->getHelper()->takeFullTypeName());
     } else {
         qWarning() << Q_FUNC_INFO << __FILE__ << __LINE__;
-        qWarning() << "Type "+node->typeNameNode->typeName + " Already exist.";
+        // qWarning() << "Type "+node->typeNameNode->typeName + " Already exist.";
         // 这里要丢异常
+        throw ParserError(1, "Type "+node->typeNameNode->typeName + " Already exist.");
     }
 
 }
 
 // 模板类型
-void TypeSystemVisitor::visit(TypeSpecifierNode * node)
+void TypeSystemVisitor::visit(TypeSpecifierNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
-    //    std::cout << "TypeSpecifierNode(" << node << ")" << std::endl;
+    // qDebug() << "TypeSpecifierNode(" << node << ")";
     if(node->kind == Node::Kind_TypeNameNode) {
         TypeNameNode* n = dynamic_cast<TypeNameNode*>(node);
         this->visit(n);
@@ -141,11 +141,10 @@ void TypeSystemVisitor::visit(TypeSpecifierNode * node)
 }
 
 // xx xx (xx)*
-void TypeSystemVisitor::visit(TemplateTypeSpecifierNode * node)
+void TypeSystemVisitor::visit(TemplateTypeSpecifierNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
-    qDebug() << "TemplateTypeSpecifierNode(" << node << "," << node->templateName << ")" ;
-
+    // qDebug() << "TemplateTypeSpecifierNode(" << node << "," << node->templateName << ")" ;
 
     QString templateTypeName = node->templateName;
     const int templateArgsCount = typeSystem->templateArgsCount(templateTypeName);
@@ -171,19 +170,12 @@ void TypeSystemVisitor::visit(TemplateTypeSpecifierNode * node)
                 typeSystem->getHelper()->pushTypeToken(",");
             }
 
-//            if(nodeVar->kind == Node::Kind_TypeNameNode) {
-//                typeSystem->getHelper()->pushTypeToken(dynamic_cast<TypeNameNode*>(nodeVar)->typeName);
-//            }
-//            else if (nodeVar->kind == Node::Kind_TemplateTypeSpecifier) {
-//                typeSystem->getHelper()->pushTypeToken(dynamic_cast<TemplateTypeSpecifierNode*>(nodeVar)->templateName);
-//            }
-
-
             this->visit(nodeVar);
 
             thizTemplateArguments.push_back(typeSystem->getHelper()->takeCurrentArgumentTypeMetaData());
-
         }
+    } else {
+        throw TypeError(0, "template type :" + templateTypeName + " template arguments count: "+QString::number(templateArgsCount));
     }
 
     typeSystem->getHelper()->pushTypeToken(">");
@@ -204,10 +196,10 @@ void TypeSystemVisitor::visit(TemplateTypeSpecifierNode * node)
 
 }
 
-void TypeSystemVisitor::visit(TypeNameNode * node)
+void TypeSystemVisitor::visit(TypeNameNode * node) throw(TypeError, ParserError)
 {
     Q_ASSERT(node != nullptr);
-    qDebug() << "TypeNameNode(" << node << "," << node->typeName << ")";
+    // qDebug() << "TypeNameNode(" << node << "," << node->typeName << ")";
 }
 
 }

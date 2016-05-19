@@ -6,7 +6,6 @@
 #include <QMap>
 
 #include "types/buildintype.h"
-
 #include "../ast/node.h"
 
 namespace qyvlik {

@@ -14,7 +14,7 @@ TypeNameNode::TypeNameNode(){
 TypeNameNode::~TypeNameNode()
 {}
 
-void TypeNameNode::accept(Visitor *visitor)
+void TypeNameNode::accept(Visitor *visitor) throw(TypeError, ParserError)
 { visitor->visit(this); }
 
 TypeDefineNode::TypeDefineNode(){
@@ -24,14 +24,14 @@ TypeDefineNode::TypeDefineNode(){
 TypeDefineNode::~TypeDefineNode()
 {}
 
-void TypeDefineNode::accept(Visitor *visitor)
+void TypeDefineNode::accept(Visitor *visitor) throw(TypeError, ParserError)
 { visitor->visit(this); }
 
 TemplateTypeSpecifierNode::TemplateTypeSpecifierNode(){
     kind = K;
 }
 
-void TemplateTypeSpecifierNode::accept(Visitor *visitor)
+void TemplateTypeSpecifierNode::accept(Visitor *visitor) throw(TypeError, ParserError)
 { visitor->visit(this);  }
 
 TypeSpecifierNode::TypeSpecifierNode()
@@ -42,14 +42,14 @@ TypeSpecifierNode::TypeSpecifierNode()
 TypeSpecifierNode::~TypeSpecifierNode()
 {  }
 
-void TypeSpecifierNode::accept(Visitor *visitor)
+void TypeSpecifierNode::accept(Visitor *visitor) throw(TypeError, ParserError)
 { visitor->visit(this); }
 
 TypeDefinesNode::TypeDefinesNode() {
     kind = K;
 }
 
-void TypeDefinesNode::accept(Visitor *visitor)
+void TypeDefinesNode::accept(Visitor *visitor) throw(TypeError, ParserError)
 {
     visitor->visit(this);
 }
