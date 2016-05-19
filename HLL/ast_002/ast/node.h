@@ -21,10 +21,11 @@ class Visitor;
 class Node{
 public:
     enum Type {
+        Kind_TypeDefines,
         Kind_TypeDefine,
         Kind_TypeSpecifier,
         Kind_TemplateTypeSpecifier,
-        Kind_TypeName
+        Kind_TypeNameNode
     };
 
     virtual ~Node();
@@ -32,6 +33,7 @@ public:
 
     int kind;
 };
+
 
 
 class TypeSpecifierNode : public Node
@@ -60,7 +62,7 @@ public:
 class TypeNameNode final : public TypeSpecifierNode
 {
 public:
-    DECLARE_AST_NODE(TypeName)
+    DECLARE_AST_NODE(TypeNameNode)
     TypeNameNode();
     ~TypeNameNode();
 
@@ -82,6 +84,17 @@ public:
     TypeSpecifierNode* typeSpecifierNode;
     SourceLocal as;
     TypeNameNode* typeNameNode;
+};
+
+class TypeDefinesNode : public Node
+{
+public:
+    DECLARE_AST_NODE(TypeDefines)
+
+    TypeDefinesNode();
+    void accept(Visitor *visitor) override;
+
+    QList<TypeDefineNode*> typeDefines;
 };
 
 }

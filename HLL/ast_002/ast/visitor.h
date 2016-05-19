@@ -74,10 +74,12 @@ class Visitor {
 public:
     virtual ~Visitor();
     virtual void visit(Node*);
+    virtual void visit(TypeDefinesNode*);
     virtual void visit(TypeDefineNode*);
     virtual void visit(TypeSpecifierNode*);
     virtual void visit(TemplateTypeSpecifierNode*);
     virtual void visit(TypeNameNode*);
+
 };
 
 class TypeSystemVisitor : public Visitor
@@ -86,13 +88,13 @@ public:
     TypeSystemVisitor();
     ~TypeSystemVisitor();
     void visit(Node *) override;
+    void visit(TypeDefinesNode *) override;
     void visit(TypeDefineNode *) override;
     void visit(TypeSpecifierNode *) override;
     void visit(TemplateTypeSpecifierNode *) override;
     void visit(TypeNameNode *) override;
 
     TypeSystem* typeSystem;
-
 
 };
 

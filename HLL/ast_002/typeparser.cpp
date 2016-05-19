@@ -19,13 +19,25 @@ bool TypeParser::start(TokenStream *lexerStream, TypeSystem *__typeSystem)
 
 void TypeParser::TypeDefinesStatement(TokenStream *lexerStream, TypeSystem *__typeSystem) throw(ParserError)
 {
+
+    QList<TypeDefineNode*> typeDefines;
+
     while(lexerStream->current().value() == "let") {
         TypeDefineStatement(lexerStream, __typeSystem);
+
+        TypeDefineNode* typeDefine =  dynamic_cast<TypeDefineNode*>(__typeSystem->nodeVar.pop());
+        typeDefines.push_back(typeDefine);
+
+
         if(lexerStream->current().value() != ";") {
             throw ParserError(-1, "Lost `;");
         } else {
             lexerStream->next();
         }
+
+        TypeDefinesNode* node = __typeSystem->createTypeDefinesNode(typeDefines);
+        __typeSystem->astNode = node;
+
     }
     qDebug() << "OK";
 }
@@ -68,8 +80,9 @@ void TypeParser::TypeDefineStatement(TokenStream *lexerStream, TypeSystem *__typ
 
         TypeDefineNode* node = __typeSystem->createTypeDefineNode(typeSpecifierNode, typeNameNode);
         __typeSystem->nodeVar.push(node);
+
         // 由于忘记设计 TypeDefinesStatement 了。。。所以直接获取一条定义语句
-        __typeSystem->astNode = node;
+//        __typeSystem->astNode = node;
 
         lexerStream->next();
 

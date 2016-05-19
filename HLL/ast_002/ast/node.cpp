@@ -34,7 +34,8 @@ TemplateTypeSpecifierNode::TemplateTypeSpecifierNode(){
 void TemplateTypeSpecifierNode::accept(Visitor *visitor)
 { visitor->visit(this);  }
 
-TypeSpecifierNode::TypeSpecifierNode(){
+TypeSpecifierNode::TypeSpecifierNode()
+{
     kind = K;
 }
 
@@ -43,6 +44,15 @@ TypeSpecifierNode::~TypeSpecifierNode()
 
 void TypeSpecifierNode::accept(Visitor *visitor)
 { visitor->visit(this); }
+
+TypeDefinesNode::TypeDefinesNode() {
+    kind = K;
+}
+
+void TypeDefinesNode::accept(Visitor *visitor)
+{
+    visitor->visit(this);
+}
 
 }
 }

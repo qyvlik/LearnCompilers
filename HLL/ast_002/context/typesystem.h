@@ -41,6 +41,12 @@ public:
 
     TypeSystemHelper *getHelper() const;
 
+    TypeDefinesNode* createTypeDefinesNode(const QList<TypeDefineNode*>& typeDefines) {
+        TypeDefinesNode* n = new TypeDefinesNode();
+        n->typeDefines = typeDefines;
+        return n;
+    }
+
     TypeDefineNode* createTypeDefineNode( TypeSpecifierNode* typeSpecifierNode, TypeNameNode* typeNameNode) {
         TypeDefineNode* n = new TypeDefineNode();
         n->typeSpecifierNode = typeSpecifierNode;
