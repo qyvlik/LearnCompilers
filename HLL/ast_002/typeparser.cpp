@@ -140,7 +140,7 @@ void TypeParser::TemplateTypeSpecifier(TokenStream *lexerStream, ASTTree *__astT
 
         } while(lexerStream->current().value() == ",");
 
-        if(lexerStream->current().value() == ">") {
+        if(lexerStream->current().value() != ">") {
 
             throw ParserError(-1, "Template Type "+templateTypeName + " lost `> ");
 
