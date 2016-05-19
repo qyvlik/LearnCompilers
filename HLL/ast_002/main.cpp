@@ -129,10 +129,15 @@ void test3()
 
     qDebug() << "=======================";
 
+//    TypeSystemVisitor visitor;
+//    typeSystem->astNode->accept(&visitor);
+
+
+
     TypeSystemVisitor visitor;
-    typeSystem->astNode->accept(&visitor);
+    typeParser.astTree->astNode->accept(&visitor);
 
-
+    delete typeParser.astTree->astNode;
 
     delete lexerStream;
     delete typeSystem;

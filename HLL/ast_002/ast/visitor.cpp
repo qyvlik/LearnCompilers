@@ -117,6 +117,7 @@ void TypeSystemVisitor::visit(TypeDefineNode * node)
     } else {
         qWarning() << Q_FUNC_INFO << __FILE__ << __LINE__;
         qWarning() << "Type "+node->typeNameNode->typeName + " Already exist.";
+        // 这里要丢异常
     }
 
 }

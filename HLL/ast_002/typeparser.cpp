@@ -6,6 +6,13 @@
 namespace qyvlik {
 namespace typer {
 
+
+TypeParser::TypeParser():
+    astTree(new ASTTree)
+{
+
+}
+
 bool TypeParser::start(TokenStream *lexerStream, TypeSystem *__typeSystem)
 {
     try {
@@ -25,9 +32,11 @@ void TypeParser::TypeDefinesStatement(TokenStream *lexerStream, TypeSystem *__ty
     while(lexerStream->current().value() == "let") {
         TypeDefineStatement(lexerStream, __typeSystem);
 
-        TypeDefineNode* typeDefine =  dynamic_cast<TypeDefineNode*>(__typeSystem->nodeVar.pop());
-        typeDefines.push_back(typeDefine);
+//        TypeDefineNode* typeDefine =  dynamic_cast<TypeDefineNode*>(__typeSystem->nodeVar.pop());
+//        typeDefines.push_back(typeDefine);
 
+         TypeDefineNode* __typeDefine = dynamic_cast<TypeDefineNode*>(astTree->nodeVar.pop());
+         typeDefines.push_back(__typeDefine);
 
         if(lexerStream->current().value() != ";") {
             throw ParserError(-1, "Lost `;");
@@ -35,8 +44,12 @@ void TypeParser::TypeDefinesStatement(TokenStream *lexerStream, TypeSystem *__ty
             lexerStream->next();
         }
 
-        TypeDefinesNode* node = __typeSystem->createTypeDefinesNode(typeDefines);
-        __typeSystem->astNode = node;
+//        TypeDefinesNode* node = __typeSystem->createTypeDefinesNode(typeDefines);
+//        __typeSystem->astNode = node;
+
+         TypeDefinesNode* node = astTree->createTypeDefinesNode(typeDefines);
+         astTree->astNode = node;
+
 
     }
     qDebug() << "OK";
@@ -54,8 +67,9 @@ void TypeParser::TypeDefineStatement(TokenStream *lexerStream, TypeSystem *__typ
 
     lexerStream->next();
 
-    TypeSpecifierNode* typeSpecifierNode =  dynamic_cast<TypeSpecifierNode*>(__typeSystem->nodeVar.pop());
+    // TypeSpecifierNode* typeSpecifierNode =  dynamic_cast<TypeSpecifierNode*>(__typeSystem->nodeVar.pop());
 
+    TypeSpecifierNode* typeSpecifierNode = dynamic_cast<TypeSpecifierNode*>(astTree->nodeVar.pop());
 
     if(lexerStream->current().value() == "as") {
         lexerStream->next();
@@ -66,26 +80,30 @@ void TypeParser::TypeDefineStatement(TokenStream *lexerStream, TypeSystem *__typ
             __typeSystem->mapTypeName(lexerStream->current().value(),
                                       __typeSystem->getHelper()->takeFullTypeName());
 
-
-
         } else {
             throw ParserError(-1, "Type "+lexerStream->current().value()+" Already exist.");
         }
+
+        // 这一段可能要移除，放到语法树解析上
+
         TypeName(lexerStream, __typeSystem);
 
 
         //! 语法树
-        TypeNameNode* typeNameNode = __typeSystem->createTypeName();
-        typeNameNode->typeName = lexerStream->current().value();
+//        TypeNameNode* typeNameNode = astTree->createTypeName();
+//        typeNameNode->typeName = lexerStream->current().value();
+//        TypeDefineNode* node = astTree->createTypeDefineNode(typeSpecifierNode, typeNameNode);
+//        astTree->nodeVar.push(node);
 
-        TypeDefineNode* node = __typeSystem->createTypeDefineNode(typeSpecifierNode, typeNameNode);
-        __typeSystem->nodeVar.push(node);
-
-        // 由于忘记设计 TypeDefinesStatement 了。。。所以直接获取一条定义语句
-//        __typeSystem->astNode = node;
+         TypeNameNode* typeNameNode = astTree->createTypeName();
+         typeNameNode->typeName = lexerStream->current().value();
+         TypeDefineNode* node = astTree->createTypeDefineNode(typeSpecifierNode, typeNameNode);
+         astTree->nodeVar.push(node);
 
         lexerStream->next();
 
+    } else {
+        throw ParserError(-1, "Type "+lexerStream->current().value()+" not a `as key word");
     }
 
 }
@@ -100,12 +118,14 @@ void TypeParser::TypeSpecifier(TokenStream *lexerStream, TypeSystem *__typeSyste
         __typeSystem->getHelper()->pushArgumentTypeMetaData(__typeSystem->getTypeMetaData(lexerStream->current().value()));
         __typeSystem->getHelper()->pushTypeToken(__typeSystem->getFullTypeName(lexerStream->current().value()));
 
-
         //! 语法树
-        TypeNameNode* node = __typeSystem->createTypeName();
-        node->typeName = lexerStream->current().value();
-        __typeSystem->nodeVar.push(node);
+//        TypeNameNode* node = __typeSystem->createTypeName();
+//        node->typeName = lexerStream->current().value();
+//        __typeSystem->nodeVar.push(node);
 
+         TypeNameNode* node = astTree->createTypeName();
+         node->typeName = lexerStream->current().value();
+         astTree->nodeVar.push(node);
 
     } else {
         throw ParserError(-1, "Type "+lexerStream->current().value()+" not exist.");
@@ -146,7 +166,9 @@ void TypeParser::TemplateTypeSpecifier(TokenStream *lexerStream, TypeSystem *__t
     thizTemplateArguments.push_back(__typeSystem->getHelper()->takeCurrentArgumentTypeMetaData());
 
     //! 语法树
-    nodes.push_back(dynamic_cast<TypeSpecifierNode*>(__typeSystem->nodeVar.pop()));
+//    nodes.push_back(dynamic_cast<TypeSpecifierNode*>(__typeSystem->nodeVar.pop()));
+
+     nodes.push_back(dynamic_cast<TypeSpecifierNode*>(astTree->nodeVar.pop()));
 
     switch(templateArgsCount)
     {
@@ -188,7 +210,9 @@ void TypeParser::TemplateTypeSpecifier(TokenStream *lexerStream, TypeSystem *__t
                 thizTemplateArguments.push_back(__typeSystem->getHelper()->takeCurrentArgumentTypeMetaData());
 
                 //! 语法树
-                nodes.push_back(dynamic_cast<TypeSpecifierNode*>(__typeSystem->nodeVar.pop()));
+//                nodes.push_back(dynamic_cast<TypeSpecifierNode*>(__typeSystem->nodeVar.pop()));
+
+                 nodes.push_back(dynamic_cast<TypeSpecifierNode*>(astTree->nodeVar.pop()));
 
 
             } while(lexerStream->current().value() == ",");
@@ -223,9 +247,14 @@ void TypeParser::TemplateTypeSpecifier(TokenStream *lexerStream, TypeSystem *__t
 
 
     //! 语法树
-    TemplateTypeSpecifierNode* node = __typeSystem->createTemplateTypeSpecifierNode(nodes);
-    node->templateName = templateTypeName;
-    __typeSystem->nodeVar.push(node);
+//    TemplateTypeSpecifierNode* node = __typeSystem->createTemplateTypeSpecifierNode(nodes);
+//    node->templateName = templateTypeName;
+//    __typeSystem->nodeVar.push(node);
+
+     TemplateTypeSpecifierNode* node = astTree->createTemplateTypeSpecifierNode(nodes);
+     node->templateName = templateTypeName;
+     astTree->nodeVar.push(node);
+
 }
 
 void TypeParser::TypeName(TokenStream *lexerStream, TypeSystem *__typeSystem)  throw(ParserError)
@@ -239,6 +268,46 @@ void TypeParser::TypeName(TokenStream *lexerStream, TypeSystem *__typeSystem)  t
     } else {
         qDebug() << "base type :" << lexerStream->current().value();
     }
+}
+
+
+
+
+ASTTree::ASTTree()
+{
+
+}
+
+TypeDefinesNode *ASTTree::createTypeDefinesNode(const QList<TypeDefineNode *> &typeDefines)
+{
+    TypeDefinesNode* n = new TypeDefinesNode();
+    n->typeDefines = typeDefines;
+    return n;
+}
+
+TypeDefineNode *ASTTree::createTypeDefineNode(TypeSpecifierNode *typeSpecifierNode, TypeNameNode *typeNameNode)
+{
+    TypeDefineNode* n = new TypeDefineNode();
+    n->typeSpecifierNode = typeSpecifierNode;
+    n->typeNameNode = typeNameNode;
+    return n;
+}
+
+TypeSpecifierNode *ASTTree::createTypeSpecifierNode(TypeSpecifierNode *node)
+{
+    return node;
+}
+
+TemplateTypeSpecifierNode *ASTTree::createTemplateTypeSpecifierNode(const QList<TypeSpecifierNode *> &nodes)
+{
+    TemplateTypeSpecifierNode* n = new TemplateTypeSpecifierNode();
+    n->nodes = nodes;
+    return n;
+}
+
+TypeNameNode *ASTTree::createTypeName()
+{
+    return new TypeNameNode();
 }
 
 

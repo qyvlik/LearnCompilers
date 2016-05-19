@@ -69,11 +69,38 @@ public:
     { }
 };
 
+class TypeDefinesNode;
+class TypeDefineNode;
+class TypeSpecifierNode;
+class TemplateTypeSpecifierNode;
+class TypeNameNode;
+class Node;
+
+class ASTTree {
+public:
+    ASTTree();
+    TypeDefinesNode* createTypeDefinesNode(const QList<TypeDefineNode*>& typeDefines);
+
+    TypeDefineNode* createTypeDefineNode( TypeSpecifierNode* typeSpecifierNode, TypeNameNode* typeNameNode);
+
+    // TypeSpecifierNode -> TemplateTypeSpecifierNode | TypeName
+    TypeSpecifierNode* createTypeSpecifierNode(TypeSpecifierNode* node);
+
+    TemplateTypeSpecifierNode* createTemplateTypeSpecifierNode(const QList<TypeSpecifierNode*>& nodes);
+
+    TypeNameNode* createTypeName();
+
+    Node* astNode;
+    QStack<Node*> nodeVar;
+};
+
 class TypeSystem;
 class TypeParser
 {
 public:
-    bool start(TokenStream* lexerStream, TypeSystem* __typeSystem);
+    TypeParser();
+    bool start(TokenStream* lexerStream, TypeSystem* __typeSystem = 0);
+    ASTTree* astTree;
 
 protected:
     void TypeDefinesStatement(TokenStream* lexerStream, TypeSystem* __typeSystem) throw(ParserError);
@@ -88,6 +115,8 @@ protected:
     void TemplateTypeSpecifier(TokenStream* lexerStream, TypeSystem* __typeSystem) throw(ParserError);
 
     void TypeName(TokenStream* lexerStream, TypeSystem* __typeSystem) throw(ParserError);
+
+
 };
 
 }
