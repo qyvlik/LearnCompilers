@@ -99,22 +99,21 @@ class TypeParser
 {
 public:
     TypeParser();
-    bool start(TokenStream* lexerStream, TypeSystem* __typeSystem = 0);
-    ASTTree* astTree;
+    bool start(TokenStream* lexerStream, ASTTree* __astTree = 0);
 
 protected:
-    void TypeDefinesStatement(TokenStream* lexerStream, TypeSystem* __typeSystem) throw(ParserError);
+    void TypeDefinesStatement(TokenStream* lexerStream, ASTTree* __astTree) throw(ParserError);
 
     //  LET TypeSpecifier AS TypeName
-    void TypeDefineStatement(TokenStream* lexerStream , TypeSystem* __typeSystem) throw(ParserError);
+    void TypeDefineStatement(TokenStream* lexerStream , ASTTree* __astTree) throw(ParserError);
 
     // TypeSpecifier : TypeName | TemplateTypeSpecifier
-    void TypeSpecifier(TokenStream* lexerStream, TypeSystem* __typeSystem) throw(ParserError);
+    void TypeSpecifier(TokenStream* lexerStream, ASTTree* __astTree) throw(ParserError);
 
     // template < name (,name)* >
-    void TemplateTypeSpecifier(TokenStream* lexerStream, TypeSystem* __typeSystem) throw(ParserError);
+    void TemplateTypeSpecifier(TokenStream* lexerStream, ASTTree* __astTree) throw(ParserError);
 
-    void TypeName(TokenStream* lexerStream, TypeSystem* __typeSystem) throw(ParserError);
+    void TypeName(TokenStream* lexerStream, ASTTree* __astTree) throw(ParserError);
 
 
 };
