@@ -66,6 +66,7 @@ private:
 // factor   -> NUMBER
 //           | ( expr )
 
+typedef std::string(*Calc)(const std::string&, const std::string&);
 
 class Node : public std::enable_shared_from_this<Node>
 {
@@ -100,7 +101,7 @@ public:
     std::weak_ptr<ExprNode> first;
     std::weak_ptr<TermNode> second;
 
-    std::function<std::string(const std::string& , const std::string)> calc;
+    Calc calc;
 
 };
 

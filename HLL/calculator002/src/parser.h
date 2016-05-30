@@ -47,7 +47,7 @@ public:
     {}
 
     std::shared_ptr<ExprNode> createExprNode( std::shared_ptr<ExprNode> first,
-                                              std::function<std::string(const std::string&, const std::string&)> calc,
+                                              const Calc& calc,
                                               std::shared_ptr<TermNode> second)
     {
         assert(first != nullptr && second != nullptr);
@@ -63,7 +63,7 @@ public:
     }
 
     std::shared_ptr<TermNode> createTermNode( std::shared_ptr<TermNode> first,
-                                              std::function<std::string(const std::string&, const std::string&)> calc,
+                                              const Calc& calc,
                                               std::shared_ptr<FactorNode> second)
     {
         assert(first != nullptr && second != nullptr);
