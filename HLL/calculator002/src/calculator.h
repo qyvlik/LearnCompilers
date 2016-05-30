@@ -4,7 +4,10 @@
 #include <string>
 #include <stack>
 #include <vector>
+#include <iostream>
 #include <assert.h>
+
+namespace qyvlik {
 
 static std::string add(const std::string& arg0, const std::string& arg1) {
     int a0 = std::stoi(arg0);
@@ -27,6 +30,8 @@ static std::string mul(const std::string& arg0, const std::string& arg1) {
 static std::string div(const std::string& arg0, const std::string& arg1) {
     int a0 = std::stoi(arg0);
     int a1 = std::stoi(arg1);
+
+    // std::cout << "arg1: " << arg1 << std::endl;
 
     assert(a1 != 0);
 
@@ -51,6 +56,8 @@ static std::string calcula(const std::string& operation, const std::string& arg0
         assert(0);
         return std::string("0");
     }
+}
+
 }
 
 class Calculator {
@@ -85,7 +92,7 @@ public:
                 std::string arg1 = calc.top();
                 calc.pop();
 
-                calc.push(calcula(current, arg0, arg1));
+                calc.push(qyvlik::calcula(current, arg0, arg1));
             }
         } while(!code.empty());
 

@@ -31,6 +31,10 @@ public:
 
     }
 
+    void clear() {
+        valueStack.clear();
+    }
+
 private:
     std::vector<std::string> valueStack;
 };
@@ -97,7 +101,7 @@ public:
     std::string op;         // +, -
     std::weak_ptr<TermNode> second;
 
-    // std::function<std::string(const std::string& , const std::string)> calc;
+    std::function<std::string(const std::string& , const std::string)> calc;
 
 };
 
@@ -118,7 +122,7 @@ public:
     std::string op;         // *, /
     std::weak_ptr<FactorNode> second;
 
-    // std::function<std::string(const std::string& , const std::string)> calc;
+    std::function<std::string(const std::string& , const std::string)> calc;
 };
 
 // factor -> ( expr )

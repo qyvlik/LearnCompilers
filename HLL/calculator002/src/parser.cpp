@@ -1,6 +1,8 @@
 #include "parser.h"
 #include "lexerstream.h"
 
+#include "calculator.h"
+
 #include <iostream>
 
 
@@ -29,6 +31,12 @@ void Parser::expr(LexerStream *lexers)
         asttree.nodeVar.pop();
 
         std::shared_ptr<ExprNode> exprNode = asttree.createExprNode(frist, op, second);
+
+        if(lexers->current() == "+") {
+            exprNode->calc = &qyvlik::add;
+        } else {
+            exprNode->calc = &qyvlik::sub;
+        }
 
         asttree.nodeVar.push(exprNode);
     }
@@ -61,6 +69,12 @@ void Parser::term(LexerStream *lexers)
         asttree.nodeVar.pop();
 
         std::shared_ptr<TermNode> termNode = asttree.createTermNode(frist, op, second);
+
+        if(lexers->current() == "*") {
+            termNode->calc = &qyvlik::mul;
+        } else {
+            termNode->calc = &qyvlik::div;
+        }
 
         asttree.nodeVar.push(termNode);
     }

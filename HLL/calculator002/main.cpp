@@ -44,8 +44,8 @@ int main()
 
 
     long usetime = timeTick([&](){
-        Calculator calculator;
         int count = 100000;
+        Calculator calculator;
         while(count-- != 0) {
             calculator.code = parser.code;
             calculator.result();
@@ -61,10 +61,12 @@ int main()
 
     usetime = timeTick([&](){
         int count = 100000;
+        Visitor visitor;
         while(count-- != 0) {
-            Visitor visitor;
+            visitor.clear();
             parser.asttree.astNode->accept(&visitor);
         }
+
     });
 
     cout << endl;

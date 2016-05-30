@@ -20,7 +20,7 @@ void Visitor::visit(std::shared_ptr<ExprNode> node)
 
     first->accept(this);
 
-    std::string op = node->op;
+    // std::string op = node->op;
 
     std::shared_ptr<TermNode> second = node->second.lock();
 
@@ -32,7 +32,8 @@ void Visitor::visit(std::shared_ptr<ExprNode> node)
     std::string arg1 = this->valueStack.front();
     this->valueStack.erase(this->valueStack.begin());
 
-    valueStack.push_back(calcula(op, arg0, arg1));
+//    valueStack.push_back(qyvlik::calcula(op, arg0, arg1));
+    valueStack.push_back(node->calc(arg0, arg1));
 
 }
 
@@ -46,7 +47,7 @@ void Visitor::visit(std::shared_ptr<TermNode> node)
 
     first->accept(this);
 
-    std::string op = node->op;
+    // std::string op = node->op;
 
     std::shared_ptr<TermNode> second = node->second.lock();
 
@@ -58,7 +59,8 @@ void Visitor::visit(std::shared_ptr<TermNode> node)
     std::string arg1 = this->valueStack.front();
     this->valueStack.erase(this->valueStack.begin());
 
-    valueStack.push_back(calcula(op, arg0, arg1));
+    // valueStack.push_back(qyvlik::calcula(op, arg0, arg1));
+    valueStack.push_back(node->calc( arg0, arg1));
 }
 
 // factor -> ( expr )
