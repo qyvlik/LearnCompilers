@@ -1,12 +1,23 @@
 #include <QCoreApplication>
 
-#include <time.h>
 #include <sys/time.h>
-
 #include "ast/node.h"
 #include "ast/visitor.h"
 #include "typeparser.h"
 #include "context/typesystem.h"
+
+#include <memory>
+
+
+template<typename T>
+inline std::shared_ptr<T> weak_lock(const std::weak_ptr<T>& d) throw(std::string)
+{
+    if(d.expired()) {
+        return d.lock();
+    } else {
+        throw "expired";
+    }
+}
 
 using namespace qyvlik::typer;
 
