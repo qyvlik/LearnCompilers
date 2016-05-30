@@ -98,7 +98,6 @@ public:
     void accept(Visitor* visitor) override;
 
     std::weak_ptr<ExprNode> first;
-    std::string op;         // +, -
     std::weak_ptr<TermNode> second;
 
     std::function<std::string(const std::string& , const std::string)> calc;
@@ -119,10 +118,10 @@ public:
     }
     void accept(Visitor* visitor) override;
     std::weak_ptr<TermNode> first;
-    std::string op;         // *, /
+    // std::string op;         // *, /
     std::weak_ptr<FactorNode> second;
 
-    std::function<std::string(const std::string& , const std::string)> calc;
+    // std::function<std::string(const std::string& , const std::string)> calc;
 };
 
 // factor -> ( expr )

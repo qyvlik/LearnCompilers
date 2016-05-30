@@ -32,6 +32,8 @@ int main()
     l.push_back("+");
     l.push_back("1");
     l.push_back(")");
+    l.push_back("+");
+    l.push_back("123123");
 
 
     LexerStream stream(l);
@@ -43,36 +45,47 @@ int main()
     //    cout << parser.code.front();
 
 
-    long usetime = timeTick([&](){
-        int count = 100000;
-        Calculator calculator;
-        while(count-- != 0) {
-            calculator.code = parser.code;
-            calculator.result();
-        }
-    });
+//    long usetime = timeTick([&](){
+//        int count = 100000;
+//        Calculator calculator;
+//        while(count-- != 0) {
+//            calculator.code = parser.code;
+//            calculator.result();
+//        }
+//    });
 
-    cout << endl;
+//    cout << endl;
 
-    cout << "usetime:" << usetime;
+//    cout << "usetime:" << usetime;
 
-    cout << endl;
+//    cout << endl;
 
 
-    usetime = timeTick([&](){
-        int count = 100000;
-        Visitor visitor;
-        while(count-- != 0) {
-            visitor.clear();
-            parser.asttree.astNode->accept(&visitor);
-        }
+//    usetime = timeTick([&](){
+//        int count = 100000;
+//        Visitor visitor;
+//        while(count-- != 0) {
+//            visitor.clear();
+//            parser.asttree.astNode->accept(&visitor);
+//        }
 
-    });
+//    });
 
-    cout << endl;
 
-    cout << "usetime:" << usetime;
 
-    cout << endl;
+//    cout << endl;
+
+//    cout << "usetime:" << usetime;
+
+//    cout << endl;
+
+//    Calculator calculator;
+//    calculator.code = parser.code;
+//    cout <<  calculator.result();
+
+    Visitor visitor;
+    parser.asttree.astNode->accept(&visitor);
+    std::cout << std::endl;
+    visitor.print();
 
 }

@@ -60,7 +60,8 @@ void Visitor::visit(std::shared_ptr<TermNode> node)
     this->valueStack.erase(this->valueStack.begin());
 
     // valueStack.push_back(qyvlik::calcula(op, arg0, arg1));
-    valueStack.push_back(node->calc( arg0, arg1));
+    valueStack.push_back(
+                node->calc( arg0, arg1));
 }
 
 // factor -> ( expr )

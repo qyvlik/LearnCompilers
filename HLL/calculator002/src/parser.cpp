@@ -30,12 +30,13 @@ void Parser::expr(LexerStream *lexers)
         std::shared_ptr<TermNode> second = std::dynamic_pointer_cast<TermNode>(asttree.nodeVar.top()) ;
         asttree.nodeVar.pop();
 
-        std::shared_ptr<ExprNode> exprNode = asttree.createExprNode(frist, op, second);
+        std::shared_ptr<ExprNode> exprNode ;
 
-        if(lexers->current() == "+") {
-            exprNode->calc = &qyvlik::add;
+        if(op == "+") {
+            exprNode = asttree.createExprNode(frist, &qyvlik::add, second);
+
         } else {
-            exprNode->calc = &qyvlik::sub;
+            exprNode = asttree.createExprNode(frist, &qyvlik::sub, second);
         }
 
         asttree.nodeVar.push(exprNode);
@@ -68,12 +69,14 @@ void Parser::term(LexerStream *lexers)
         std::shared_ptr<FactorNode> second = std::dynamic_pointer_cast<FactorNode>(asttree.nodeVar.top()) ;
         asttree.nodeVar.pop();
 
-        std::shared_ptr<TermNode> termNode = asttree.createTermNode(frist, op, second);
+        std::shared_ptr<TermNode> termNode;
 
-        if(lexers->current() == "*") {
-            termNode->calc = &qyvlik::mul;
+        if(op == "*") {
+            termNode = asttree.createTermNode(frist, &qyvlik::mul, second);
         } else {
-            termNode->calc = &qyvlik::div;
+            std::cout << std::endl;
+            std::cout << "lexers->current()" << op << std::endl;
+            termNode = asttree.createTermNode(frist, &qyvlik::div, second);
         }
 
         asttree.nodeVar.push(termNode);
@@ -92,6 +95,7 @@ void Parser::factor(LexerStream *lexers)
         lexers->next();
 
         expr(lexers);
+
         lexers->next();
 
         std::shared_ptr<ExprNode> exprNode = std::dynamic_pointer_cast<ExprNode>(asttree.nodeVar.top()) ;
@@ -100,10 +104,11 @@ void Parser::factor(LexerStream *lexers)
         std::shared_ptr<FactorNode> factorNode =  asttree.createFactorNode(exprNode);
         asttree.nodeVar.push(factorNode);
 
-        std::string e = lexers->current();
-        if(e != ")") {
-            std::cout << "lost `(" << std::endl;
-        }
+//        std::string e = lexers->current();
+
+//        if(e != ")") {
+//            std::cout << "lost `(" << std::endl;
+//        }
     } else {
         std::cout << current;      // PUSH
 

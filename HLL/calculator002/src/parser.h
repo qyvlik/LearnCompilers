@@ -46,7 +46,10 @@ public:
     ASTTree()
     {}
 
-    std::shared_ptr<ExprNode> createExprNode( std::shared_ptr<ExprNode> first, const std::string& op, std::shared_ptr<TermNode> second) {
+    std::shared_ptr<ExprNode> createExprNode( std::shared_ptr<ExprNode> first,
+                                              std::function<std::string(const std::string&, const std::string&)> calc,
+                                              std::shared_ptr<TermNode> second)
+    {
         assert(first != nullptr && second != nullptr);
 
         std::shared_ptr<ExprNode> expr (new ExprNode);
@@ -54,12 +57,15 @@ public:
         nodes.push_back(expr);
 
         expr->first = first;
-        expr->op = op;
+        expr->calc = calc;
         expr->second = second;
         return expr;
     }
 
-    std::shared_ptr<TermNode> createTermNode( std::shared_ptr<TermNode> first, const std::string& op, std::shared_ptr<FactorNode> second) {
+    std::shared_ptr<TermNode> createTermNode( std::shared_ptr<TermNode> first,
+                                              std::function<std::string(const std::string&, const std::string&)> calc,
+                                              std::shared_ptr<FactorNode> second)
+    {
         assert(first != nullptr && second != nullptr);
 
         std::shared_ptr<TermNode> term (new TermNode);
@@ -67,7 +73,7 @@ public:
         nodes.push_back(term);
 
         term->first = first;
-        term->op = op;
+        term->calc = calc;
         term->second = second;
         return term;
     }
