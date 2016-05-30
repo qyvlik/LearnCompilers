@@ -5,10 +5,29 @@
 #include <stack>
 #include <assert.h>
 
+#include <functional>
+#include <sys/time.h>
+
 using namespace std;
 
 // std::stoi
 
+
+
+long timeTick(const std::function<void(void)>& t)
+{
+    timeval start, end;
+
+    gettimeofday( &start, NULL );
+
+    t();
+
+    gettimeofday( &end, NULL );
+
+    //long timeuse =
+    return 1000000 * ( end.tv_sec - start.tv_sec ) + end.tv_usec - start.tv_usec;
+    //return end.tv_usec - start.tv_usec;
+}
 
 //class Node {
 //public:
@@ -75,6 +94,9 @@ private:
 
 class Calculator {
 public:
+    Calculator()
+    {}
+
     Calculator(const vector<string>& code):
         code(code)
     { }
@@ -249,11 +271,20 @@ int main()
 //    cout << endl;
 //    cout << parser.code.front();
 
-     Calculator calculator(parser.code);
-     cout << endl;
-     cout <<
-             calculator.result();
 
+    long usetime = timeTick([&](){
+         Calculator calculator;
+         int count = 100000;
+         while(count-- != 0) {
+             calculator.code = parser.code;
+             calculator.result();
+         }
+     });
+
+
+     cout << endl;
+
+     cout << "usetime:" << usetime;
 
 
 }
