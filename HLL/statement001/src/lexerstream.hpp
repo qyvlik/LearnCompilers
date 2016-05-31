@@ -9,7 +9,7 @@ class LexerStream
 public:
     LexerStream(const std::vector<std::string> l):
         l(l),
-        index(0)
+        index(0)        // -1?
     {}
 
     void next() {
@@ -22,6 +22,11 @@ public:
 
     std::string current() const {
         return l.at(index);
+    }
+
+    bool atEnd() const {
+        return  l.size() == 0
+                || index == l.size()-1;
     }
 
 private:
