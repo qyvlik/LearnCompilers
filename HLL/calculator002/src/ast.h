@@ -36,7 +36,7 @@ public:
     }
 
 private:
-    std::vector<std::string> valueStack;
+    std::vector<int> valueStack;
 };
 
 
@@ -66,7 +66,9 @@ private:
 // factor   -> NUMBER
 //           | ( expr )
 
-typedef std::string(*Calc)(const std::string&, const std::string&);
+// typedef std::string(*Calc)(const std::string&, const std::string&);
+
+typedef int(*Calc)(const int&, const int&);
 
 class Node : public std::enable_shared_from_this<Node>
 {
@@ -77,6 +79,10 @@ public:
         Factor,
         NumberLiteral,
     };
+    virtual ~Node()
+    {
+        std::cout << "kind: " << kind << std::endl;
+    }
     virtual void accept(Visitor* visitor) = 0;
     int kind;
 };
@@ -137,8 +143,8 @@ public:
     }
     void accept(Visitor* visitor) override;
 
-    std::string token;                          // literal
-    std::weak_ptr<ExprNode> expr;               // 要么是 token ，要么是 expr
+    int value;                                  // literal
+    std::weak_ptr<ExprNode> expr;               // 要么是 value ，要么是 expr
 };
 
 

@@ -20,7 +20,7 @@ void Parser::expr(LexerStream *lexers)
         lexers->next();
         term(lexers);
 
-        std::cout << op;     // PUSH
+        std::cout << op << " ";     // PUSH
 
         code.push_back(op);
 
@@ -60,7 +60,7 @@ void Parser::term(LexerStream *lexers)
         lexers->next();
         factor(lexers);
 
-        std::cout << op;     // PUSH
+        std::cout << op << " ";     // PUSH
         code.push_back(op);
 
         std::shared_ptr<TermNode> frist = std::dynamic_pointer_cast<TermNode>(asttree.nodeVar.top()) ;
@@ -75,7 +75,6 @@ void Parser::term(LexerStream *lexers)
             termNode = asttree.createTermNode(frist, &qyvlik::mul, second);
         } else {
             std::cout << std::endl;
-            std::cout << "lexers->current()" << op << std::endl;
             termNode = asttree.createTermNode(frist, &qyvlik::div, second);
         }
 
@@ -104,17 +103,17 @@ void Parser::factor(LexerStream *lexers)
         std::shared_ptr<FactorNode> factorNode =  asttree.createFactorNode(exprNode);
         asttree.nodeVar.push(factorNode);
 
-//        std::string e = lexers->current();
+        //        std::string e = lexers->current();
 
-//        if(e != ")") {
-//            std::cout << "lost `(" << std::endl;
-//        }
+        //        if(e != ")") {
+        //            std::cout << "lost `(" << std::endl;
+        //        }
     } else {
-        std::cout << current;      // PUSH
+        std::cout << current << " ";      // PUSH
 
         code.push_back(current);
 
-        std::shared_ptr<FactorNode> factorNode =  asttree.createFactorNode(current);
+        std::shared_ptr<FactorNode> factorNode =  asttree.createFactorNode(std::stoi(current));
         asttree.nodeVar.push(factorNode);
 
         lexers->next();

@@ -44,8 +44,20 @@ int main()
     //    cout << endl;
     //    cout << parser.code.front();
 
-
     long usetime = timeTick([&](){
+        int count = 100000;
+        while(count-- != 0) {
+            int r = 2 * (1+1) + 123123;
+            (void)r;
+        }
+    });
+
+    cout << endl;
+    cout << "usetime:" << usetime;
+    cout << endl;
+
+
+    usetime = timeTick([&](){
         int count = 100000;
         Calculator calculator;
         while(count-- != 0) {

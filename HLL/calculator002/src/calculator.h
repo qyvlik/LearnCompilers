@@ -58,6 +58,27 @@ static std::string calcula(const std::string& operation, const std::string& arg0
     }
 }
 
+static inline int add(const int& arg0, const int& arg1)
+{
+    return arg0 + arg1;
+}
+
+static inline int sub(const int& arg0, const int& arg1)
+{
+    return arg0 - arg1;
+}
+
+static inline mul(const int& arg0, const int& arg1)
+{
+    return arg0 * arg1;
+}
+
+static inline div(const int& arg0, const int& arg1)
+{
+    assert( arg1 != 0);
+    return arg0 / arg1;
+}
+
 }
 
 class Calculator {

@@ -91,12 +91,12 @@ public:
         return factor;
     }
 
-    std::shared_ptr<FactorNode> createFactorNode(const std::string& token) {
+    std::shared_ptr<FactorNode> createFactorNode(int value) {
         std::shared_ptr<FactorNode> factor(new FactorNode);
 
         nodes.push_back(factor);
 
-        factor->token = token;
+        factor->value = value;
 
         return factor;
     }
