@@ -120,4 +120,63 @@ void factor(LexerStream* lexers)
 }
 ```
 
-详细代码前往 [LearnCompilers/HLL/calculator001](https://github.com/qyvlik/LearnCompilers/tree/master/HLL/calculator001) 下载。
+先给 `Parser` 这个类一个 `code` 字段，用来保存后缀表达式：
+
+```
+class Parser {
+public:
+    void expr(LexerStream* lexers)
+    {
+    }
+
+    void term(LexerStream* lexers)
+    {
+    }
+
+    void factor(LexerStream* lexers)
+    {
+    }
+    vector<string> code;
+};
+```
+
+```
+class Calculator {
+public:
+    string result() {
+
+        string current;
+
+        do {
+            current = code.front();
+            code.erase(code.begin());
+
+            if(!isOperator(current)) {
+                calc.push(current);
+            } else {
+
+                string arg0 = calc.top();
+                calc.pop();
+                string arg1 = calc.top();
+                calc.pop();
+
+                calc.push(calcula(current, arg0, arg1));
+            }
+        } while(!code.empty());
+
+        return calc.top();
+    }
+    
+    bool isOperator(const string& s) ;
+    string calcula(const string& operation, const string& arg0, const string& arg1);
+    string add(const string& arg0, const string& arg1)
+    string sub(const string& arg0, const string& arg1);
+    string mul(const string& arg0, const string& arg1);
+    string div(const string& arg0, const string& arg1);
+    
+    vector<string> code;
+    stack<string> calc;
+}
+```
+
+具体看 `result` 函数。先取出**后缀表达式**中的 `token`，如果是操作符，就从**运算结果栈**中取出两个 `token`，然后进行计算，将获取到的结果压入**运算结果栈**中；如果不是操作符，就压入**运算结果栈**中。
