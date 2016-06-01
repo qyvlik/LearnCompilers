@@ -29,20 +29,10 @@ long timeTick(const std::function<void(void)>& t)
     //return end.tv_usec - start.tv_usec;
 }
 
-//class Node {
-//public:
-//    enum NodeType {
-//        ExprNode,
-//        TermNode,
-//        FactorNode,
-//        NumberLiteral,
-//    };
-//};
-
-class lexerStream
+class LexerStream
 {
 public:
-    lexerStream(const vector<string> l):
+    LexerStream(const vector<string> l):
         l(l),
         index(0)
     {}
@@ -185,7 +175,7 @@ public:
 
 class Parser {
 public:
-    void expr(lexerStream* lexers)
+    void expr(LexerStream* lexers)
     {
         term(lexers);
         while(lexers->current() == "+" || lexers->current() == "-") {
@@ -200,7 +190,7 @@ public:
         }
     }
 
-    void term(lexerStream* lexers)
+    void term(LexerStream* lexers)
     {
         factor(lexers);
 
@@ -216,7 +206,7 @@ public:
         }
     }
 
-    void factor(lexerStream* lexers)
+    void factor(LexerStream* lexers)
     {
         string current = lexers->current();
 
@@ -263,14 +253,10 @@ int main()
     l.push_back(")");
 
 
-    lexerStream stream(l);
+    LexerStream stream(l);
 
     Parser parser;
     parser.expr(&stream);
-
-//    cout << endl;
-//    cout << parser.code.front();
-
 
     long usetime = timeTick([&](){
          Calculator calculator;
@@ -281,10 +267,7 @@ int main()
          }
      });
 
-
      cout << endl;
 
      cout << "usetime:" << usetime;
-
-
 }
