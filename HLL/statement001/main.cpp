@@ -9,15 +9,10 @@ using namespace std;
 int main()
 {
 
-//    string code = "if ( true ) {"
-//                  " echo true ;"
-//                  " } else {"
-//                  " echo false ;"
-//                  " }";
-
-    // for ( true ; true ; true ) { do { } while ( true ) ; }
-     string code = "for ( true ; true ; true ) { do { } while ( true ) ; }";
+    // string code = "for ( true ; true ; true ) { do { } while ( true ) ; }";
     // string code = "try { if ( true ) { while ( true ) { } } } catch ( true ) { }";
+
+    string code = "try { if ( true ) { while ( true ) { } } } catch ( true ) { for ( true ; true ; true ) { do { } while ( true ) ; } }";
 
     vector<string> tokens = qyvlik::split(code, " ");
 

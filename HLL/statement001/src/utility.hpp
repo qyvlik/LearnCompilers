@@ -8,7 +8,7 @@
 
 namespace qyvlik {
 
-long timeTick(const std::function<void(void)>& t)
+static inline long timeTick(const std::function<void(void)>& t)
 {
     timeval start, end;
 

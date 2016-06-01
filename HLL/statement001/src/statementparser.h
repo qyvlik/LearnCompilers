@@ -9,48 +9,48 @@
 
 
 /**
-Break -> break
+Break ::= "break"
 
-Continue -> continue
+Continue ::= "continue"
 
-Expression -> ( true | false )
+Expression ::=  "true" | "false"
 
-EchoStatement -> echo Expression ;
+EchoStatement ::= "echo" Expression ";"
 
-ExpressionStatement -> Expression;
+ExpressionStatement ::= Expression ";"
 
-IfStatement -> if ( Expression ) Statement ( ElseStatement )+
+IfStatement ::= "if" "(" Expression ")" Statement [ ElseStatement ]
 
-ElseStatement -> else Statement
+ElseStatement ::= "else" Statement
 
-BreakStatement -> Break ;
+BreakStatement ::= Break ";"
 
-ContinueStatement -> Continue ;
+ContinueStatement ::= Continue ";"
 
-DoWhileStatement -> do Statement while( Expression ) ;
+DoWhileStatement ::= "do" Statement "while" "(" Expression ")" ";"
 
-WhileStatement -> while ( Expression ) Statement
+WhileStatement ::= "while" "(" Expression ")" Statement
 
-ForStatement -> for ( Expression ; Expression ; Expression ) Statement
+ForStatement ::= "for" "(" Expression ";" Expression ";" Expression ")" Statement
 
-TryStatement -> try Block CatchStatement
+TryStatement ::= "try" Block CatchStatement
 
-CatchStatement -> catch Block
+CatchStatement ::= "catch" Block
 
-Block -> { Statements } | ε
+Block ::= "{" Statements "}"
 
-Statements -> ( Statement )*
+Statements ::= { Statement }
 
-Statement -> EchoStatement
-           | ExpressionStatement
-           | IfStatement
-           | WhileStatement
-           | DoWhileStatement
-           | ForStatement
-           | BreakStatement
-           | ContinueStatement
-           | TryStatement
-           | Block
+Statement ::= EchoStatement
+            | ExpressionStatement
+            | IfStatement
+            | WhileStatement
+            | DoWhileStatement
+            | ForStatement
+            | BreakStatement
+            | ContinueStatement
+            | TryStatement
+            | Block
 */
 
 class StatementParser
@@ -61,7 +61,7 @@ public:
     { }
 
 
-    // Statements -> ( Statement )*
+    // Statements ::= { Statement }
     static void Statements(LexerStream* lexers) throw(std::string)
     {
         while(!lexers->atEnd()) {
@@ -70,16 +70,16 @@ public:
     }
 
 
-    //    Statement -> EchoStatement
-    //               | ExpressionStatement
-    //               | IfStatement
-    //               | WhileStatement
-    //               | DoWhileStatement
-    //               | ForStatement
-    //               | BreakStatement
-    //               | ContinueStatement
-    //               | TryStatement
-    //               | Block
+//    Statement ::= EchoStatement
+//                | ExpressionStatement
+//                | IfStatement
+//                | WhileStatement
+//                | DoWhileStatement
+//                | ForStatement
+//                | BreakStatement
+//                | ContinueStatement
+//                | TryStatement
+//                | Block
     static void Statement(LexerStream* lexers) throw(std::string)
     {
         //lexers->next();
@@ -109,7 +109,7 @@ public:
         }
     }
 
-    // EchoStatement -> echo Expression ;
+    // EchoStatement ::= "echo" Expression ";"
     static void EchoStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `echo
@@ -127,7 +127,7 @@ public:
     }
 
 
-    // ExpressionStatement -> Expression ;
+    // ExpressionStatement ::= Expression ";"
     static void ExpressionStatement(LexerStream* lexers) throw(std::string)
     {
         Expression(lexers);
@@ -142,7 +142,7 @@ public:
     }
 
 
-    // IfStatement -> if ( Expression ) Statement ( ElseStatement )+
+    // IfStatement ::= "if" "(" Expression ")" Statement [ ElseStatement ]
     static void IfStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `if
@@ -171,7 +171,7 @@ public:
         }
     }
 
-    // ElseStatement -> else Statement
+    // ElseStatement ::= "else" Statement
     static void ElseStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `else
@@ -181,7 +181,7 @@ public:
     }
 
 
-    // DoWhileStatement -> do Statement while( Expression ) ;
+    // DoWhileStatement ::= "do" Statement "while" "(" Expression ")" ";"
     static void DoWhileStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `do
@@ -216,11 +216,10 @@ public:
         }
 
         lexers->next();
-
     }
 
 
-    // WhileStatement -> while ( Expression ) Statement
+    // WhileStatement ::= "while" "(" Expression ")" Statement
     static void WhileStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `while
@@ -246,7 +245,7 @@ public:
     }
 
 
-    // ForStatement -> for ( Expression ; Expression ; Expression ) Statement
+    // ForStatement ::= "for" "(" Expression ";" Expression ";" Expression ")" Statement
     static void ForStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `for
@@ -287,7 +286,7 @@ public:
     }
 
 
-    // BreakStatement -> Break ;
+    // BreakStatement ::= Break ";"
     static void BreakStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `break
@@ -303,7 +302,7 @@ public:
     }
 
 
-    // ContinueStatement -> Continue ;
+    // ContinueStatement ::= Continue ";"
     static void ContinueStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `continue
@@ -319,7 +318,7 @@ public:
     }
 
 
-    // TryStatement -> try Block CatchStatement
+    // TryStatement ::= "try" Block CatchStatement
     static void TryStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `try
@@ -335,7 +334,7 @@ public:
     }
 
 
-    // CatchStatement -> catch ( Expression ) Block
+    // CatchStatement ::= "catch" "(" Expression ")" Block
     static void CatchStatement(LexerStream* lexers) throw(std::string)
     {
         // first is `catch
@@ -358,7 +357,7 @@ public:
         Block(lexers);
     }
 
-    // Block -> { Statements } | ε
+    // Block ::= "{" Statements "}"
     static void Block(LexerStream* lexers) throw(std::string)
     {
         // first is `{
@@ -380,21 +379,21 @@ public:
     }
 
 
-    // Break -> break
+    // Break ::= "break"
     static void Break(LexerStream* lexers) throw(std::string)
     {
         (void)lexers;
     }
 
 
-    // Continue -> continue
+    // Continue ::= "continue"
     static void Continue(LexerStream* lexers) throw(std::string)
     {
         (void)lexers;
     }
 
 
-    // Expression -> ( true | false )
+    // Expression ::= "true" | "false"
     static void Expression(LexerStream* lexers) throw(std::string)
     {
         (void)lexers;
