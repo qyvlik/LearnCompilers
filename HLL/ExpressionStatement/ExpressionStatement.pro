@@ -18,3 +18,4 @@ HEADERS += \
 DISTFILES += \
     readme.md
 
+CONFIG += c++11
