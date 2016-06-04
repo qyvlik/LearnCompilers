@@ -2,13 +2,18 @@
 #define PARSER_H
 
 #include "tokenstream.hpp"
+#include "calleetracker.hpp"
+
+#include "throwable.hpp"
 
 class Parser
 {
 public:
     // Statements ::= { Statement }
-    static void Statements(TokenStream* stream) throw (std::string)
+    static void Statements(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         while(!stream->atEnd()) {
             Statement(stream);
         }
@@ -24,8 +29,10 @@ public:
     //             | ContinueStatement
     //             | TryStatement
     //             | Block
-    static void Statement(TokenStream* stream) throw (std::string)
+    static void Statement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         std::string ahead = stream->current().value;
 
         if(ahead == "if") {
@@ -51,8 +58,10 @@ public:
 
 
     // ExpressionStatement ::= Expression ";" | ";"
-    static void ExpressionStatement(TokenStream* stream) throw (std::string)
+    static void ExpressionStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         if(stream->current().value == ";") {
             stream->next();
         } else {
@@ -60,7 +69,7 @@ public:
 
             if(stream->current().value != ";") {
                 std::cout << stream->current() << std::endl;
-                throw std::string("ExpressionStatement: lost `;");
+                throw Throwable(0, "ExpressionStatement: lost `;");
             }
             stream->next();
         }
@@ -68,8 +77,10 @@ public:
 
 
     // Expression ::= ObjectExpression { ( "=" | "+=" | "-=" | "*=" | "%=" | "/=" ) BoolExpression } | BoolExpression
-    static void Expression(TokenStream* stream) throw (std::string)
+    static void Expression(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         if(stream->current().type == Token::Identity) {
             ObjectExpression(stream);
 
@@ -92,8 +103,10 @@ public:
 
 
     // BoolExpression ::= ArithmeticExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) ArithmeticExpression }
-    static void BoolExpression(TokenStream* stream) throw (std::string)
+    static void BoolExpression(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         ArithmeticExpression(stream);
 
         std::string current = stream->current().value;
@@ -112,8 +125,10 @@ public:
 
 
     // ArithmeticExpression ::= TermExpression { ( "+" | "-" ) TermExpression }
-    static void ArithmeticExpression(TokenStream* stream) throw (std::string)
+    static void ArithmeticExpression(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         TermExpression(stream);
         std::string current = stream->current().value;
         while( current == "+" || current == "-" ) {
@@ -127,8 +142,10 @@ public:
 
 
     // TermExpression ::= FactorExpression { ( "*" | "/" | "%" ) FactorExpression }
-    static void TermExpression(TokenStream* stream) throw (std::string)
+    static void TermExpression(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         FactorExpression(stream);
         std::string current = stream->current().value;
         while( current == "*" || current == "/" || current == "%" ) {
@@ -142,8 +159,10 @@ public:
 
 
     // FactorExpression ::= "(" Expression ")" | ObjectExpression | Lterial
-    static void FactorExpression(TokenStream* stream) throw (std::string)
+    static void FactorExpression(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         std::string current = stream->current().value;
         if(current == "(") {
             stream->next();
@@ -152,7 +171,7 @@ public:
 
             if(stream->current().value != ")") {
                 std::cout << stream->current() << std::endl;
-                throw std::string("FactorExpression: lost `)");
+                throw Throwable(0, "FactorExpression: lost `)");
             }
 
             stream->next();             // eat `)
@@ -170,11 +189,13 @@ public:
     //                    | ObjectExpression "[" Expression "]"
     //                    | ObjectExpression "(" CallArgumentList ")"
     //                    | Identity
-    static void ObjectExpression(TokenStream* stream) throw (std::string)
+    static void ObjectExpression(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         if(stream->current().type != Token::Identity) {
             std::cout << stream->current() << std::endl;
-            throw std::string("ObjectExpression: not start of Identity " + stream->current().value);
+            throw Throwable(0, "ObjectExpression: not start of Identity " + stream->current().value);
         }
 
         Identity(stream);
@@ -197,7 +218,7 @@ public:
 
                 if(stream->current().value != "]") {
                     std::cout << stream->current() << std::endl;
-                    throw std::string("ObjectExpression:  lost `]");
+                    throw Throwable(0, "ObjectExpression:  lost `]");
                 }
 
                 stream->next();             // eat `]
@@ -209,7 +230,7 @@ public:
 
                 if(stream->current().value != ")") {
                     std::cout << stream->current() << std::endl;
-                    throw std::string("ObjectExpression: in CallArgumentList lost `)");
+                    throw Throwable(0, "ObjectExpression: in CallArgumentList lost `)");
                 }
 
                 stream->next();             // eat `)
@@ -221,8 +242,10 @@ public:
 
 
     // CallArgumentList ::= ε | Expression { "," Expression }
-    static void CallArgumentList(TokenStream* stream) throw (std::string)
+    static void CallArgumentList(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         Token current = stream->current();
         if(current.value == ")") {
             // don't stream->next();
@@ -233,7 +256,7 @@ public:
             // ],}
 
             std::cout << stream->current() << std::endl;
-            throw std::string("CallArgumentList: have a error Token" + current.value);
+            throw Throwable(0, "CallArgumentList: have a error Token" + current.value);
         } else {
             Expression(stream);
 
@@ -246,8 +269,10 @@ public:
 
 
     // Lterial ::= StringLterial | NumberLterial | ArrayLterial | KeyValuesLterial
-    static void Lterial(TokenStream* stream) throw (std::string)
+    static void Lterial(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         Token current = stream->current();
         if(current.type == Token::StringLterial) {
             StringLterial(stream);
@@ -258,21 +283,23 @@ public:
         } else if(current.value == "[") {
             ArrayLterial(stream);
         } else {
-            throw std::string("Lterial: Token not a `Lterial");
+            throw Throwable(0, "Lterial: Token not a `Lterial");
         }
     }
 
 
     // KeyValuesLterial ::= "{" { StringLterial ":" Expression "," } "}"           // map 或者说是对象，不能对此进行函数调用
-    static void KeyValuesLterial(TokenStream* stream) throw (std::string)
+    static void KeyValuesLterial(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         stream->next();
 
         while(stream->current().value != "}") {
 
             if(stream->current().type != Token::StringLterial) {
                 std::cout << stream->current() << std::endl;
-                throw std::string("KeyValuesLterial Map Object Key Not StringLterial, current Token " + stream->current().value);
+                throw Throwable(0, "KeyValuesLterial Map Object Key Not StringLterial, current Token " + stream->current().value);
             }
 
             // `Key
@@ -280,7 +307,7 @@ public:
 
             if(stream->current().value != ":") {
                 std::cout << stream->current() << std::endl;
-                throw std::string("KeyValuesLterial Map Object Lost `:, current Token " + stream->current().value);
+                throw Throwable(0, "KeyValuesLterial Map Object Lost `:, current Token " + stream->current().value);
             }
 
             stream->next();
@@ -290,6 +317,11 @@ public:
 
             if(stream->current().value == ",") {
                 stream->next();
+            } else {
+                if(stream->current().value != "}") {
+                    std::cout << stream->current() << std::endl;
+                    throw Throwable(0, "KeyValuesLterial Key-Value lost `, current token " + stream->current().value);
+                }
             }
         }
 
@@ -298,8 +330,10 @@ public:
 
 
     // ArrayLterial ::= "[" { Expression "," } "]"                                 // 数组，不能对此进行函数调用
-    static void ArrayLterial(TokenStream* stream) throw (std::string)
+    static void ArrayLterial(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first `[
         stream->next();
 
@@ -314,32 +348,40 @@ public:
     }
 
 
-    static void NumberLterial(TokenStream* stream) throw(std::string)
+    static void NumberLterial(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         stream->next();
     }
 
 
-    static void StringLterial(TokenStream* stream) throw(std::string)
+    static void StringLterial(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         stream->next();
     }
 
 
-    static void Identity(TokenStream* stream) throw(std::string)
+    static void Identity(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         stream->next();
     }
 
 
     // IfStatement ::= "if" "(" Expression ")" Statement [ ElseStatement ]
-    static void IfStatement(TokenStream* stream) throw (std::string)
+    static void IfStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first is `if
         stream->next();
 
         if(stream->current().value != "(") {
-            throw std::string("IfStatement lost `(");
+            throw Throwable(0,"IfStatement lost `(");
         }
 
         stream->next();
@@ -347,7 +389,7 @@ public:
         Expression(stream);
 
         if(stream->current().value != ")") {
-            throw std::string("IfStatement lost `)");
+            throw Throwable(0,"IfStatement lost `)");
         }
 
         stream->next();
@@ -363,8 +405,10 @@ public:
 
 
     // ElseStatement ::= "else" Statement
-    static void ElseStatement(TokenStream* stream) throw (std::string)
+    static void ElseStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first is `else
         stream->next();
 
@@ -373,8 +417,10 @@ public:
 
 
     // DoWhileStatement ::= "do" Statement "while" "(" Expression ")" ";"
-    static void DoWhileStatement(TokenStream* stream) throw (std::string)
+    static void DoWhileStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first is `do
         stream->next();
 
@@ -383,13 +429,13 @@ public:
         // stream->next();
 
         if(stream->current().value != "while") {
-            throw std::string("DoWhileStatement lost `while");
+            throw Throwable(0,"DoWhileStatement lost `while");
         }
 
         stream->next();
 
         if(stream->current().value != "(") {
-            throw std::string("DoWhileStatement while lost `(");
+            throw Throwable(0,"DoWhileStatement while lost `(");
         }
 
         stream->next();
@@ -397,13 +443,13 @@ public:
         Expression(stream);
 
         if(stream->current().value != ")") {
-            throw std::string("DoWhileStatement while lost `)");
+            throw Throwable(0,"DoWhileStatement while lost `)");
         }
 
         stream->next();
 
         if(stream->current().value != ";") {
-            throw std::string("DoWhileStatement while lost `;");
+            throw Throwable(0,"DoWhileStatement while lost `;");
         }
 
         stream->next();
@@ -411,13 +457,15 @@ public:
 
 
     // WhileStatement ::= "while" "(" Expression ")" Statement
-    static void WhileStatement(TokenStream* stream) throw (std::string)
+    static void WhileStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first is `while
         stream->next();
 
         if(stream->current().value != "(") {
-            throw std::string("WhileStatement lost `(");
+            throw Throwable(0,"WhileStatement lost `(");
         }
 
         stream->next();
@@ -427,7 +475,7 @@ public:
         // stream->next();
 
         if(stream->current().value != ")") {
-            throw std::string("WhileStatement lost `)");
+            throw Throwable(0,"WhileStatement lost `)");
         }
 
         stream->next();
@@ -437,14 +485,16 @@ public:
 
 
     // ForStatement ::= "for" "(" Expression ";" Expression ";" Expression ")" Statement
-    static void ForStatement(TokenStream* stream) throw (std::string)
+    static void ForStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first is `for
 
         stream->next();
 
         if(stream->current().value != "(") {
-            throw std::string("ForStatement lost `(");
+            throw Throwable(0,"ForStatement lost `(");
         }
 
         stream->next();
@@ -452,7 +502,7 @@ public:
         Expression(stream);
 
         if(stream->current().value != ";") {
-            throw std::string("ForStatement lost frist `;");
+            throw Throwable(0,"ForStatement lost frist `;");
         }
 
         stream->next();
@@ -460,7 +510,7 @@ public:
         Expression(stream);
 
         if(stream->current().value != ";") {
-            throw std::string("ForStatement lost second `;");
+            throw Throwable(0,"ForStatement lost second `;");
         }
 
         stream->next();
@@ -468,7 +518,7 @@ public:
         Expression(stream);
 
         if(stream->current().value != ")") {
-            throw std::string("ForStatement lost `)");
+            throw Throwable(0,"ForStatement lost `)");
         }
 
         stream->next();
@@ -478,15 +528,17 @@ public:
 
 
     // TryStatement ::= "try" Block CatchStatement
-    static void TryStatement(TokenStream* stream) throw (std::string)
+    static void TryStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first is `try
         stream->next();
 
         Block(stream);
 
         if(stream->current().value != "catch") {
-            throw std::string("TryStatement lost `catch");
+            throw Throwable(0,"TryStatement lost `catch");
         }
 
         CatchStatement(stream);
@@ -494,13 +546,15 @@ public:
 
 
     // CatchStatement ::= "catch" Block
-    static void CatchStatement(TokenStream* stream) throw (std::string)
+    static void CatchStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first is `catch
         stream->next();
 
         if(stream->current().value != "(") {
-            throw std::string("CatchStatement lost )");
+            throw Throwable(0,"CatchStatement lost `(");
         }
 
         stream->next();
@@ -508,7 +562,7 @@ public:
         Expression(stream);
 
         if(stream->current().value != ")") {
-            throw std::string("CatchStatement lost `)");
+            throw Throwable(0,"CatchStatement lost `)");
         }
 
         stream->next();
@@ -518,8 +572,10 @@ public:
 
 
     // Block ::= "{" Statements "}"
-    static void Block(TokenStream* stream) throw (std::string)
+    static void Block(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         // first is `{
         stream->next();
 
@@ -540,38 +596,46 @@ public:
 
 
     // Break ::= "break"
-    static void Break(TokenStream* stream) throw (std::string)
+    static void Break(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         stream->next();
     }
 
 
     // Continue ::= "continue"
-    static void Continue(TokenStream* stream) throw (std::string)
+    static void Continue(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         stream->next();
     }
 
 
     // BreakStatement ::= Break ";"
-    static void BreakStatement(TokenStream* stream) throw (std::string)
+    static void BreakStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         Break(stream);
         if(stream->current().value != ";") {
             std::cout << stream->current() << std::endl;
-            throw std::string("BreakStatement lost `; current token " + stream->current().value);
+            throw Throwable(0,"BreakStatement lost `; current token " + stream->current().value);
         }
         stream->next();
     }
 
 
     // ContinueStatement ::= Continue ";"
-    static void ContinueStatement(TokenStream* stream) throw (std::string)
+    static void ContinueStatement(TokenStream* stream) throw(Throwable)
     {
+        CALLEE_PUSH_TRACK_;
+
         Continue(stream);
         if(stream->current().value != ";") {
             std::cout << stream->current() << std::endl;
-            throw std::string("ContinueStatement lost `; current token " + stream->current().value);
+            throw Throwable(0,"ContinueStatement lost `; current token " + stream->current().value);
         }
         stream->next();
     }

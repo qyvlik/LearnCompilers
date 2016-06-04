@@ -9,6 +9,7 @@ void test_3();
 void test_4();
 void test_5();
 void test_6();
+void test_7();
 
 int main()
 {
@@ -18,6 +19,7 @@ int main()
     test_4();
     test_5();
     test_6();
+    test_7();
     return 0;
 }
 
@@ -52,9 +54,10 @@ void test_1()
     try {
         Parser::ExpressionStatement(&stream);
         std::cout << "Done!" << std::endl;
-    } catch(std::string e) {
+    } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
+        e.printTrack();
     }
 }
 
@@ -84,9 +87,10 @@ void test_2()
     try {
         Parser::ExpressionStatement(&stream);
         std::cout << "Done!" << std::endl;
-    } catch(std::string e) {
+    } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
+        e.printTrack();
     }
 }
 
@@ -111,9 +115,10 @@ void test_3()
     try {
         Parser::ExpressionStatement(&stream);
         std::cout << "Done!" << std::endl;
-    } catch(std::string e) {
+    } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
+        e.printTrack();
     }
 }
 
@@ -175,9 +180,10 @@ void test_4()
     try {
         Parser::ExpressionStatement(&stream);
         std::cout << "Done!" << std::endl;
-    } catch(std::string e) {
+    } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
+        e.printTrack();
     }
 }
 
@@ -232,9 +238,10 @@ void test_5()
     try {
         Parser::Statements(&stream);
         std::cout << "Done!" << std::endl;
-    } catch(std::string e) {
+    } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
+        e.printTrack();
     }
 }
 
@@ -336,8 +343,41 @@ void test_6()
     try {
         Parser::Statements(&stream);
         std::cout << "Done!" << std::endl;
-    } catch(std::string e) {
+    } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
+        e.printTrack();
     }
+}
+
+void test_7()
+{
+    vector<Token> tokens;
+
+    //{ "name" : 1  "age": 1/1 } ;
+
+    tokens.push_back(Token(Token::Delimiter, "{"));
+    tokens.push_back(Token(Token::StringLterial, "\"name\""));
+    tokens.push_back(Token(Token::Delimiter, ":"));
+    tokens.push_back(Token(Token::NumberLterial, "1"));
+//    tokens.push_back(Token(Token::Delimiter, ","));
+    tokens.push_back(Token(Token::StringLterial, "\"age\""));
+    tokens.push_back(Token(Token::Delimiter, ":"));
+    tokens.push_back(Token(Token::NumberLterial, "1"));
+    tokens.push_back(Token(Token::Operator, "/"));
+    tokens.push_back(Token(Token::NumberLterial, "1"));
+    tokens.push_back(Token(Token::Delimiter, "}"));
+    tokens.push_back(Token(Token::Delimiter, ";"));
+
+    TokenStream stream(tokens);
+
+    try {
+        Parser::ExpressionStatement(&stream);
+        std::cout << "Done!" << std::endl;
+    } catch(Throwable e) {
+        std::cout << "error:" << std::endl;
+        std::cout << e << std::endl;
+        e.printTrack();
+    }
+
 }
