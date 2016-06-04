@@ -18,4 +18,6 @@ DISTFILES += \
 HEADERS += \
     src/tokenstream.hpp \
     src/utility.hpp \
-    src/parser.hpp
+    src/parser.hpp \
+    src/calleetracker.hpp \
+    src/throwable.hpp
