@@ -37,8 +37,17 @@ public:
         os << "Token";
         switch(thiz.type)
         {
+        case Token::Delimiter:
+            os << "( Delimiter, ";
+            break;
+        case Token::Operator:
+            os << "( Operator, ";
+            break;
         case Token::Identity:
             os << "( Identity, ";
+            break;
+        case Token::Lterial:
+            os << "( Lterial, ";
             break;
         case Token::StringLterial:
             os << "( StringLterial, ";
@@ -46,8 +55,11 @@ public:
         case Token::NumberLterial:
             os << "( NumberLterial, ";
             break;
-        case Token::Operator:
-            os << "( Operator, ";
+        case Token::ArrayLterial:
+            os << "( ArrayLterial, ";
+            break;
+        case Token::KeyValuesLterial:
+            os << "( KeyValuesLterial, ";
             break;
         default:
             os << "( Unknow, ";

@@ -226,7 +226,7 @@ public:
 
             if(stream->current().type != Token::StringLterial) {
                 std::cout << stream->current() << std::endl;
-                throw std::string("RightValue Map Object Key Not StringLterial, current Token " + stream->current().value);
+                throw std::string("KeyValuesLterial Map Object Key Not StringLterial, current Token " + stream->current().value);
             }
 
             // `Key
@@ -234,7 +234,7 @@ public:
 
             if(stream->current().value != ":") {
                 std::cout << stream->current() << std::endl;
-                throw std::string("RightValue Map Object Lost `:, current Token " + stream->current().value);
+                throw std::string("KeyValuesLterial Map Object Lost `:, current Token " + stream->current().value);
             }
 
             stream->next();
