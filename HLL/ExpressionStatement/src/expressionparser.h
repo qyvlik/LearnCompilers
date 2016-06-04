@@ -244,6 +244,11 @@ public:
 
             if(stream->current().value == ",") {
                 stream->next();
+            } else {
+                if(stream->current().value != "}") {
+                    std::cout << stream->current() << std::endl;
+                    throw std::string("KeyValuesLterial Key-Value lost `, current token " + stream->current().value);
+                }
             }
         }
 
