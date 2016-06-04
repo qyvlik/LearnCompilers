@@ -10,6 +10,7 @@ class Token
 public:
     enum Type {
         Unknow,
+        KeyWord,
         Delimiter,              // [, ], {, }, (, )
         Operator,               // +,-,*,/,%,+=,*=,-=,/=,%=,>,<,>=,<=,==,!=,!,.
         Identity,
