@@ -13,6 +13,8 @@ struct StackFrame {
         line(l),
         callname(c)
     {}
+    ~StackFrame()
+    {}
 
     std::string file;
     int line;
@@ -30,30 +32,30 @@ public:
     {
     public:
         DoDestory(const char* f, int l, const char* c)
-        { CalleeTracker::shared()->push(StackFrame(f,l,c)); }
+        { CalleeTracker::threadSingleton().push(StackFrame(f,l,c)); }
 
         ~DoDestory()
-        { CalleeTracker::shared()->pop(); }
+        { CalleeTracker::threadSingleton().pop(); }
     };
 
-    static std::shared_ptr<CalleeTracker> shared() {
-        static std::shared_ptr<CalleeTracker> s(new CalleeTracker);
-        return s;
+    static CalleeTracker& threadSingleton() {
+        thread_local static CalleeTracker r;
+        return r;
     }
 
     void push(const StackFrame& sFrame) {
-        stackframes.push_back(sFrame);
+        stackFrames->push_back(sFrame);
     }
 
     void pop() {
-        if(!stackframes.empty()) {
-            stackframes.pop_back();
+        if(!stackFrames->empty()) {
+            stackFrames->pop_back();
         }
     }
 
     void printTrack() const {
-        auto iter = stackframes.begin();
-        auto end = stackframes.end();
+        auto iter = stackFrames->begin();
+        auto end = stackFrames->end();
         while(iter != end) {
             (*iter).print();
             std::cout << std::endl;
@@ -62,23 +64,26 @@ public:
     }
 
     std::vector<StackFrame> getCallStack() const {
-        return stackframes;
+        return *stackFrames;
     }
 
-protected:
-    CalleeTracker()
+    ~CalleeTracker()
     {}
 
+protected:
+    CalleeTracker():
+        stackFrames(new std::vector<StackFrame>())
+    {}
 private:
-    std::vector<StackFrame> stackframes;
+    bool avoid_fail:1;            // avoid thread_loacl variables destory fail
+    std::shared_ptr< std::vector<StackFrame> > stackFrames;
 };
-
 
 #define CALLEE_PUSH_TRACK_ \
     CalleeTracker::DoDestory nil(__FILE__, __LINE__, __PRETTY_FUNCTION__); (void)nil;
 
 #define CALLEE_PRINT_TRACK \
-    CalleeTracker::shared()->printTrack();
+    CalleeTracker::threadSingleton().printTrack();
 
 
 #endif // CALLEETRACKER_H

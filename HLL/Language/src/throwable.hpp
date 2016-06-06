@@ -14,7 +14,7 @@ public:
     Throwable(int code, const std::string& err):
         errorCode(code),
         error(err),
-        callStack(CalleeTracker::shared()->getCallStack())
+        callStack(CalleeTracker::threadSingleton().getCallStack())
     { }
 
     virtual ~Throwable()
