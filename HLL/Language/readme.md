@@ -37,6 +37,9 @@ Statement ::= ExpressionStatement
             | TryStatement
             | Block
             | ReturnStatement
+            | DeclarationStatement
+
+DeclarationStatement ::= TypeName Identity [ "=" Expression ] { "," Identity [ "=" Expression ] } ";"
 
 ExpressionStatement ::= Expression ";" | ";"
 

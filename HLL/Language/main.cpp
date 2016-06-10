@@ -11,6 +11,7 @@ void test_5();
 void test_6();
 void test_7();
 void test_8();
+void test_9();
 
 int main()
 {
@@ -22,6 +23,7 @@ int main()
     test_6();
     test_7();
     test_8();
+    test_9();
     return 0;
 }
 
@@ -391,16 +393,16 @@ void test_8()
 
     tokens.push_back(Token(Token::KeyWord, "function"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::KeyWord, "int"));
+    tokens.push_back(Token(Token::TypeName, "int"));
     tokens.push_back(Token(Token::Identity, "a"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::KeyWord, "int"));
+    tokens.push_back(Token(Token::TypeName, "int"));
     tokens.push_back(Token(Token::Identity, "b"));
     tokens.push_back(Token(Token::Delimiter, ")"));
 
     tokens.push_back(Token(Token::Delimiter, "->"));
 
-    tokens.push_back(Token(Token::KeyWord, "int"));
+    tokens.push_back(Token(Token::TypeName, "int"));
 
 
     tokens.push_back(Token(Token::Delimiter, "{"));
@@ -423,3 +425,34 @@ void test_8()
         e.printTrack();
     }
 }
+
+void test_9()
+{
+    // int a = 10, b = 11;
+    vector<Token> tokens;
+
+    tokens.push_back(Token(Token::TypeName, "int"));
+    tokens.push_back(Token(Token::Identity, "a"));
+    tokens.push_back(Token(Token::Operator, "="));
+    tokens.push_back(Token(Token::NumberLterial, "10"));
+    tokens.push_back(Token(Token::Delimiter, ","));
+    tokens.push_back(Token(Token::TypeName, "int"));
+    tokens.push_back(Token(Token::Identity, "b"));
+    tokens.push_back(Token(Token::Operator, "="));
+
+    tokens.push_back(Token(Token::NumberLterial, "10"));
+
+    tokens.push_back(Token(Token::Delimiter, ";"));
+
+    TokenStream stream(tokens);
+
+    try {
+        Parser::Statements(&stream);
+        std::cout << "Done!" << std::endl;
+    } catch(Throwable e) {
+        std::cout << "error:" << std::endl;
+        std::cout << e << std::endl;
+        e.printTrack();
+    }
+}
+

@@ -14,6 +14,9 @@ public:
         Delimiter,              // [, ], {, }, (, )
         Operator,               // +,-,*,/,%,+=,*=,-=,/=,%=,>,<,>=,<=,==,!=,!,.
         Identity,
+
+        TypeName,
+
         Lterial,
         StringLterial,
         NumberLterial,

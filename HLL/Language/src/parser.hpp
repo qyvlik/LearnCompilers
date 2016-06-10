@@ -30,10 +30,12 @@ public:
     //             | TryStatement
     //             | Block
     //             | ReturnStatement
+    //             | DeclarationStatement
     static void Statement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
+        const int type = stream->current().type;
         std::string ahead = stream->current().value;
 
         if(ahead == "if") {
@@ -54,7 +56,9 @@ public:
             TryStatement(stream);
         } else if(ahead == "return") {
             ReturnStatement(stream);
-        } else  {
+        } else if(type == Token::TypeName) {
+            DeclarationStatement(stream);
+        }else{
             ExpressionStatement(stream);
         }
     }
@@ -78,6 +82,42 @@ public:
         }
     }
 
+
+    // DeclarationStatement ::= TypeName Identity [ "=" Expression ] { "," Identity [ "=" Expression ] } ";"
+
+    static void DeclarationStatement(TokenStream* stream) throw(Throwable)
+    {
+        CALLEE_PUSH_TRACK_;
+
+        TypeName(stream);
+
+        Identity(stream);
+
+        if(stream->current().value == "=") {
+            stream->next();
+            Expression(stream);
+        }
+
+        while(stream->current().value == ",") {
+            stream->next();
+
+            TypeName(stream);
+
+            Identity(stream);
+
+            if(stream->current().value == "=") {
+                stream->next();
+                Expression(stream);
+            }
+        }
+
+        if(stream->current().value != ";") {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0, "DeclarationStatement: lost `;");
+        }
+        stream->next();
+
+    }
 
     // Expression ::= ObjectExpression { ( "=" | "+=" | "-=" | "*=" | "%=" | "/=" ) BoolExpression } | BoolExpression
     static void Expression(TokenStream* stream) throw(Throwable)
@@ -373,6 +413,11 @@ public:
     {
         CALLEE_PUSH_TRACK_;
 
+        if(stream->current().type != Token::Identity) {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0,stream->current().value + " isn't' Identity");
+        }
+
         stream->next();
     }
 
@@ -645,6 +690,7 @@ public:
         stream->next();
     }
 
+
     // Lambda ::= "function" "(" FunctionArgumentsList ")" "->" TypeName Block
     static void Lambda(TokenStream* stream) throw(Throwable)
     {
@@ -681,6 +727,7 @@ public:
         Block(stream);
     }
 
+
     // TypeName ::= "bool" | "int" | "string" | "real" | "var"
     static void TypeName(TokenStream* stream) throw(Throwable)
     {
@@ -694,6 +741,7 @@ public:
             throw Throwable(0,stream->current().value + " Not a Type!");
         }
     }
+
 
     // Function ::= "function" Identity "(" FunctionArgumentsList ")" "->" TypeName Body
     static void Function(TokenStream* stream) throw(Throwable)
@@ -733,6 +781,7 @@ public:
         Block(stream);
     }
 
+
     // FunctionArgumentsList ::= ε | TypeName Identity { "," TypeName Identity }
     static void FunctionArgumentsList(TokenStream* stream) throw(Throwable)
     {
@@ -754,6 +803,7 @@ public:
             Identity(stream);
         }
     }
+
 
     // Return ::= "return"
     static void Return(TokenStream* stream) throw(Throwable)
