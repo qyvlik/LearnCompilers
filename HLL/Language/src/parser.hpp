@@ -101,7 +101,6 @@ public:
 
 
     // DeclarationStatement ::= TypeName Identity [ "=" Expression ] { "," Identity [ "=" Expression ] } ";"
-
     static void DeclarationStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
@@ -137,9 +136,7 @@ public:
     }
 
     // Expression ::= ObjectExpression { ( "=" | "+=" | "-=" | "*=" | "%=" | "/=" ) BoolExpression }
-    //              | ObjectExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) ArithmeticExpression }
-    //              | ObjectExpression { ( "+" | "-" ) TermExpression }
-    //              | ObjectExpression { ( "*" | "/" | "%" ) FactorExpression }
+    //              | ObjectExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" | "+" | "-" | "*" | "/" | "%" ) Expression }
     //              | BoolExpression
     static void Expression(TokenStream* stream) throw(Throwable)
     {
@@ -164,46 +161,20 @@ public:
 
             while( current == ">"  || current == "<"  ||
                    current == ">=" || current == "<=" ||
-                   current == "==" || current == "!="
-                   )
-            {
-                stream->next();
-
-                TermExpression(stream);
-
-                current = stream->current().value;
-            }
-
-            while( current == ">"  || current == "<"  ||
+                   current == "==" || current == "!=" ||
+                   current == ">"  || current == "<"  ||
                    current == ">=" || current == "<=" ||
-                   current == "==" || current == "!="
+                   current == "==" || current == "!=" ||
+                   current == "+"  || current == "-"  ||
+                   current == "*"  || current == "/"  || current == "%"
                    )
             {
                 stream->next();
 
-                TermExpression(stream);
+                Expression(stream);
 
                 current = stream->current().value;
             }
-
-            while( current == "+"  || current == "-")
-            {
-                stream->next();
-
-                FactorExpression(stream);
-
-                current = stream->current().value;
-            }
-
-            while( current == "*"  || current == "/" || current == "%")
-            {
-                stream->next();
-
-                FactorExpression(stream);
-
-                current = stream->current().value;
-            }
-
         } else {
             BoolExpression(stream);
         }

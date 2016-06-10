@@ -46,9 +46,7 @@ DeclarationStatement ::= TypeName Identity [ "=" Expression ] { "," Identity [ "
 ExpressionStatement ::= Expression ";" | ";"
 
 Expression ::= ObjectExpression { ( "=" | "+=" | "-=" | "*=" | "%=" | "/=" ) BoolExpression }
-             | ObjectExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) ArithmeticExpression }
-             | ObjectExpression { ( "+" | "-" ) TermExpression }
-             | ObjectExpression { ( "*" | "/" | "%" ) FactorExpression }
+             | ObjectExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" | "+" | "-" | "*" | "/" | "%" ) Expression }
              | BoolExpression
 
 BoolExpression ::= ArithmeticExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) ArithmeticExpression }
