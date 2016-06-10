@@ -36,6 +36,7 @@ Statement ::= ExpressionStatement
             | ContinueStatement
             | TryStatement
             | Block
+            | ReturnStatement
 
 ExpressionStatement ::= Expression ";" | ";"
 
@@ -69,9 +70,13 @@ Lambda ::= "function" "(" FunctionArgumentsList ")" "->" TypeName Body
 
 TypeName ::= "bool" | "int" | "string" | "real" | "var"
 
-Function ::= "function" Identity "(" FunctionArgumentsList ")" "->" TypeName Body
+Function ::= "function" Identity "(" FunctionArgumentsList ")" "->" TypeName Block
 
-FunctionArgumentsList ::= TypeName Identity { "," TypeName Identity }
+FunctionArgumentsList ::= ε | TypeName Identity { "," TypeName Identity }
+
+Return ::= "return"
+
+ReturnStatement ::= Return ExpressionStatement
 
 ```
 

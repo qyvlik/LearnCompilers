@@ -29,6 +29,7 @@ public:
     //             | ContinueStatement
     //             | TryStatement
     //             | Block
+    //             | ReturnStatement
     static void Statement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
@@ -51,6 +52,8 @@ public:
             Block(stream);
         }  else if(ahead == "try") {
             TryStatement(stream);
+        } else if(ahead == "return") {
+            ReturnStatement(stream);
         } else  {
             ExpressionStatement(stream);
         }
@@ -179,7 +182,9 @@ public:
                   stream->current().value == "{" ||
                   stream->current().value == "[" ) {
             Lterial(stream);
-        } else {
+        } else if(stream->current().value == "function") {
+            Lambda(stream);
+        }else  {
             ObjectExpression(stream);
         }
     }
@@ -640,21 +645,136 @@ public:
         stream->next();
     }
 
-    //    Lambda ::= "function" "(" FunctionArgumentsList ")" "->" TypeName Body
+    // Lambda ::= "function" "(" FunctionArgumentsList ")" "->" TypeName Block
     static void Lambda(TokenStream* stream) throw(Throwable)
-    {}
+    {
+        CALLEE_PUSH_TRACK_;
 
-    //    TypeName ::= "bool" | "int" | "string" | "real" | "var"
+        // first is `function
+        stream->next();
+
+        if(stream->current().value != "(") {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0,"Lambda lost `(; current token " + stream->current().value);
+        }
+
+        stream->next();
+
+        FunctionArgumentsList(stream);
+
+        if(stream->current().value != ")") {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0,"Lambda lost `); current token " + stream->current().value);
+        }
+
+        stream->next();
+
+        if(stream->current().value != "->") {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0,"Lambda lost `->; current token " + stream->current().value);
+        }
+
+        stream->next();
+
+        TypeName(stream);
+
+        Block(stream);
+    }
+
+    // TypeName ::= "bool" | "int" | "string" | "real" | "var"
     static void TypeName(TokenStream* stream) throw(Throwable)
-    {}
+    {
+        CALLEE_PUSH_TRACK_;
 
-    //    Function ::= "function" Identity "(" FunctionArgumentsList ")" "->" TypeName Body
+        std::string type = stream->current().value;
+        if(type == "bool" || type == "int" || type == "string" || type == "real" || type == "var") {
+            stream->next();
+        } else {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0,stream->current().value + " Not a Type!");
+        }
+    }
+
+    // Function ::= "function" Identity "(" FunctionArgumentsList ")" "->" TypeName Body
     static void Function(TokenStream* stream) throw(Throwable)
-    {}
+    {
+        CALLEE_PUSH_TRACK_;
 
-    //    FunctionArgumentsList ::= TypeName Identity { "," TypeName Identity }
+        // first is `function
+        stream->next();
+
+        Identity(stream);
+
+        if(stream->current().value != "(") {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0,"Lambda lost `(; current token " + stream->current().value);
+        }
+
+        stream->next();
+
+        FunctionArgumentsList(stream);
+
+        if(stream->current().value != ")") {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0,"Lambda lost `); current token " + stream->current().value);
+        }
+
+        stream->next();
+
+        if(stream->current().value != "->") {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0,"Lambda lost `->; current token " + stream->current().value);
+        }
+
+        stream->next();
+
+        TypeName(stream);
+
+        Block(stream);
+    }
+
+    // FunctionArgumentsList ::= ε | TypeName Identity { "," TypeName Identity }
     static void FunctionArgumentsList(TokenStream* stream) throw(Throwable)
-    {}
+    {
+        CALLEE_PUSH_TRACK_;
+
+        if(stream->current().value == ")") {
+            return ;
+        }
+
+        TypeName(stream);
+
+        Identity(stream);
+
+        while(stream->current().value == ",") {
+            stream->next();
+
+            TypeName(stream);
+
+            Identity(stream);
+        }
+    }
+
+    // Return ::= "return"
+    static void Return(TokenStream* stream) throw(Throwable)
+    {
+        CALLEE_PUSH_TRACK_;
+
+        // first is `return
+        stream->next();
+    }
+
+
+    // ReturnStatement ::= Return ExpressionStatement
+    static void ReturnStatement(TokenStream* stream) throw(Throwable)
+    {
+        CALLEE_PUSH_TRACK_;
+
+        Return(stream);
+
+        ExpressionStatement(stream);
+    }
+
 };
 
 #endif // PARSER_H
