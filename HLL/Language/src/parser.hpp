@@ -9,6 +9,23 @@
 class Parser
 {
 public:
+
+    // Program ::= { Function | Statements }
+    static void Program(TokenStream* stream) throw(Throwable)
+    {
+        CALLEE_PUSH_TRACK_;
+
+        while(!stream->atEnd()) {
+
+            if(stream->current().value == "function") {
+                Function(stream);
+            } else {
+                Statements(stream);
+            }
+        }
+    }
+
+
     // Statements ::= { Statement }
     static void Statements(TokenStream* stream) throw(Throwable)
     {
@@ -119,7 +136,11 @@ public:
 
     }
 
-    // Expression ::= ObjectExpression { ( "=" | "+=" | "-=" | "*=" | "%=" | "/=" ) BoolExpression } | BoolExpression
+    // Expression ::= ObjectExpression { ( "=" | "+=" | "-=" | "*=" | "%=" | "/=" ) BoolExpression }
+    //              | ObjectExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) ArithmeticExpression }
+    //              | ObjectExpression { ( "+" | "-" ) TermExpression }
+    //              | ObjectExpression { ( "*" | "/" | "%" ) FactorExpression }
+    //              | BoolExpression
     static void Expression(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
@@ -128,6 +149,7 @@ public:
             ObjectExpression(stream);
 
             std::string current = stream->current().value;
+
             while( current == "="  || current == "+="  ||
                    current == "-=" || current == "*=" ||
                    current == "/=" || current == "%="
@@ -139,6 +161,49 @@ public:
 
                 current = stream->current().value;
             }
+
+            while( current == ">"  || current == "<"  ||
+                   current == ">=" || current == "<=" ||
+                   current == "==" || current == "!="
+                   )
+            {
+                stream->next();
+
+                TermExpression(stream);
+
+                current = stream->current().value;
+            }
+
+            while( current == ">"  || current == "<"  ||
+                   current == ">=" || current == "<=" ||
+                   current == "==" || current == "!="
+                   )
+            {
+                stream->next();
+
+                TermExpression(stream);
+
+                current = stream->current().value;
+            }
+
+            while( current == "+"  || current == "-")
+            {
+                stream->next();
+
+                FactorExpression(stream);
+
+                current = stream->current().value;
+            }
+
+            while( current == "*"  || current == "/" || current == "%")
+            {
+                stream->next();
+
+                FactorExpression(stream);
+
+                current = stream->current().value;
+            }
+
         } else {
             BoolExpression(stream);
         }
@@ -698,6 +763,12 @@ public:
 
         // first is `function
         stream->next();
+
+        // if current is Identity throw
+
+        if(stream->current().type == Token::Identity) {
+            throw Throwable(0,"Function Can't In Statement!");
+        }
 
         if(stream->current().value != "(") {
             std::cout << stream->current() << std::endl;

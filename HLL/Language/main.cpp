@@ -12,6 +12,7 @@ void test_6();
 void test_7();
 void test_8();
 void test_9();
+void test_10();
 
 int main()
 {
@@ -24,6 +25,7 @@ int main()
     test_7();
     test_8();
     test_9();
+    test_10();
     return 0;
 }
 
@@ -447,7 +449,7 @@ void test_9()
     TokenStream stream(tokens);
 
     try {
-        Parser::Statements(&stream);
+        Parser::DeclarationStatement(&stream);
         std::cout << "Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
@@ -456,3 +458,57 @@ void test_9()
     }
 }
 
+void test_10()
+{
+    // function add(int a, int b) -> int { return a + b ; }
+    // int result = add(1, 1);
+    vector<Token> tokens;
+
+    tokens.push_back(Token(Token::KeyWord, "function"));
+
+    tokens.push_back(Token(Token::Identity, "add"));
+    tokens.push_back(Token(Token::Delimiter, "("));
+    tokens.push_back(Token(Token::TypeName, "int"));
+    tokens.push_back(Token(Token::Identity, "a"));
+    tokens.push_back(Token(Token::Delimiter, ","));
+    tokens.push_back(Token(Token::TypeName, "int"));
+    tokens.push_back(Token(Token::Identity, "b"));
+    tokens.push_back(Token(Token::Delimiter, ")"));
+    tokens.push_back(Token(Token::Delimiter, "->"));
+    tokens.push_back(Token(Token::TypeName, "int"));
+    tokens.push_back(Token(Token::Delimiter, "{"));
+    tokens.push_back(Token(Token::KeyWord, "return"));
+
+    tokens.push_back(Token(Token::Identity, "a"));
+    tokens.push_back(Token(Token::Operator, "+"));
+    tokens.push_back(Token(Token::Identity, "b"));
+
+    tokens.push_back(Token(Token::Delimiter, ";"));
+    tokens.push_back(Token(Token::Delimiter, "}"));
+
+    tokens.push_back(Token(Token::TypeName, "int"));
+    tokens.push_back(Token(Token::Identity, "result"));
+    tokens.push_back(Token(Token::Operator, "="));
+
+    tokens.push_back(Token(Token::Identity, "add"));
+
+    tokens.push_back(Token(Token::Delimiter, "("));
+
+    tokens.push_back(Token(Token::NumberLterial, "1"));
+    tokens.push_back(Token(Token::Delimiter, ","));
+    tokens.push_back(Token(Token::NumberLterial, "1"));
+    tokens.push_back(Token(Token::Delimiter, ")"));
+
+    tokens.push_back(Token(Token::Delimiter, ";"));
+
+    TokenStream stream(tokens);
+
+    try {
+        Parser::Program(&stream);
+        std::cout << "Done!" << std::endl;
+    } catch(Throwable e) {
+        std::cout << "error:" << std::endl;
+        std::cout << e << std::endl;
+        e.printTrack();
+    }
+}

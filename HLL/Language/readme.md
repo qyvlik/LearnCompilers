@@ -1,6 +1,22 @@
 # 提出语言文法
 
 ```
+Program ::= { Function | Statements }
+
+Statements ::= { Statement }
+
+Statement ::= ExpressionStatement
+            | IfStatement
+            | WhileStatement
+            | DoWhileStatement
+            | ForStatement
+            | BreakStatement
+            | ContinueStatement
+            | TryStatement
+            | Block
+            | ReturnStatement
+            | DeclarationStatement
+
 IfStatement ::= "if" "(" Expression ")" Statement [ ElseStatement ]
 
 ElseStatement ::= "else" Statement
@@ -25,25 +41,15 @@ CatchStatement ::= "catch" Block
 
 Block ::= "{" Statements "}"
 
-Statements ::= { Statement }
-
-Statement ::= ExpressionStatement
-            | IfStatement
-            | WhileStatement
-            | DoWhileStatement
-            | ForStatement
-            | BreakStatement
-            | ContinueStatement
-            | TryStatement
-            | Block
-            | ReturnStatement
-            | DeclarationStatement
-
 DeclarationStatement ::= TypeName Identity [ "=" Expression ] { "," Identity [ "=" Expression ] } ";"
 
 ExpressionStatement ::= Expression ";" | ";"
 
-Expression ::= ObjectExpression { ( "=" | "+=" | "-=" | "*=" | "%=" | "/=" ) BoolExpression } | BoolExpression
+Expression ::= ObjectExpression { ( "=" | "+=" | "-=" | "*=" | "%=" | "/=" ) BoolExpression }
+             | ObjectExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) ArithmeticExpression }
+             | ObjectExpression { ( "+" | "-" ) TermExpression }
+             | ObjectExpression { ( "*" | "/" | "%" ) FactorExpression }
+             | BoolExpression
 
 BoolExpression ::= ArithmeticExpression { ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) ArithmeticExpression }
 
