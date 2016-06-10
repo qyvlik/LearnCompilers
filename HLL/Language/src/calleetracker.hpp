@@ -21,7 +21,7 @@ struct StackFrame {
     std::string callname;
 
     void print() const {
-        std::cout << file << ":" << line << "@" << callname;
+        std::cout << file << ":" << line << "@ " << callname;
     }
 };
 

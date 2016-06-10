@@ -50,6 +50,7 @@ TermExpression ::= FactorExpression { ( "*" | "/" | "%" ) FactorExpression }
 FactorExpression ::= "(" Expression ")"
                    | ObjectExpression
                    | Lterial
+                   | Lambda
 
 ObjectExpression ::= ObjectExpression "." Identity
                    | ObjectExpression "[" Expression "]"
@@ -63,6 +64,14 @@ Lterial ::= StringLterial | NumberLterial | ArrayLterial | KeyValuesLterial
 KeyValuesLterial ::= "{" { StringLterial ":" Expression "," } "}"           // map 或者说是对象，不能对此进行函数调用
 
 ArrayLterial ::= "[" { Expression "," } "]"                                 // 数组，不能对此进行函数调用
+
+Lambda ::= "function" "(" FunctionArgumentsList ")" "->" TypeName Body
+
+TypeName ::= "bool" | "int" | "string" | "real" | "var"
+
+Function ::= "function" Identity "(" FunctionArgumentsList ")" "->" TypeName Body
+
+FunctionArgumentsList ::= TypeName Identity { "," TypeName Identity }
 
 ```
 

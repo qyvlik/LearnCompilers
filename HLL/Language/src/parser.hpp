@@ -640,6 +640,21 @@ public:
         stream->next();
     }
 
+    //    Lambda ::= "function" "(" FunctionArgumentsList ")" "->" TypeName Body
+    static void Lambda(TokenStream* stream) throw(Throwable)
+    {}
+
+    //    TypeName ::= "bool" | "int" | "string" | "real" | "var"
+    static void TypeName(TokenStream* stream) throw(Throwable)
+    {}
+
+    //    Function ::= "function" Identity "(" FunctionArgumentsList ")" "->" TypeName Body
+    static void Function(TokenStream* stream) throw(Throwable)
+    {}
+
+    //    FunctionArgumentsList ::= TypeName Identity { "," TypeName Identity }
+    static void FunctionArgumentsList(TokenStream* stream) throw(Throwable)
+    {}
 };
 
 #endif // PARSER_H
