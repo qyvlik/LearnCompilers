@@ -46,6 +46,18 @@ static inline std::vector<std::string> split(const std::string& str, const std::
     return result;
 }
 
+template<typename T>
+bool contains(const std::vector<T>& s, const T& item) {
+    auto iter = s.begin();
+    auto end = s.end();
+    while(iter != end) {
+        if((*iter) == item) {
+            return true;
+        }
+        iter++;
+    }
+    return false;
+}
 
 
 }

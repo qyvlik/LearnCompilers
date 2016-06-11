@@ -11,6 +11,11 @@
 class Throwable
 {
 public:
+    Throwable():
+        errorCode(0),
+        error("")
+    {}
+
     Throwable(int code, const std::string& err):
         errorCode(code),
         error(err),
