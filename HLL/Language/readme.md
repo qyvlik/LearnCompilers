@@ -13,6 +13,7 @@ Statement ::= ExpressionStatement
             | BreakStatement
             | ContinueStatement
             | TryStatement
+            | ThrowStatement
             | Block
             | ReturnStatement
             | DeclarationStatement
@@ -38,6 +39,8 @@ ForStatement ::= "for" "(" Expression ";" Expression ";" Expression ")" Statemen
 TryStatement ::= "try" Block CatchStatement
 
 CatchStatement ::= "catch" Block
+
+ThrowStatement ::= "throw" Expression ";"
 
 Block ::= "{" Statements "}"
 

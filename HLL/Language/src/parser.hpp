@@ -45,6 +45,7 @@ public:
     //             | BreakStatement
     //             | ContinueStatement
     //             | TryStatement
+    //             | ThrowStatement
     //             | Block
     //             | ReturnStatement
     //             | DeclarationStatement
@@ -71,6 +72,8 @@ public:
             Block(stream);
         }  else if(ahead == "try") {
             TryStatement(stream);
+        } else if(ahead == "throw"){
+            ThrowStatement(stream);
         } else if(ahead == "return") {
             ReturnStatement(stream);
         } else if(type == Token::TypeName) {
@@ -654,6 +657,25 @@ public:
         stream->next();
 
         Block(stream);
+    }
+
+
+    // ThrowStatement ::= "throw" Expression ";"
+    static void ThrowStatement(TokenStream* stream) throw(Throwable)
+    {
+        CALLEE_PUSH_TRACK_;
+
+        // first is `throw
+        stream->next();
+
+        Expression(stream);
+
+        if(stream->current().value != ";") {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0, "ThrowStatement: lost `;");
+        }
+
+        stream->next();
     }
 
 
