@@ -117,14 +117,14 @@ public:
             } else if(symbol.isIdentityPreFix(stream->current())) {
                 tokens.push_back(Identity(stream, symbol));
             } else if(symbol.isNumber(stream->current())) {
-                tokens.push_back(NumberLterial(stream, symbol));
+                tokens.push_back(NumberLiteral(stream, symbol));
             } else if(stream->current() == '\'' || stream->current() == '\"') {
                 try {
-                    tokens.push_back(StringLterial(stream, symbol));
+                    tokens.push_back(StringLiteral(stream, symbol));
                 } catch(Throwable e) {
                     Throwable newE;
                     newE = e;
-                    newE.setError("StringLterial :" + e.getError());
+                    newE.setError("StringLiteral :" + e.getError());
                     throw newE;
                 }
             } else if( symbol.isDelimiter(stream->current()) ) {
@@ -190,7 +190,7 @@ public:
     // 0.11
     // 1.111
     // 10.1
-    static Token NumberLterial(CodeStream* stream, const StaticSymbol& symbol) throw(Throwable)
+    static Token NumberLiteral(CodeStream* stream, const StaticSymbol& symbol) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
@@ -214,7 +214,7 @@ public:
                 if(hex_number_length > 8) {
                     throw Throwable(0, "Hex Number Is Too Long: " + std::to_string(hex_number_length));
                 }
-                return Token(Token::IntegerLterial, value);
+                return Token(Token::IntegerLiteral, value);
             } else if( symbol.isNumber(stream->current()) ){
                 error.push_back(stream->current());
                 throw Throwable(0, error + " Don't Support Number's Prefix Which is `0");
@@ -233,7 +233,7 @@ public:
                 if(decimal_number_length > 15) {
                     throw Throwable(0, "Double Number's Decimal Part Is Too Long: " + std::to_string(decimal_number_length));
                 }
-                return Token(Token::DoubleLterial, value);
+                return Token(Token::DoubleLiteral, value);
             } else {
                 error.push_back(stream->current());
                 throw Throwable(0, "Unknow Error Current Letter : " + error);
@@ -267,15 +267,15 @@ public:
                 throw Throwable(0, "Integer Number's Is Too Long: " + std::to_string(decimal_number_length));
             }
             if(dot_count == 0) {
-                return Token(Token::IntegerLterial, value);
+                return Token(Token::IntegerLiteral, value);
             } else {
-                return Token(Token::DoubleLterial, value);
+                return Token(Token::DoubleLiteral, value);
             }
         }
     }
 
     // " '
-    static Token StringLterial(CodeStream* stream, const StaticSymbol& symbol) throw(Throwable)
+    static Token StringLiteral(CodeStream* stream, const StaticSymbol& symbol) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
@@ -321,7 +321,7 @@ public:
             throw Throwable(0, "StringLeterial Lost Last Quota");
         }
         stream->next();
-        return Token(Token::StringLterial, value);
+        return Token(Token::StringLiteral, value);
     }
 
     // start of [a-zA-Z_]

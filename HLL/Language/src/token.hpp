@@ -16,16 +16,16 @@ public:
 
         TypeName,
 
-        Lterial,
-        StringLterial,
-        NumberLterial,
+        Literal,
+        StringLiteral,
+        NumberLiteral,
 
-        BoolLterial,
-        IntegerLterial,
-        DoubleLterial,
+        BoolLiteral,
+        IntegerLiteral,
+        DoubleLiteral,
 
-        ArrayLterial,
-        KeyValuesLterial,
+        ArrayLiteral,
+        KeyValuesLiteral,
     };
 
     Token():
@@ -60,29 +60,29 @@ public:
         case Token::Identity:
             os << "( Identity, ";
             break;
-        case Token::Lterial:
-            os << "( Lterial, ";
+        case Token::Literal:
+            os << "( Literal, ";
             break;
-        case Token::StringLterial:
-            os << "( StringLterial, ";
+        case Token::StringLiteral:
+            os << "( StringLiteral, ";
             break;
-        case Token::NumberLterial:
-            os << "( NumberLterial, ";
+        case Token::NumberLiteral:
+            os << "( NumberLiteral, ";
             break;
-        case Token::ArrayLterial:
-            os << "( ArrayLterial, ";
+        case Token::ArrayLiteral:
+            os << "( ArrayLiteral, ";
             break;
-        case Token::KeyValuesLterial:
-            os << "( KeyValuesLterial, ";
+        case Token::KeyValuesLiteral:
+            os << "( KeyValuesLiteral, ";
             break;
-        case Token::BoolLterial:
-            os << "( BoolLterial, ";
+        case Token::BoolLiteral:
+            os << "( BoolLiteral, ";
             break;
-        case Token::IntegerLterial:
-            os << "( IntegerLterial, ";
+        case Token::IntegerLiteral:
+            os << "( IntegerLiteral, ";
             break;
-        case Token::DoubleLterial:
-            os << "( DoubleLterial, ";
+        case Token::DoubleLiteral:
+            os << "( DoubleLiteral, ";
             break;
         default:
             os << "( Unknow, ";

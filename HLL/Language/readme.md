@@ -60,7 +60,7 @@ TermExpression ::= FactorExpression { ( "*" | "/" | "%" ) FactorExpression }
 
 FactorExpression ::= "(" Expression ")"
                    | ObjectExpression
-                   | Lterial
+                   | Literal
                    | Lambda
 
 ObjectExpression ::= ObjectExpression "." Identity
@@ -70,11 +70,11 @@ ObjectExpression ::= ObjectExpression "." Identity
 
 CallArgumentList ::= ε | Expression { "," Expression }
 
-Lterial ::= StringLterial | NumberLterial | ArrayLterial | KeyValuesLterial
+Literal ::= StringLiteral | NumberLiteral | ArrayLiteral | KeyValuesLiteral
 
-KeyValuesLterial ::= "{" { StringLterial ":" Expression "," } "}"           // map 或者说是对象，不能对此进行函数调用
+KeyValuesLiteral ::= "{" { StringLiteral ":" Expression "," } "}"           // map 或者说是对象，不能对此进行函数调用
 
-ArrayLterial ::= "[" { Expression "," } "]"                                 // 数组，不能对此进行函数调用
+ArrayLiteral ::= "[" { Expression "," } "]"                                 // 数组，不能对此进行函数调用
 
 Lambda ::= "function" "(" FunctionArgumentsList ")" "->" TypeName Body
 
@@ -103,3 +103,9 @@ ObjectExpression ::= _R_ObjectExpression
                    | _R_ObjectExpression "[" Expression "]"
                    | _R_ObjectExpression "(" CallArgumentList ")"
 ```
+
+---
+
+1. 冲突，`Block` 和 `KeyValuesLiteral` 的 `FIRST` 集合一样，如何处理？
+
+    由于 `Block` 优先级大于 `KeyValuesLiteral`

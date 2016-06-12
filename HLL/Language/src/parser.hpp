@@ -240,7 +240,7 @@ public:
     }
 
 
-    // FactorExpression ::= "(" Expression ")" | ObjectExpression | Lterial
+    // FactorExpression ::= "(" Expression ")" | ObjectExpression | Literal
     static void FactorExpression(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
@@ -257,10 +257,10 @@ public:
             }
 
             stream->next();             // eat `)
-        } else if(stream->current().type > Token::Lterial ||
+        } else if(stream->current().type > Token::Literal ||
                   stream->current().value == "{" ||
                   stream->current().value == "[" ) {
-            Lterial(stream);
+            Literal(stream);
         } else if(stream->current().value == "function") {
             Lambda(stream);
         }else  {
@@ -352,28 +352,28 @@ public:
     }
 
 
-    // Lterial ::= StringLterial | NumberLterial | ArrayLterial | KeyValuesLterial
-    static void Lterial(TokenStream* stream) throw(Throwable)
+    // Literal ::= StringLiteral | NumberLiteral | ArrayLiteral | KeyValuesLiteral
+    static void Literal(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
         Token current = stream->current();
-        if(current.type == Token::StringLterial) {
-            StringLterial(stream);
-        } else if(current.type == Token::NumberLterial || current.type == Token::IntegerLterial || current.type == Token::DoubleLterial ) {
-            NumberLterial(stream);
+        if(current.type == Token::StringLiteral) {
+            StringLiteral(stream);
+        } else if(current.type == Token::NumberLiteral || current.type == Token::IntegerLiteral || current.type == Token::DoubleLiteral ) {
+            NumberLiteral(stream);
         } else if(current.value == "{"){
-            KeyValuesLterial(stream);
+            KeyValuesLiteral(stream);
         } else if(current.value == "[") {
-            ArrayLterial(stream);
+            ArrayLiteral(stream);
         } else {
-            throw Throwable(0, "Lterial: Token not a `Lterial");
+            throw Throwable(0, "Literal: Token not a `Literal");
         }
     }
 
 
-    // KeyValuesLterial ::= "{" { StringLterial ":" Expression "," } "}"           // map 或者说是对象，不能对此进行函数调用
-    static void KeyValuesLterial(TokenStream* stream) throw(Throwable)
+    // KeyValuesLiteral ::= "{" { StringLiteral ":" Expression "," } "}"           // map 或者说是对象，不能对此进行函数调用
+    static void KeyValuesLiteral(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
@@ -381,17 +381,17 @@ public:
 
         while(stream->current().value != "}") {
 
-            if(stream->current().type != Token::StringLterial) {
+            if(stream->current().type != Token::StringLiteral) {
                 std::cout << stream->current() << std::endl;
-                throw Throwable(0, "KeyValuesLterial Map Object Key Not StringLterial, current Token " + stream->current().value);
+                throw Throwable(0, "KeyValuesLiteral Map Object Key Not StringLiteral, current Token " + stream->current().value);
             }
 
             // `Key
-            StringLterial(stream);
+            StringLiteral(stream);
 
             if(stream->current().value != ":") {
                 std::cout << stream->current() << std::endl;
-                throw Throwable(0, "KeyValuesLterial Map Object Lost `:, current Token " + stream->current().value);
+                throw Throwable(0, "KeyValuesLiteral Map Object Lost `:, current Token " + stream->current().value);
             }
 
             stream->next();
@@ -404,7 +404,7 @@ public:
             } else {
                 if(stream->current().value != "}") {
                     std::cout << stream->current() << std::endl;
-                    throw Throwable(0, "KeyValuesLterial Key-Value lost `, current token " + stream->current().value);
+                    throw Throwable(0, "KeyValuesLiteral Key-Value lost `, current token " + stream->current().value);
                 }
             }
         }
@@ -413,8 +413,8 @@ public:
     }
 
 
-    // ArrayLterial ::= "[" { Expression "," } "]"                                 // 数组，不能对此进行函数调用
-    static void ArrayLterial(TokenStream* stream) throw(Throwable)
+    // ArrayLiteral ::= "[" { Expression "," } "]"                                 // 数组，不能对此进行函数调用
+    static void ArrayLiteral(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
@@ -432,7 +432,7 @@ public:
     }
 
 
-    static void NumberLterial(TokenStream* stream) throw(Throwable)
+    static void NumberLiteral(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
@@ -440,7 +440,7 @@ public:
     }
 
 
-    static void StringLterial(TokenStream* stream) throw(Throwable)
+    static void StringLiteral(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
