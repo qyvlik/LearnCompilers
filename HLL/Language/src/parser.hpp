@@ -360,7 +360,7 @@ public:
         Token current = stream->current();
         if(current.type == Token::StringLterial) {
             StringLterial(stream);
-        } else if(current.type == Token::NumberLterial) {
+        } else if(current.type == Token::NumberLterial || current.type == Token::IntegerLterial || current.type == Token::DoubleLterial ) {
             NumberLterial(stream);
         } else if(current.value == "{"){
             KeyValuesLterial(stream);
