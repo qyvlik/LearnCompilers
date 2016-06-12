@@ -1,6 +1,7 @@
 #include <iostream>
 #include "src/parser.hpp"
 #include "src/utility.hpp"
+#include "src/lexer.hpp"
 
 using namespace std;
 
@@ -17,6 +18,8 @@ void test_10();
 void test_11();
 void test_12();
 void test_13();
+void test_14();
+void test_15();
 
 int main()
 {
@@ -33,6 +36,8 @@ int main()
     test_11();
     test_12();
     test_13();
+    test_14();
+    test_15();
     return 0;
 }
 
@@ -703,5 +708,46 @@ void test_13()
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
         e.printTrack();
+    }
+}
+
+void test_14()
+{
+    std::string code = "     try { if ( 1 ) { while ( 1.02312 ) {"
+                       "     A . B . C [ \"D\" ] ( 1, 2, 3 ) [ \"A\" ] = { \"name\" : 1 , \"age\": 1/1 , \"array\" : [ \"age\", 1, ] } ;"
+                       "     } } } catch ( 1 ) { for ( 1 ; 1 ; 1 ) { do { } while ( 1 ) ; } } ";
+    CodeStream stream(code);
+    try {
+        std::vector<Token> tokens = Lexer::parser(&stream);
+        TokenStream stream(tokens);
+        std::cout << "Lexer Done!" << std::endl;
+
+        Parser::Program(&stream);
+        std::cout << "Parser Done!" << std::endl;
+
+    } catch(Throwable e) {
+        e.printTrack();
+        std::cout << e.getError()  << std::endl;
+    }
+}
+
+void test_15()
+{
+    std::string code = "     function add(int a, int b) -> var { return function () -> int { return a + b ; } ; }"
+                       "     function sub(int a, int b) -> var {  return a - b ; }"
+                       "     int result = add(1, 1)();"
+                       "     int result2 = sub(result, result); ";
+    CodeStream stream(code);
+    try {
+        std::vector<Token> tokens = Lexer::parser(&stream);
+        TokenStream stream(tokens);
+        std::cout << "Lexer Done!" << std::endl;
+
+        Parser::Program(&stream);
+        std::cout << "Parser Done!" << std::endl;
+
+    } catch(Throwable e) {
+        e.printTrack();
+        std::cout << e.getError()  << std::endl;
     }
 }
