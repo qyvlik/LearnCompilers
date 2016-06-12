@@ -20,4 +20,6 @@ HEADERS += \
     src/utility.hpp \
     src/parser.hpp \
     src/calleetracker.hpp \
-    src/throwable.hpp
+    src/throwable.hpp \
+    src/token.hpp \
+    src/lexer.hpp
