@@ -234,7 +234,7 @@ public:
                 if(hex_number_length > 8) {
                     throw Throwable(0, "Hex Number Is Too Long: " + std::to_string(hex_number_length));
                 }
-                return Token(Token::IntegerLiteral, value);
+                // return Token(Token::IntegerLiteral, value);
             } else if( symbol.isNumber(stream->current()) ){
                 error.push_back(stream->current());
                 throw Throwable(0, error + " Don't Support Number's Prefix Which is `0");
@@ -253,11 +253,16 @@ public:
                 if(decimal_number_length > 15) {
                     throw Throwable(0, "Double Number's Decimal Part Is Too Long: " + std::to_string(decimal_number_length));
                 }
-                return Token(Token::DoubleLiteral, value);
-            } else {
-                error.push_back(stream->current());
-                throw Throwable(0, "Unknow Error Current Letter : " + error);
+                // return Token(Token::DoubleLiteral, value);
             }
+            return Token(Token::DoubleLiteral, value);
+
+            // if(0)
+            // next is `)
+//            else {
+//                error.push_back(stream->current());
+//                throw Throwable(0, "Unknow Error Current Letter : " + error);
+//            }
         } else {
             int dot_count = 0;
             int decimal_number_length = 0;
