@@ -22,6 +22,7 @@ void test_14();
 void test_15();
 void test_16();
 void test_17();
+void test_18();
 
 int main()
 {
@@ -42,40 +43,21 @@ int main()
     test_15();
     test_16();
     test_17();
+    test_18();
     return 0;
 }
 
 
 void test_1()
 {
-    vector<Token> tokens;
-
-    // A . B . C [ "D" ] ( 1, 2, 3 ) [ "A" ] ;
-    tokens.push_back(Token(Token::Identity, "A"));
-    tokens.push_back(Token(Token::Delimiter, "."));
-    tokens.push_back(Token(Token::Identity, "B"));
-    tokens.push_back(Token(Token::Delimiter, "."));
-    tokens.push_back(Token(Token::Identity, "C"));
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"D\""));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"A\""));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "A . B . C [ \"D\" ] ( 1, 2, 3 ) [ \"A\" ] ;";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::ExpressionStatement(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -85,30 +67,14 @@ void test_1()
 
 void test_2()
 {
-    vector<Token> tokens;
-
-    // A = { "name" : 1 , "age": 1/1 } ;
-
-    tokens.push_back(Token(Token::Identity, "A"));
-    tokens.push_back(Token(Token::Operator, "="));
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::StringLiteral, "\"name\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::StringLiteral, "\"age\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Operator, "/"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "A = { \"name\" : 1 , \"age\": 1/1 } ;";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::ExpressionStatement(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -118,25 +84,14 @@ void test_2()
 
 void test_3()
 {
-    vector<Token> tokens;
-
-    // A = [ "age", 1, ] ;
-
-    tokens.push_back(Token(Token::Identity, "A"));
-    tokens.push_back(Token(Token::Operator, "="));
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"age\""));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = " A = [ \"age\", 1, ] ;";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::ExpressionStatement(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -146,62 +101,14 @@ void test_3()
 
 void test_4()
 {
-    vector<Token> tokens;
-
-    // A . B . C [ "D" ] ( 1, 2, 3 ) [ "A" ] = { "name" : 1 , "age": 1/1 , "array" : [ "age", 1, ] } ;
-    tokens.push_back(Token(Token::Identity, "A"));
-    tokens.push_back(Token(Token::Delimiter, "."));
-    tokens.push_back(Token(Token::Identity, "B"));
-    tokens.push_back(Token(Token::Delimiter, "."));
-    tokens.push_back(Token(Token::Identity, "C"));
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"D\""));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"A\""));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-
-    tokens.push_back(Token(Token::Operator, "="));
-
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::StringLiteral, "\"name\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::StringLiteral, "\"age\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Operator, "/"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-
-    tokens.push_back(Token(Token::Delimiter, ","));
-
-    tokens.push_back(Token(Token::StringLiteral, "\"array\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"age\""));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-
-    tokens.push_back(Token(Token::Delimiter, "}"));
-
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "A . B . C [ \"D\" ] ( 1, 2, 3 ) [ \"A\" ] = { \"name\" : 1 , \"age\": 1/1 , \"array\" : [ \"age\", 1, ] } ;";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::ExpressionStatement(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -211,55 +118,14 @@ void test_4()
 
 void test_5()
 {
-    vector<Token> tokens;
-
-    // try { if ( 1 ) { while ( 1 ) { } } } catch ( 1 ) { for ( 1 ; 1 ; 1 ) { do { } while ( 1 ) ; } }
-    tokens.push_back(Token(Token::KeyWord, "try"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // try
-    tokens.push_back(Token(Token::KeyWord, "if"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // if
-    tokens.push_back(Token(Token::KeyWord, "while"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::Delimiter, "}"));  // while
-    tokens.push_back(Token(Token::Delimiter, "}"));  // if
-    tokens.push_back(Token(Token::Delimiter, "}"));  // try
-    tokens.push_back(Token(Token::KeyWord, "catch"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // catch
-    tokens.push_back(Token(Token::KeyWord, "for"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // for
-    tokens.push_back(Token(Token::KeyWord, "do"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // do-while
-    tokens.push_back(Token(Token::Delimiter, "}"));  // do-while
-    tokens.push_back(Token(Token::KeyWord, "while"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::Delimiter, "}"));  // for
-    tokens.push_back(Token(Token::Delimiter, "}"));  // catch
-
-
-    TokenStream stream(tokens);
+    std::string code = "try { if ( 1 ) { while ( 1 ) { } } } catch ( 1 ) { for ( 1 ; 1 ; 1 ) { do { } while ( 1 ) ; } }";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::Statements(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -270,101 +136,16 @@ void test_5()
 
 void test_6()
 {
-    vector<Token> tokens;
-
-    // try { if ( 1 ) { while ( 1 ) {
-    // A . B . C [ "D" ] ( 1, 2, 3 ) [ "A" ] = { "name" : 1 , "age": 1/1 , "array" : [ "age", 1, ] } ;
-    // } } } catch ( 1 ) { for ( 1 ; 1 ; 1 ) { do { } while ( 1 ) ; } }
-    tokens.push_back(Token(Token::KeyWord, "try"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // try
-    tokens.push_back(Token(Token::KeyWord, "if"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // if
-    tokens.push_back(Token(Token::KeyWord, "while"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // while
-
-    tokens.push_back(Token(Token::Identity, "A"));
-    tokens.push_back(Token(Token::Delimiter, "."));
-    tokens.push_back(Token(Token::Identity, "B"));
-    tokens.push_back(Token(Token::Delimiter, "."));
-    tokens.push_back(Token(Token::Identity, "C"));
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"D\""));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"A\""));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-
-    tokens.push_back(Token(Token::Operator, "="));
-
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::StringLiteral, "\"name\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::StringLiteral, "\"age\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Operator, "/"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::StringLiteral, "\"array\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::Delimiter, "["));
-    tokens.push_back(Token(Token::StringLiteral, "\"age\""));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::Delimiter, "]"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    tokens.push_back(Token(Token::Delimiter, "}"));  // while
-    tokens.push_back(Token(Token::Delimiter, "}"));  // if
-    tokens.push_back(Token(Token::Delimiter, "}"));  // try
-    tokens.push_back(Token(Token::KeyWord, "catch"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // catch
-    tokens.push_back(Token(Token::KeyWord, "for"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // for
-    tokens.push_back(Token(Token::KeyWord, "do"));
-    tokens.push_back(Token(Token::Delimiter, "{"));  // do-while
-    tokens.push_back(Token(Token::Delimiter, "}"));  // do-while
-    tokens.push_back(Token(Token::KeyWord, "while"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::Delimiter, "}"));  // for
-    tokens.push_back(Token(Token::Delimiter, "}"));  // catch
-
-
-    TokenStream stream(tokens);
+    std::string code = "     try { if ( 1 ) { while ( 1 ) {"
+                       "     A . B . C [ \"D\" ] ( 1, 2, 3 ) [ \"A\" ] = { \"name\" : 1 , \"age\": 1/1 , \"array\" : [ \"age\", 1, ] } ;"
+                       "     } } } catch ( 1 ) { for ( 1 ; 1 ; 1 ) { do { } while ( 1 ) ; } }";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::Statements(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -374,28 +155,14 @@ void test_6()
 
 void test_7()
 {
-    vector<Token> tokens;
-
-    //{ "name" : 1  "age": 1/1 } ;
-
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::StringLiteral, "\"name\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    //    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::StringLiteral, "\"age\""));
-    tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Operator, "/"));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "{ \"name\" : 1  \"age\": 1/1 } ;";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::ExpressionStatement(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -406,37 +173,14 @@ void test_7()
 
 void test_8()
 {
-    // function (int a, int b) -> int { return a; }
-    vector<Token> tokens;
-
-    tokens.push_back(Token(Token::KeyWord, "function"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-
-    tokens.push_back(Token(Token::Delimiter, "->"));
-
-    tokens.push_back(Token(Token::TypeName, "int"));
-
-
-    tokens.push_back(Token(Token::Delimiter, "{"));
-
-    tokens.push_back(Token(Token::KeyWord, "return"));
-
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    tokens.push_back(Token(Token::Delimiter, "}"));
-
-    TokenStream stream(tokens);
+    std::string code = "function (int a, int b) -> int { return a; }";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::Lambda(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -446,27 +190,14 @@ void test_8()
 
 void test_9()
 {
-    // int a = 10, b = 11;
-    vector<Token> tokens;
-
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Operator, "="));
-    tokens.push_back(Token(Token::IntegerLiteral, "10"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Operator, "="));
-
-    tokens.push_back(Token(Token::IntegerLiteral, "10"));
-
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "int a = 10, b = 11;";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::DeclarationStatement(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -476,52 +207,14 @@ void test_9()
 
 void test_10()
 {
-    // function add(int a, int b) -> int { return a + b ; }
-    // int result = add(1, 1);
-    vector<Token> tokens;
-
-    tokens.push_back(Token(Token::KeyWord, "function"));
-
-    tokens.push_back(Token(Token::Identity, "add"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "->"));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::KeyWord, "return"));
-
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Operator, "+"));
-    tokens.push_back(Token(Token::Identity, "b"));
-
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "result"));
-    tokens.push_back(Token(Token::Operator, "="));
-
-    tokens.push_back(Token(Token::Identity, "add"));
-
-    tokens.push_back(Token(Token::Delimiter, "("));
-
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "    function add(int a, int b) -> int { return a + b ; } int result = add(1, 1);";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::Program(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -531,68 +224,14 @@ void test_10()
 
 void test_11()
 {
-    // function add(int a, int b) -> var { return function () -> int { return a + b ; } ; }
-    // int result = add(1, 1)();
-
-    vector<Token> tokens;
-
-    tokens.push_back(Token(Token::KeyWord, "function"));
-
-    tokens.push_back(Token(Token::Identity, "add"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "->"));
-    tokens.push_back(Token(Token::TypeName, "var"));
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::KeyWord, "return"));
-
-    tokens.push_back(Token(Token::KeyWord, "function"));
-
-    // tokens.push_back(Token(Token::Identity, "add0"));
-
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "->"));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::KeyWord, "return"));
-
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Operator, "+"));
-    tokens.push_back(Token(Token::Identity, "b"));
-
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-
-
-
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "result"));
-    tokens.push_back(Token(Token::Operator, "="));
-    tokens.push_back(Token(Token::Identity, "add"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "function add(int a, int b) -> var { return function () -> int { return a + b ; } ; } int result = add(1, 1)(); ";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::Program(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -603,89 +242,17 @@ void test_11()
 
 void test_12()
 {
-    // function add(int a, int b) -> var { return function () -> int { return a + b ; } ; }
-    // function sub(int a, int b) -> var {  return a - b ; }
-    // int result = add(1, 1)();
-    // int result2 = sub(result, result);
-
-    vector<Token> tokens;
-
-    tokens.push_back(Token(Token::KeyWord, "function"));
-    tokens.push_back(Token(Token::Identity, "add"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "->"));
-    tokens.push_back(Token(Token::TypeName, "var"));
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::KeyWord, "return"));
-    tokens.push_back(Token(Token::KeyWord, "function"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "->"));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::KeyWord, "return"));
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Operator, "+"));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-
-    tokens.push_back(Token(Token::KeyWord, "function"));
-    tokens.push_back(Token(Token::Identity, "sub"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "->"));
-    tokens.push_back(Token(Token::TypeName, "var"));
-    tokens.push_back(Token(Token::Delimiter, "{"));
-    tokens.push_back(Token(Token::KeyWord, "return"));
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Operator, "-"));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::Delimiter, "}"));
-
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "result"));
-    tokens.push_back(Token(Token::Operator, "="));
-    tokens.push_back(Token(Token::Identity, "add"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "1"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    tokens.push_back(Token(Token::TypeName, "int"));
-    tokens.push_back(Token(Token::Identity, "result0"));
-    tokens.push_back(Token(Token::Operator, "="));
-    tokens.push_back(Token(Token::Identity, "sub"));
-    tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::IntegerLiteral, "result"));
-    tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::IntegerLiteral, "result"));
-    tokens.push_back(Token(Token::Delimiter, ")"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "     function add(int a, int b) -> var { return function () -> int { return a + b ; } ; }"
+                       "     function sub(int a, int b) -> var {  return a - b ; }"
+                       "     int result = add(1, 1)();"
+                       "     int result2 = sub(result, result);";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::Program(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -695,19 +262,14 @@ void test_12()
 
 void test_13()
 {
-    // a = b;
-    vector<Token> tokens;
-
-    tokens.push_back(Token(Token::Identity, "a"));
-    tokens.push_back(Token(Token::Operator, "="));
-    tokens.push_back(Token(Token::Identity, "b"));
-    tokens.push_back(Token(Token::Delimiter, ";"));
-
-    TokenStream stream(tokens);
+    std::string code = "a = b;";
+    CodeStream codeStream(code);
 
     try {
+        TokenStream stream(Lexer::parser(&codeStream));
+        std::cout << "Lexer parser Done!" << std::endl;
         Parser::Program(&stream);
-        std::cout << "Done!" << std::endl;
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         std::cout << "error:" << std::endl;
         std::cout << e << std::endl;
@@ -725,10 +287,8 @@ void test_14()
         std::vector<Token> tokens = Lexer::parser(&stream);
         TokenStream stream(tokens);
         std::cout << "Lexer Done!" << std::endl;
-
         Parser::Program(&stream);
-        std::cout << "Parser Done!" << std::endl;
-
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         e.printTrack();
         std::cout << e.getError()  << std::endl;
@@ -746,10 +306,8 @@ void test_15()
         std::vector<Token> tokens = Lexer::parser(&stream);
         TokenStream stream(tokens);
         std::cout << "Lexer Done!" << std::endl;
-
         Parser::Program(&stream);
-        std::cout << "Parser Done!" << std::endl;
-
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         e.printTrack();
         std::cout << e.getError()  << std::endl;
@@ -767,8 +325,7 @@ void test_16()
         std::cout << "Lexer Done!" << std::endl;
 
         Parser::Program(&stream);
-        std::cout << "Parser Done!" << std::endl;
-
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         e.printTrack();
         std::cout << e.getError()  << std::endl;
@@ -785,11 +342,26 @@ void test_17()
         std::cout << "Lexer Done!" << std::endl;
 
         Parser::Program(&stream);
-        std::cout << "Parser Done!" << std::endl;
-
+        std::cout << "Parser Parser Done!" << std::endl;
     } catch(Throwable e) {
         e.printTrack();
         std::cout << e.getError()  << std::endl;
     }
 }
 
+void test_18()
+{
+    std::string code = " if(1){ continue; } ";
+    CodeStream stream(code);
+    try {
+        std::vector<Token> tokens = Lexer::parser(&stream);
+        TokenStream stream(tokens);
+        std::cout << "Lexer Done!" << std::endl;
+
+        Parser::Program(&stream);
+        std::cout << "Parser Parser Done!" << std::endl;
+    } catch(Throwable e) {
+        e.printTrack();
+        std::cout << e.getError()  << std::endl;
+    }
+}

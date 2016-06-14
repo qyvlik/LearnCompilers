@@ -22,4 +22,6 @@ HEADERS += \
     src/calleetracker.hpp \
     src/throwable.hpp \
     src/token.hpp \
-    src/lexer.hpp
+    src/lexer.hpp \
+    src/abstractsyntaxtree.hpp \
+    src/parsercontext.hpp
