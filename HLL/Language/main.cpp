@@ -20,6 +20,8 @@ void test_12();
 void test_13();
 void test_14();
 void test_15();
+void test_16();
+void test_17();
 
 int main()
 {
@@ -38,6 +40,8 @@ int main()
     test_13();
     test_14();
     test_15();
+    test_16();
+    test_17();
     return 0;
 }
 
@@ -56,11 +60,11 @@ void test_1()
     tokens.push_back(Token(Token::StringLiteral, "\"D\""));
     tokens.push_back(Token(Token::Delimiter, "]"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "["));
     tokens.push_back(Token(Token::StringLiteral, "\"A\""));
@@ -90,13 +94,13 @@ void test_2()
     tokens.push_back(Token(Token::Delimiter, "{"));
     tokens.push_back(Token(Token::StringLiteral, "\"name\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::StringLiteral, "\"age\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Operator, "/"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, "}"));
     tokens.push_back(Token(Token::Delimiter, ";"));
 
@@ -123,7 +127,7 @@ void test_3()
     tokens.push_back(Token(Token::Delimiter, "["));
     tokens.push_back(Token(Token::StringLiteral, "\"age\""));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::Delimiter, "]"));
     tokens.push_back(Token(Token::Delimiter, ";"));
@@ -154,11 +158,11 @@ void test_4()
     tokens.push_back(Token(Token::StringLiteral, "\"D\""));
     tokens.push_back(Token(Token::Delimiter, "]"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "["));
     tokens.push_back(Token(Token::StringLiteral, "\"A\""));
@@ -169,13 +173,13 @@ void test_4()
     tokens.push_back(Token(Token::Delimiter, "{"));
     tokens.push_back(Token(Token::StringLiteral, "\"name\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::StringLiteral, "\"age\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Operator, "/"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
 
     tokens.push_back(Token(Token::Delimiter, ","));
 
@@ -185,7 +189,7 @@ void test_4()
     tokens.push_back(Token(Token::Delimiter, "["));
     tokens.push_back(Token(Token::StringLiteral, "\"age\""));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::Delimiter, "]"));
 
@@ -214,12 +218,12 @@ void test_5()
     tokens.push_back(Token(Token::Delimiter, "{"));  // try
     tokens.push_back(Token(Token::KeyWord, "if"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "{"));  // if
     tokens.push_back(Token(Token::KeyWord, "while"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "{"));
     tokens.push_back(Token(Token::Delimiter, "}"));  // while
@@ -227,16 +231,16 @@ void test_5()
     tokens.push_back(Token(Token::Delimiter, "}"));  // try
     tokens.push_back(Token(Token::KeyWord, "catch"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "{"));  // catch
     tokens.push_back(Token(Token::KeyWord, "for"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "{"));  // for
     tokens.push_back(Token(Token::KeyWord, "do"));
@@ -244,7 +248,7 @@ void test_5()
     tokens.push_back(Token(Token::Delimiter, "}"));  // do-while
     tokens.push_back(Token(Token::KeyWord, "while"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, ";"));
     tokens.push_back(Token(Token::Delimiter, "}"));  // for
@@ -275,12 +279,12 @@ void test_6()
     tokens.push_back(Token(Token::Delimiter, "{"));  // try
     tokens.push_back(Token(Token::KeyWord, "if"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "{"));  // if
     tokens.push_back(Token(Token::KeyWord, "while"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "{"));  // while
 
@@ -293,11 +297,11 @@ void test_6()
     tokens.push_back(Token(Token::StringLiteral, "\"D\""));
     tokens.push_back(Token(Token::Delimiter, "]"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "["));
     tokens.push_back(Token(Token::StringLiteral, "\"A\""));
@@ -308,20 +312,20 @@ void test_6()
     tokens.push_back(Token(Token::Delimiter, "{"));
     tokens.push_back(Token(Token::StringLiteral, "\"name\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::StringLiteral, "\"age\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Operator, "/"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::StringLiteral, "\"array\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
     tokens.push_back(Token(Token::Delimiter, "["));
     tokens.push_back(Token(Token::StringLiteral, "\"age\""));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::Delimiter, "]"));
     tokens.push_back(Token(Token::Delimiter, "}"));
@@ -332,16 +336,16 @@ void test_6()
     tokens.push_back(Token(Token::Delimiter, "}"));  // try
     tokens.push_back(Token(Token::KeyWord, "catch"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "{"));  // catch
     tokens.push_back(Token(Token::KeyWord, "for"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ";"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "{"));  // for
     tokens.push_back(Token(Token::KeyWord, "do"));
@@ -349,7 +353,7 @@ void test_6()
     tokens.push_back(Token(Token::Delimiter, "}"));  // do-while
     tokens.push_back(Token(Token::KeyWord, "while"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, ";"));
     tokens.push_back(Token(Token::Delimiter, "}"));  // for
@@ -377,13 +381,13 @@ void test_7()
     tokens.push_back(Token(Token::Delimiter, "{"));
     tokens.push_back(Token(Token::StringLiteral, "\"name\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     //    tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::StringLiteral, "\"age\""));
     tokens.push_back(Token(Token::Delimiter, ":"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Operator, "/"));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, "}"));
     tokens.push_back(Token(Token::Delimiter, ";"));
 
@@ -448,13 +452,13 @@ void test_9()
     tokens.push_back(Token(Token::TypeName, "int"));
     tokens.push_back(Token(Token::Identity, "a"));
     tokens.push_back(Token(Token::Operator, "="));
-    tokens.push_back(Token(Token::NumberLiteral, "10"));
+    tokens.push_back(Token(Token::IntegerLiteral, "10"));
     tokens.push_back(Token(Token::Delimiter, ","));
     tokens.push_back(Token(Token::TypeName, "int"));
     tokens.push_back(Token(Token::Identity, "b"));
     tokens.push_back(Token(Token::Operator, "="));
 
-    tokens.push_back(Token(Token::NumberLiteral, "10"));
+    tokens.push_back(Token(Token::IntegerLiteral, "10"));
 
     tokens.push_back(Token(Token::Delimiter, ";"));
 
@@ -506,9 +510,9 @@ void test_10()
 
     tokens.push_back(Token(Token::Delimiter, "("));
 
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
 
     tokens.push_back(Token(Token::Delimiter, ";"));
@@ -575,9 +579,9 @@ void test_11()
     tokens.push_back(Token(Token::Operator, "="));
     tokens.push_back(Token(Token::Identity, "add"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "("));
     tokens.push_back(Token(Token::Delimiter, ")"));
@@ -658,9 +662,9 @@ void test_12()
     tokens.push_back(Token(Token::Operator, "="));
     tokens.push_back(Token(Token::Identity, "add"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "1"));
+    tokens.push_back(Token(Token::IntegerLiteral, "1"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, "("));
     tokens.push_back(Token(Token::Delimiter, ")"));
@@ -671,9 +675,9 @@ void test_12()
     tokens.push_back(Token(Token::Operator, "="));
     tokens.push_back(Token(Token::Identity, "sub"));
     tokens.push_back(Token(Token::Delimiter, "("));
-    tokens.push_back(Token(Token::NumberLiteral, "result"));
+    tokens.push_back(Token(Token::IntegerLiteral, "result"));
     tokens.push_back(Token(Token::Delimiter, ","));
-    tokens.push_back(Token(Token::NumberLiteral, "result"));
+    tokens.push_back(Token(Token::IntegerLiteral, "result"));
     tokens.push_back(Token(Token::Delimiter, ")"));
     tokens.push_back(Token(Token::Delimiter, ";"));
 
@@ -751,3 +755,41 @@ void test_15()
         std::cout << e.getError()  << std::endl;
     }
 }
+
+void test_16()
+{
+    std::string code = "     function add(int a, int b) -> var { return function () -> int { return - a + b ; } ; }"
+                       "     function more_than(int a, int b) -> var {  return !!(a > b) ; }";
+    CodeStream stream(code);
+    try {
+        std::vector<Token> tokens = Lexer::parser(&stream);
+        TokenStream stream(tokens);
+        std::cout << "Lexer Done!" << std::endl;
+
+        Parser::Program(&stream);
+        std::cout << "Parser Done!" << std::endl;
+
+    } catch(Throwable e) {
+        e.printTrack();
+        std::cout << e.getError()  << std::endl;
+    }
+}
+
+void test_17()
+{
+    std::string code = "!a = !a; ";
+    CodeStream stream(code);
+    try {
+        std::vector<Token> tokens = Lexer::parser(&stream);
+        TokenStream stream(tokens);
+        std::cout << "Lexer Done!" << std::endl;
+
+        Parser::Program(&stream);
+        std::cout << "Parser Done!" << std::endl;
+
+    } catch(Throwable e) {
+        e.printTrack();
+        std::cout << e.getError()  << std::endl;
+    }
+}
+
