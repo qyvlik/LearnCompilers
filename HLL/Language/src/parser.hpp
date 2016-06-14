@@ -240,7 +240,7 @@ public:
     }
 
 
-    // FactorExpression ::= "(" Expression ")" | ObjectExpression | Literal
+    // FactorExpression ::= "(" Expression ")" | ObjectExpression | Literal | Lambda | UnaryExpression
     static void FactorExpression(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
@@ -258,14 +258,26 @@ public:
 
             stream->next();             // eat `)
         } else if(stream->current().type > Token::Literal ||
-                  stream->current().value == "{" ||
-                  stream->current().value == "[" ) {
+                  current == "{" ||
+                  current == "[" ) {
             Literal(stream);
-        } else if(stream->current().value == "function") {
+        } else if(current == "function") {
             Lambda(stream);
-        }else  {
+        } else if(current == "+" || current == "-" || current == "!") {
+            UnaryExpression(stream);
+        } else {
             ObjectExpression(stream);
         }
+    }
+
+   // UnaryExpression ::= { ( "+" | "-" | "!" ) } BoolExpression
+    static void UnaryExpression(TokenStream* stream) throw(Throwable)
+    {
+        CALLEE_PUSH_TRACK_;
+
+        stream->next(); // eat `+ or `- or `!
+
+        BoolExpression(stream);
     }
 
 
@@ -432,13 +444,37 @@ public:
     }
 
 
+    // NumberLiteral ::= IntegerLiteral | DoubleLiteral
     static void NumberLiteral(TokenStream* stream) throw(Throwable)
+    {
+        CALLEE_PUSH_TRACK_;
+
+        int type = stream->current().type;
+        if(type == Token::IntegerLiteral) {
+            IntegerLiteral(stream);
+        } else if(type == Token::DoubleLiteral) {
+            DoubleLiteral(stream);
+        } else {
+            std::cout << stream->current() << std::endl;
+            throw Throwable(0, "Current Token is Not a NumberLiteral");
+        }
+    }
+
+
+    static void IntegerLiteral(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
         stream->next();
     }
 
+
+    static void DoubleLiteral(TokenStream* stream) throw(Throwable)
+    {
+        CALLEE_PUSH_TRACK_;
+
+        stream->next();
+    }
 
     static void StringLiteral(TokenStream* stream) throw(Throwable)
     {
@@ -696,6 +732,10 @@ public:
             Statement(stream);
             if(stream->current().value == "}") {
                 break;
+                // meaning KeyValuesLiteral can't declara alone with out Statement
+            } else if(stream->current().value == ":") {
+                std::cout << stream->current() << std::endl;
+                throw Throwable(0, "KeyValuesLiteral: Can't Declara Alone With Out Statement !");
             }
         }
 

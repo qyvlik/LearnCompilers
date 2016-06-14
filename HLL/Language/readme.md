@@ -62,6 +62,9 @@ FactorExpression ::= "(" Expression ")"
                    | ObjectExpression
                    | Literal
                    | Lambda
+                   | UnaryExpression
+
+UnaryExpression ::= { ( "+" | "-" | "!" ) } BoolExpression
 
 ObjectExpression ::= ObjectExpression "." Identity
                    | ObjectExpression "[" Expression "]"
@@ -75,6 +78,8 @@ Literal ::= StringLiteral | NumberLiteral | ArrayLiteral | KeyValuesLiteral
 KeyValuesLiteral ::= "{" { StringLiteral ":" Expression "," } "}"           // map 或者说是对象，不能对此进行函数调用
 
 ArrayLiteral ::= "[" { Expression "," } "]"                                 // 数组，不能对此进行函数调用
+
+NumberLiteral ::= IntegerLiteral | DoubleLiteral
 
 Lambda ::= "function" "(" FunctionArgumentsList ")" "->" TypeName Body
 
@@ -108,4 +113,14 @@ ObjectExpression ::= _R_ObjectExpression
 
 1. 冲突，`Block` 和 `KeyValuesLiteral` 的 `FIRST` 集合一样，如何处理？
 
-    由于 `Block` 优先级大于 `KeyValuesLiteral`
+    由于 `Block` 优先级大于 `KeyValuesLiteral`，所以会解析会报错，所以应该禁止在语句外部单独写 `KeyValuesLiteral` 或者 `ArrayLiteral`。
+
+    在 `Block` 中处理掉 `StringLiteral` 后，下一个字符为 `:`。从 `Block` 出发。
+
+    `Block -> Statement -> ExpressionStatement -> Expression -> BoolExpression -> ArithmeticExpression -> TermExpression -> FactorExpression-> ObjectExpression -> throw('ObjectExpression: not start of Identity');`
+
+    所以应该在 `Block` 设置检测步骤。
+
+2. 具名函数声明应该都要提前声明。并且函数声明必须带上函数实现。
+
+3. 还未处理 `-1` ，`-A-B` 这样的语句。

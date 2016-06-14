@@ -160,8 +160,19 @@ public:
 
         stream->next();
 
-        if(stream->current() != '=' && is_NOT) {
-            throw Throwable(0, "Token `! Must Match Token `=");
+//        if(stream->current() != '=' && is_NOT) {
+//            throw Throwable(0, "Token `! Must Match Token `=");
+//        }
+
+        if(is_NOT) {
+            if(stream->current() == '=') {
+                value.push_back(stream->current());
+                stream->next();
+
+                return Token(Token::Operator, value);
+            } else {
+                return Token(Token::Operator, value);
+            }
         } else if( symbol.isOperator(stream->current()) ) {
             if(stream->current() == '-') {
                 value.push_back(stream->current());
