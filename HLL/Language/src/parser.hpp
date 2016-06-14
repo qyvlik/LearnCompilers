@@ -3,8 +3,17 @@
 
 #include "tokenstream.hpp"
 #include "calleetracker.hpp"
-
 #include "throwable.hpp"
+#include "parsercontext.hpp"
+
+template<typename T>
+class Static
+{
+public:
+    static T Object;
+};
+
+template<typename T> T Static<T>::Object;
 
 class Parser
 {
@@ -65,10 +74,8 @@ public:
         } else if(ahead == "for") {
             ForStatement(stream);
         } else if(ahead == "continue") {
-            // TODO if current statement is loop
             ContinueStatement(stream);
         } else if(ahead == "break") {
-            // TODO if current statement is loop
             BreakStatement(stream);
         } else if(ahead == "{") {
             Block(stream);
@@ -80,6 +87,7 @@ public:
             // TODO if current statement is function body
             ReturnStatement(stream);
         } else if(type == Token::TypeName) {
+            // delcara every where
             DeclarationStatement(stream);
         }else{
             ExpressionStatement(stream);
@@ -276,7 +284,7 @@ public:
         }
     }
 
-   // UnaryExpression ::= { ( "+" | "-" | "!" ) } BoolExpression
+    // UnaryExpression ::= { ( "+" | "-" | "!" ) } BoolExpression
     static void UnaryExpression(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
@@ -552,6 +560,8 @@ public:
     {
         CALLEE_PUSH_TRACK_;
 
+        Static<ParserContext>::Object.enterLoopStatement();
+
         // first is `do
         stream->next();
 
@@ -584,6 +594,8 @@ public:
         }
 
         stream->next();
+
+        Static<ParserContext>::Object.exitLoopStatement();
     }
 
 
@@ -591,6 +603,8 @@ public:
     static void WhileStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
+
+        Static<ParserContext>::Object.enterLoopStatement();
 
         // first is `while
         stream->next();
@@ -612,6 +626,8 @@ public:
         stream->next();
 
         Statement(stream);
+
+        Static<ParserContext>::Object.exitLoopStatement();
     }
 
 
@@ -619,6 +635,8 @@ public:
     static void ForStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
+
+        Static<ParserContext>::Object.enterLoopStatement();
 
         // first is `for
 
@@ -655,6 +673,8 @@ public:
         stream->next();
 
         Statement(stream);
+
+        Static<ParserContext>::Object.exitLoopStatement();
     }
 
 
@@ -726,6 +746,8 @@ public:
     {
         CALLEE_PUSH_TRACK_;
 
+        Static<ParserContext>::Object.enterBlock();
+
         // first is `{
         stream->next();
 
@@ -746,6 +768,8 @@ public:
         }
 
         stream->next();             // eat `}
+
+        Static<ParserContext>::Object.exitBlock();
     }
 
 
@@ -753,6 +777,10 @@ public:
     static void BreakStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
+
+        if(!Static<ParserContext>::Object.inLoopStatement()) {
+            std::cerr << "Token `continue Only In Loop Statement" << std::endl;
+        }
 
         stream->next(); // `break
 
@@ -768,6 +796,10 @@ public:
     static void ContinueStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
+
+        if(!Static<ParserContext>::Object.inLoopStatement()) {
+            std::cerr << "Token `continue Only In Loop Statement" << std::endl;
+        }
 
         stream->next(); // `continue
 
@@ -818,7 +850,11 @@ public:
 
         TypeName(stream);
 
+        Static<ParserContext>::Object.enterFunctionBody();
+
         Block(stream);
+
+        Static<ParserContext>::Object.exitFunctionBody();
     }
 
 
@@ -872,7 +908,11 @@ public:
 
         TypeName(stream);
 
+        Static<ParserContext>::Object.enterFunctionBody();
+
         Block(stream);
+
+        Static<ParserContext>::Object.exitFunctionBody();
     }
 
 
