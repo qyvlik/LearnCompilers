@@ -27,6 +27,8 @@ public:
     }
 
     void next() throw(Throwable) {
+        CALLEE_PUSH_TRACK_;
+
         if(index < code.size()-1) {
             index++;
         } else {
@@ -44,6 +46,10 @@ public:
 
     bool atEnd() const {
         return index == code.size() -1;
+    }
+
+    size_t currentIndex() const {
+        return index;
     }
 
 private:
@@ -366,7 +372,7 @@ public:
     {
         CALLEE_PUSH_TRACK_;
 
-        while(symbol.isWhiteSpace(stream->current())) {
+        while( !stream->atEnd() && symbol.isWhiteSpace(stream->current())) {
             stream->next();
         }
     }
