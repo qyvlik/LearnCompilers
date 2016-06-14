@@ -17,7 +17,10 @@ public:
     CodeStream(const std::string& s):
         code(s),
         index(0)
-    { }
+    {
+        // FIXME
+        code.push_back(' ');
+    }
 
     char current() const {
         return code.at(index);

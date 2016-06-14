@@ -133,8 +133,6 @@ public:
         while(stream->current().value == ",") {
             stream->next();
 
-            TypeName(stream);
-
             Identity(stream);
 
             if(stream->current().value == "=") {
