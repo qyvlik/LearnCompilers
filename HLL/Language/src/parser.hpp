@@ -65,8 +65,10 @@ public:
         } else if(ahead == "for") {
             ForStatement(stream);
         } else if(ahead == "continue") {
+            // TODO if current statement is loop
             ContinueStatement(stream);
         } else if(ahead == "break") {
+            // TODO if current statement is loop
             BreakStatement(stream);
         } else if(ahead == "{") {
             Block(stream);
@@ -75,6 +77,7 @@ public:
         } else if(ahead == "throw"){
             ThrowStatement(stream);
         } else if(ahead == "return") {
+            // TODO if current statement is function body
             ReturnStatement(stream);
         } else if(type == Token::TypeName) {
             DeclarationStatement(stream);
@@ -88,6 +91,8 @@ public:
     static void ExpressionStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
+
+        // TODO if current statement is return
 
         if(stream->current().value == ";") {
             stream->next();
@@ -174,6 +179,7 @@ public:
             {
                 stream->next();
 
+                // TODO change to BoolExpression
                 Expression(stream);
 
                 current = stream->current().value;
@@ -743,30 +749,13 @@ public:
     }
 
 
-    // Break ::= "break"
-    static void Break(TokenStream* stream) throw(Throwable)
-    {
-        CALLEE_PUSH_TRACK_;
-
-        stream->next();
-    }
-
-
-    // Continue ::= "continue"
-    static void Continue(TokenStream* stream) throw(Throwable)
-    {
-        CALLEE_PUSH_TRACK_;
-
-        stream->next();
-    }
-
-
-    // BreakStatement ::= Break ";"
+    // BreakStatement ::= "break" ";"
     static void BreakStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
-        Break(stream);
+        stream->next(); // `break
+
         if(stream->current().value != ";") {
             std::cout << stream->current() << std::endl;
             throw Throwable(0,"BreakStatement lost `; current token " + stream->current().value);
@@ -775,12 +764,13 @@ public:
     }
 
 
-    // ContinueStatement ::= Continue ";"
+    // ContinueStatement ::= "continue" ";"
     static void ContinueStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
-        Continue(stream);
+        stream->next(); // `continue
+
         if(stream->current().value != ";") {
             std::cout << stream->current() << std::endl;
             throw Throwable(0,"ContinueStatement lost `; current token " + stream->current().value);
@@ -909,22 +899,12 @@ public:
     }
 
 
-    // Return ::= "return"
-    static void Return(TokenStream* stream) throw(Throwable)
-    {
-        CALLEE_PUSH_TRACK_;
-
-        // first is `return
-        stream->next();
-    }
-
-
-    // ReturnStatement ::= Return ExpressionStatement
+    // ReturnStatement ::= "return" ExpressionStatement
     static void ReturnStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
 
-        Return(stream);
+        stream->next();  // `return
 
         ExpressionStatement(stream);
     }

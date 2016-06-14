@@ -22,13 +22,9 @@ IfStatement ::= "if" "(" Expression ")" Statement [ ElseStatement ]
 
 ElseStatement ::= "else" Statement
 
-Break ::= "break"
+BreakStatement ::= "break" ";"
 
-Continue ::= "continue"
-
-BreakStatement ::= Break ";"
-
-ContinueStatement ::= Continue ";"
+ContinueStatement ::= "continue" ";"
 
 DoWhileStatement ::= "do" Statement "while" "(" Expression ")" ";"
 
@@ -89,9 +85,7 @@ Function ::= "function" Identity "(" FunctionArgumentsList ")" "->" TypeName Blo
 
 FunctionArgumentsList ::= ε | TypeName Identity { "," TypeName Identity }
 
-Return ::= "return"
-
-ReturnStatement ::= Return ExpressionStatement
+ReturnStatement ::= "return" ExpressionStatement
 
 ```
 
@@ -123,4 +117,4 @@ ObjectExpression ::= _R_ObjectExpression
 
 2. 具名函数声明应该都要提前声明。并且函数声明必须带上函数实现。
 
-3. 还未处理 `-1` ，`-A-B` 这样的语句。
+~~3. 还未处理 `-1` ，`-A-B` 这样的语句。~~
