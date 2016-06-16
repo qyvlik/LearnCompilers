@@ -90,7 +90,12 @@ public:
             // delcara every where
             DeclarationStatement(stream);
         }else{
+            // 为了处理临时变量
+            Static<ParserContext>::Object.enterExpressionStatement();
+
             ExpressionStatement(stream);
+
+            Static<ParserContext>::Object.exitExpressionStatement();
         }
     }
 
@@ -99,6 +104,7 @@ public:
     static void ExpressionStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
+
 
         // TODO if current statement is return
 
@@ -168,7 +174,15 @@ public:
             {
                 stream->next();
 
+                std::string dst = Static<ParserContext>::Object.popToken().value;
+
                 ArithmeticExpression(stream);
+
+                std::string arg0 = Static<ParserContext>::Object.popToken().value;
+                // assign arg0, dst, temp_arg1
+                std::string temp_arg1 = "$" + std::to_string( Static<ParserContext>::Object.getTemporaryId() );
+                std::cout << "Assign" << current << ", " << arg0 << ", " <<  dst << " ," << temp_arg1 << std::endl;
+                Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, temp_arg1 ));
 
                 current = stream->current().value;
             }
@@ -185,8 +199,16 @@ public:
             {
                 stream->next();
 
+                std::string dst = Static<ParserContext>::Object.popToken().value;
+
                 // TODO change to BoolExpression
-                Expression(stream);
+                BoolExpression(stream);
+
+                std::string arg0 = Static<ParserContext>::Object.popToken().value;
+                // op arg0, dst, temp_arg1
+                std::string temp_arg1 = "$" + std::to_string( Static<ParserContext>::Object.getTemporaryId() );
+                std::cout << current << ", " << arg0 << ", " <<  dst << " ," << temp_arg1 << std::endl;
+                Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, temp_arg1 ));
 
                 current = stream->current().value;
             }
@@ -211,7 +233,15 @@ public:
         {
             stream->next();
 
+            std::string dst = Static<ParserContext>::Object.popToken().value;
+
             ArithmeticExpression(stream);
+
+            std::string arg0 = Static<ParserContext>::Object.popToken().value;
+            // op arg0, dst, temp_arg1
+            std::string temp_arg1 = "$" + std::to_string( Static<ParserContext>::Object.getTemporaryId() );
+            std::cout << current << ", " << arg0 << ", " <<  dst << " ," << temp_arg1 << std::endl;
+            Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, temp_arg1 ));
 
             current = stream->current().value;
         }
@@ -228,7 +258,15 @@ public:
         while( current == "+" || current == "-" ) {
             stream->next();
 
+            std::string dst = Static<ParserContext>::Object.popToken().value;
+
             TermExpression(stream);
+
+            std::string arg0 = Static<ParserContext>::Object.popToken().value;
+            // op arg0, dst, temp_arg1
+            std::string temp_arg1 = "$" + std::to_string( Static<ParserContext>::Object.getTemporaryId() );
+            std::cout << current << ", " << arg0 << ", " <<  dst << " ," << temp_arg1 << std::endl;
+            Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, temp_arg1 ));
 
             current = stream->current().value;
         }
@@ -245,7 +283,15 @@ public:
         while( current == "*" || current == "/" || current == "%" ) {
             stream->next();
 
+            std::string dst = Static<ParserContext>::Object.popToken().value;
+
             FactorExpression(stream);
+
+            std::string arg0 = Static<ParserContext>::Object.popToken().value;
+            // op arg0, dst, temp_arg1
+            std::string temp_arg1 = "$" + std::to_string( Static<ParserContext>::Object.getTemporaryId() );
+            std::cout << current << ", " << arg0 << ", " <<  dst << " ," << temp_arg1 << std::endl;
+            Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, temp_arg1 ));
 
             current = stream->current().value;
         }
@@ -287,9 +333,15 @@ public:
     {
         CALLEE_PUSH_TRACK_;
 
+        std::string op = "Unary" + stream->current().value;
+
         stream->next(); // eat `+ or `- or `!
 
         BoolExpression(stream);
+
+        std::string dst = "$" + std::to_string(Static<ParserContext>::Object.getTemporaryId());
+        std::cout << op << ", " << Static<ParserContext>::Object.popToken().value << ", " << dst << std::endl;
+        Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, dst));
     }
 
 
@@ -314,10 +366,20 @@ public:
               || current == "("
               )
         {
+
             if(current == ".") {
+
                 stream->next();
 
                 Identity(stream);
+
+                std::string arg1 = Static<ParserContext>::Object.popToken().value;
+                std::string arg0 = Static<ParserContext>::Object.popToken().value;
+                std::string dst  = "$" + std::to_string(Static<ParserContext>::Object.getTemporaryId());
+                std::cout << "Access" << ", " << arg0 << ", " << arg1 << ", " << dst << std::endl;
+
+                Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, dst));
+
 
             } else if(current == "[") {
                 stream->next();
@@ -331,8 +393,17 @@ public:
 
                 stream->next();             // eat `]
 
+                std::string arg1 = Static<ParserContext>::Object.popToken().value;
+                std::string arg0 = Static<ParserContext>::Object.popToken().value;
+                std::string dst  = "$" + std::to_string(Static<ParserContext>::Object.getTemporaryId());
+                std::cout << "Access" << ", " << arg0 << ", " << arg1 << ", " << dst << std::endl;
+
+                Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, dst));
+
             } else if(current == "(") {
                 stream->next();
+
+                std::string call_name =  Static<ParserContext>::Object.popToken().value ;
 
                 CallArgumentList(stream);
 
@@ -342,6 +413,12 @@ public:
                 }
 
                 stream->next();             // eat `)
+
+                std::cout << "Call, " << call_name << std::endl;
+
+                // std::string dst  = "$" + std::to_string(Static<ParserContext>::Object.getTemporaryId());
+                Static<ParserContext>::Object.pushToken(Token(Token::TemporaryId, "$CallResult"));
+
             }
 
             current = stream->current().value;
@@ -368,9 +445,14 @@ public:
         } else {
             Expression(stream);
 
+            std::cout << "Param, " << Static<ParserContext>::Object.popToken().value << std::endl;
+
             while(stream->current().value == ",") {
                 stream->next();
                 Expression(stream);
+
+                std::cout << "Param, " << Static<ParserContext>::Object.popToken().value << std::endl;
+
             }
         }
     }
@@ -403,6 +485,8 @@ public:
 
         stream->next();
 
+        std::string this_key_values_literal = "$" + std::to_string( Static<ParserContext>::Object.getTemporaryId() );
+
         while(stream->current().value != "}") {
 
             if(stream->current().type != Token::StringLiteral) {
@@ -412,6 +496,8 @@ public:
 
             // `Key
             StringLiteral(stream);
+
+            std::string key = Static<ParserContext>::Object.popToken().value;
 
             if(stream->current().value != ":") {
                 std::cout << stream->current() << std::endl;
@@ -423,6 +509,9 @@ public:
             // `Value
             Expression(stream);
 
+            std::string value = Static<ParserContext>::Object.popToken().value;
+
+
             if(stream->current().value == ",") {
                 stream->next();
             } else {
@@ -431,9 +520,16 @@ public:
                     throw Throwable(0, "KeyValuesLiteral Key-Value lost `, current token " + stream->current().value);
                 }
             }
+
+
+            // append_pair key, value, this_key_values
+            std::cout << "append_pair " << key << ", " << value << ", " << this_key_values_literal << std::endl;
         }
 
         stream->next();
+
+        Static<ParserContext>::Object.pushToken(Token(Token::KeyValuesLiteral, this_key_values_literal));
+
     }
 
 
@@ -445,14 +541,23 @@ public:
         // first `[
         stream->next();
 
+        std::string this_array_literal = "$" + std::to_string( Static<ParserContext>::Object.getTemporaryId() );
+
         while(stream->current().value != "]") {
             Expression(stream);
+
+            std::string value = Static<ParserContext>::Object.popToken().value;
 
             if(stream->current().value == ",") {
                 stream->next();
             }
+
+            // append_pair value, , this_key_values
+            std::cout << "append_array_item " << value << ", " << ", " << this_array_literal << std::endl;
         }
         stream->next();
+
+        Static<ParserContext>::Object.pushToken(Token(Token::ArrayLiteral, this_array_literal));
     }
 
 
@@ -477,6 +582,8 @@ public:
     {
         CALLEE_PUSH_TRACK_;
 
+        Static<ParserContext>::Object.pushToken(stream->current());
+
         stream->next();
     }
 
@@ -485,12 +592,16 @@ public:
     {
         CALLEE_PUSH_TRACK_;
 
+        Static<ParserContext>::Object.pushToken(stream->current());
+
         stream->next();
     }
 
     static void StringLiteral(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
+
+        Static<ParserContext>::Object.pushToken(stream->current());
 
         stream->next();
     }
@@ -500,10 +611,13 @@ public:
     {
         CALLEE_PUSH_TRACK_;
 
+        // TODO 检查声明情况与所在代码块
         if(stream->current().type != Token::Identity) {
             std::cout << stream->current() << std::endl;
             throw Throwable(0,stream->current().value + " isn't' Identity");
         }
+
+        Static<ParserContext>::Object.pushToken(stream->current());
 
         stream->next();
     }
@@ -513,6 +627,16 @@ public:
     static void IfStatement(TokenStream* stream) throw(Throwable)
     {
         CALLEE_PUSH_TRACK_;
+
+        int label0, label1;
+
+        label0 = Static<ParserContext>::Object.getNewLabel();
+        label1 = Static<ParserContext>::Object.getNewLabel();
+
+        // std::cout << "IfStatement: " << label0 << ", " << label1 << std::endl;
+
+        Static<ParserContext>::Object.pushLabel(label0);
+        Static<ParserContext>::Object.pushLabel(label1);
 
         // first is `if
         stream->next();
@@ -531,13 +655,23 @@ public:
 
         stream->next();
 
+        std::cout << "Jump_If_False " << label1 << std::endl;
+
+        std::cout << "lable " << label0 << " :"  << std::endl;
+
         Statement(stream);
 
         std::string ahead = stream->current().value;
 
+        std::cout << "lable " << label1 << " :" << std::endl;
+
+        Static<ParserContext>::Object.popLable();
+        Static<ParserContext>::Object.popLable();
+
         if(ahead == "else") {
             ElseStatement(stream);
         }
+
     }
 
 
@@ -560,8 +694,22 @@ public:
 
         Static<ParserContext>::Object.enterLoopStatement();
 
+        int label0, label1, label2;
+
+        label0 = Static<ParserContext>::Object.getNewLabel();
+        label1 = Static<ParserContext>::Object.getNewLabel();
+        label2 = Static<ParserContext>::Object.getNewLabel();
+
+        // std::cout << "DoWhileStatement: " << label0 << ", " << label1 << ", " << label2 << std::endl;
+
+        Static<ParserContext>::Object.pushLoopStartLabel(label0);
+        Static<ParserContext>::Object.pushLabel(label1);
+        Static<ParserContext>::Object.pushLoopEndLabel(label2);
+
         // first is `do
         stream->next();
+
+        std::cout << "label " << label0  << " :" << std::endl;
 
         Statement(stream);
 
@@ -579,7 +727,11 @@ public:
 
         stream->next();
 
+        std::cout << "lable " << label1  << " :" << std::endl;
+
         Expression(stream);
+
+        std::cout << "goto " << "E ? " << label0 << " : " << label2 << std::endl;
 
         if(stream->current().value != ")") {
             throw Throwable(0,"DoWhileStatement while lost `)");
@@ -593,6 +745,12 @@ public:
 
         stream->next();
 
+        std::cout << "lable " << label2  << " :" << std::endl;
+
+        Static<ParserContext>::Object.popLoopEndLabel();
+        Static<ParserContext>::Object.popLable();
+        Static<ParserContext>::Object.popLoopStartLabel();
+
         Static<ParserContext>::Object.exitLoopStatement();
     }
 
@@ -604,6 +762,18 @@ public:
 
         Static<ParserContext>::Object.enterLoopStatement();
 
+        int label0, label1, label2;
+
+        label0 = Static<ParserContext>::Object.getNewLabel();
+        label1 = Static<ParserContext>::Object.getNewLabel();
+        label2 = Static<ParserContext>::Object.getNewLabel();
+
+        // std::cout << "WhileStatement: " << label0 << ", " << label1 << ", " << label2 << std::endl;
+
+        Static<ParserContext>::Object.pushLoopStartLabel(label0);
+        Static<ParserContext>::Object.pushLabel(label1);
+        Static<ParserContext>::Object.pushLoopEndLabel(label2);
+
         // first is `while
         stream->next();
 
@@ -613,9 +783,13 @@ public:
 
         stream->next();
 
+        std::cout << "label " << label0  << " :" << std::endl;
+
         Expression(stream);
 
-        // stream->next();
+        // std::cout << "goto " << "E ? " << label1 << " : " << label2 << std::endl;
+
+        std::cout << "Jump_If_False " << label2 << std::endl;
 
         if(stream->current().value != ")") {
             throw Throwable(0,"WhileStatement lost `)");
@@ -623,7 +797,17 @@ public:
 
         stream->next();
 
+        std::cout << "label " << label1  << " :" << std::endl;
+
         Statement(stream);
+
+        std::cout << "label " << label2  << " :" << std::endl;
+
+        std::cout << "Jump " << label0 << std::endl;
+
+        Static<ParserContext>::Object.popLoopEndLabel();
+        Static<ParserContext>::Object.popLable();
+        Static<ParserContext>::Object.popLoopStartLabel();
 
         Static<ParserContext>::Object.exitLoopStatement();
     }
@@ -636,6 +820,20 @@ public:
 
         Static<ParserContext>::Object.enterLoopStatement();
 
+        int label0, label1, label2, label3;
+
+        label0 = Static<ParserContext>::Object.getNewLabel();
+        label1 = Static<ParserContext>::Object.getNewLabel();
+        label2 = Static<ParserContext>::Object.getNewLabel();
+        label3 = Static<ParserContext>::Object.getNewLabel();
+
+        // std::cout << "ForStatement: " << label0 << ", " << label1 << ", " << label2 << ", " << label3 << std::endl;
+
+        Static<ParserContext>::Object.pushLoopStartLabel(label0);
+        Static<ParserContext>::Object.pushLabel(label1);
+        Static<ParserContext>::Object.pushLabel(label2);
+        Static<ParserContext>::Object.pushLoopEndLabel(label3);
+
         // first is `for
 
         stream->next();
@@ -646,7 +844,7 @@ public:
 
         stream->next();
 
-        Expression(stream);
+        Expression(stream);                         // E0
 
         if(stream->current().value != ";") {
             throw Throwable(0,"ForStatement lost frist `;");
@@ -654,15 +852,23 @@ public:
 
         stream->next();
 
-        Expression(stream);
+        std::cout << "label " << label0  << " :" << std::endl;
+
+        Expression(stream);                         // E1
 
         if(stream->current().value != ";") {
             throw Throwable(0,"ForStatement lost second `;");
         }
 
+        std::cout << "goto " << "E ? " << label2 << " : " << label3 << std::endl;
+
         stream->next();
 
-        Expression(stream);
+        std::cout << "label " << label1  << " :" << std::endl;
+
+        Expression(stream);                         // E2
+
+        std::cout << "Jump " << label0 << std::endl;
 
         if(stream->current().value != ")") {
             throw Throwable(0,"ForStatement lost `)");
@@ -670,7 +876,14 @@ public:
 
         stream->next();
 
+        std::cout << "label " << label2  << " :" << std::endl;
+
         Statement(stream);
+
+        std::cout << "Jump " << label1 << std::endl;
+
+
+        std::cout << "label " << label3  << " :" << std::endl;
 
         Static<ParserContext>::Object.exitLoopStatement();
     }
@@ -782,6 +995,8 @@ public:
 
         stream->next(); // `break
 
+        std::cout << "Jump " << Static<ParserContext>::Object.getLoopEndLabel() << std::endl;
+
         if(stream->current().value != ";") {
             std::cout << stream->current() << std::endl;
             throw Throwable(0,"BreakStatement lost `; current token " + stream->current().value);
@@ -800,6 +1015,8 @@ public:
         }
 
         stream->next(); // `continue
+
+        std::cout << "Jump " << Static<ParserContext>::Object.getLoopStartLabel() << std::endl;
 
         if(stream->current().value != ";") {
             std::cout << stream->current() << std::endl;
@@ -830,6 +1047,7 @@ public:
 
         stream->next();
 
+        // TODO 记录函数特征
         FunctionArgumentsList(stream);
 
         if(stream->current().value != ")") {
@@ -883,7 +1101,7 @@ public:
 
         if(stream->current().value != "(") {
             std::cout << stream->current() << std::endl;
-            throw Throwable(0,"Lambda lost `(; current token " + stream->current().value);
+            throw Throwable(0,"Function lost `(; current token " + stream->current().value);
         }
 
         stream->next();
@@ -892,14 +1110,14 @@ public:
 
         if(stream->current().value != ")") {
             std::cout << stream->current() << std::endl;
-            throw Throwable(0,"Lambda lost `); current token " + stream->current().value);
+            throw Throwable(0,"Function lost `); current token " + stream->current().value);
         }
 
         stream->next();
 
         if(stream->current().value != "->") {
             std::cout << stream->current() << std::endl;
-            throw Throwable(0,"Lambda lost `->; current token " + stream->current().value);
+            throw Throwable(0,"Function lost `->; current token " + stream->current().value);
         }
 
         stream->next();

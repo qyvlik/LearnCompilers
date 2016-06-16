@@ -13,6 +13,7 @@ public:
         Delimiter,              // [, ], {, }, (, )
         Operator,               // +,-,*,/,%,+=,*=,-=,/=,%=,>,<,>=,<=,==,!=,!,.
         Identity,
+        TemporaryId,
 
         TypeName,
 
