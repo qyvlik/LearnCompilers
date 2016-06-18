@@ -12,31 +12,25 @@
 namespace qyvlik {
 namespace virtual_machine {
 
-/*
-  - ADD: integer addition
-  - DIV: integer division
-  - MUL: integer multiplication
-  - SUB: integer subtraction
-  - INC: incrémentation
-  - DEC: décrémentation
-  - PUSH: push value on the stack
-  - POP: pop value from stack
-  - CMP: comparator
-  - JE: jump if équal
-  - JNE: jump if not équal
-  - JMP: jump to instruction
-  - PRINT: print
-  - READ: read
-  - POS: set cursor pos
-  - DUP: duplicate the element at the top of the stack
-  - SWAP: exchange elements at the top of the stack
-  - END: exit the program
-  - NOP: nop
-*/
-
 class StackBaseVirtualMachine
 {
 public:
+
+    typedef std::vector<int> Arguments;
+    struct StackFrame {
+        StackFrame(int id):
+            methodId(id)
+        { }
+        int methodId;
+        int result;
+        Arguments arguments;
+    };
+
+    typedef std::stack<StackFrame> CallStack;
+    // for  int (int...) function ;
+    typedef void(*CallMethod)(Arguments*, int* result);
+    typedef std::map<int, CallMethod> NativeMethods;
+
     // for int32
     enum Operation {
         Add,
@@ -59,11 +53,15 @@ public:
 
         Jump,
 
+        BeforeCall,         // BeforeCall methodNameId
+        Param,
+        Call,               // Call methodNameId
+
         Print,
 
-        Label,              // label 0 = Lable + 0; Lable n = lable + n;
+        Label,
 
-        Stop,               //
+        Stop,
     };
 
     void add() {
@@ -256,6 +254,26 @@ public:
                 continue;
                 // break;
 
+                // BeforeCall methodId
+            case BeforeCall    :
+                call_stack.push(StackFrame(value));
+
+                std::cout << "Into Call Scope" << std::endl;
+
+                break;
+
+            case Param         :
+                call_stack.top().arguments.push_back(value);
+                break;
+
+            case Call          :
+                native_methods[call_stack.top().methodId](&call_stack.top().arguments, &call_stack.top().result);
+                push(call_stack.top().result);
+                call_stack.pop();
+
+                std::cout << "Go Out Call Scope" << std::endl;
+                break;
+
             case Print         :
                 printTop();
                 break;
@@ -296,8 +314,14 @@ public:
         return evaluation_stack.size();
     }
 
+    void registerNativeMethod(int methodNameId, CallMethod method) {
+        native_methods.insert(std::pair<int, CallMethod>(methodNameId, method));
+    }
+
 private:
     std::stack<int> evaluation_stack;
+    CallStack call_stack;
+    NativeMethods native_methods;
 };
 
 typedef std::tuple<StackBaseVirtualMachine::Operation, int> Code;

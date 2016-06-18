@@ -10,12 +10,14 @@ using namespace virtual_machine;
 void test_stack_base();
 void test_stack_base_0();
 void test_stack_base_1();
+void test_stack_base_2();
 
 int main()
 {
     //    test_register_base();
-//    test_stack_base_0();
-    test_stack_base_1();
+    //    test_stack_base_0();
+//    test_stack_base_1();
+    test_stack_base_2();
     return 0;
 }
 
@@ -56,10 +58,10 @@ void test_stack_base_1()
 {
     std::vector< Code> codes;
 
-//    int a = 1000000;
-//    while(a != 0) {
-//        a--;
-//    }
+    //    int a = 1000000;
+    //    while(a != 0) {
+    //        a--;
+    //    }
 
     // push 1000000
     // label 0
@@ -85,6 +87,60 @@ void test_stack_base_1()
     // codes.push_back(Code(StackBaseVirtualMachine::Print,  0));
     codes.push_back(Code(StackBaseVirtualMachine::Jump, 0));
     codes.push_back(Code(StackBaseVirtualMachine::Label, 1));
+
+    vm.execute(codes);
+
+    std::cout << "size: " << vm.evaluationStackSize() << std::endl;
+}
+
+// typedef void(*CallMethod)(StackBaseVirtualMachine::Arguments*, int* result);
+
+
+// log(1,2,3) -> 3
+void sb_vm_test_native_method_log(StackBaseVirtualMachine::Arguments* args, int* result)
+{
+    std::cout << "args ptr:" << "[" << args << "]" << std::endl;
+    std::cout << "result ptr:" << "[" << result << "]" << std::endl;
+
+    int size = 0;
+
+    if(args && args->size() != 0) {
+        auto iter = args->begin();
+        auto end = args->end();
+        while(iter != end){
+
+            std::cout << (*iter);
+            size++;
+            iter++;
+        }
+        std::cout << std::endl;
+    }
+    if(result) {
+        *result = size;
+    }
+}
+
+void test_stack_base_2()
+{
+    std::vector< Code> codes;
+
+    StackBaseVirtualMachine vm;
+
+    vm.registerNativeMethod(0, sb_vm_test_native_method_log);
+
+    // beforecall 0
+    // param 1
+    // param 2
+    // param 3
+    // call 0
+    // print    // 3
+
+    codes.push_back(Code(StackBaseVirtualMachine::BeforeCall, 0));
+    codes.push_back(Code(StackBaseVirtualMachine::Param,  1));
+    codes.push_back(Code(StackBaseVirtualMachine::Param,  2));
+    codes.push_back(Code(StackBaseVirtualMachine::Param,  3));
+    codes.push_back(Code(StackBaseVirtualMachine::Call, 0));
+    codes.push_back(Code(StackBaseVirtualMachine::Print, 0));
 
     vm.execute(codes);
 
