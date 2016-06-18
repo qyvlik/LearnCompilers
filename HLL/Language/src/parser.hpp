@@ -176,7 +176,7 @@ public:
 
                 std::string dst = Static<ParserContext>::Object.popToken().value;
 
-                ArithmeticExpression(stream);
+                BoolExpression(stream);
 
                 std::string arg0 = Static<ParserContext>::Object.popToken().value;
                 // assign arg0, dst, temp_arg1
