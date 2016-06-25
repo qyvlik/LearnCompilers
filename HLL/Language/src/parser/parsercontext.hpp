@@ -5,11 +5,9 @@
 #include <memory>
 #include <iostream>
 #include <string>
-
-#include <assert.h>
 #include <tuple>
+#include <assert.h>
 
-#include "abstractsyntaxtree.hpp"
 #include "throwable.hpp"
 #include "token.hpp"
 

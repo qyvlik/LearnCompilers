@@ -16,12 +16,11 @@ DISTFILES += \
     readme.md
 
 HEADERS += \
-    src/tokenstream.hpp \
-    src/utility.hpp \
-    src/parser.hpp \
-    src/calleetracker.hpp \
-    src/throwable.hpp \
-    src/token.hpp \
-    src/lexer.hpp \
-    src/abstractsyntaxtree.hpp \
-    src/parsercontext.hpp
+    src/parser/lexer.hpp \
+    src/parser/parser.hpp \
+    src/parser/parsercontext.hpp \
+    src/parser/token.hpp \
+    src/parser/tokenstream.hpp \
+    src/throwable/throwable.hpp \
+    src/utility/calleetracker.hpp \
+    src/utility/utility.hpp
