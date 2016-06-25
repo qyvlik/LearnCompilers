@@ -5,6 +5,7 @@
 
 #include "token.hpp"
 
+namespace qyvlik {
 
 class TokenStream
 {
@@ -35,6 +36,8 @@ private:
     std::vector<Token> l;
     size_t index;
 };
+
+}
 
 #endif // TOKENSTREAM_H
 

@@ -2,13 +2,15 @@
 #define LEXER_HPP
 
 #include "token.hpp"
-#include "utility.hpp"
-#include "throwable.hpp"
+#include "../utility/utility.hpp"
+#include "../throwable/throwable.hpp"
 
 #include <string>
 #include <vector>
 #include <cctype>
 #include <cassert>
+
+namespace qyvlik {
 
 class CodeStream
 {
@@ -346,7 +348,7 @@ public:
             throw Throwable(0, "StringLeterial Lost Last Quota");
         }
         stream->next();
-        return Token(Token::StringLiteral, value);
+        return Token(Token::ObjectLiteral, value);
     }
 
     // start of [a-zA-Z_]
@@ -382,6 +384,8 @@ public:
         }
     }
 };
+
+}
 
 #endif // LEXER_HPP
 

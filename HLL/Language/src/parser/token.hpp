@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+namespace qyvlik {
+
 class Token
 {
 public:
@@ -18,7 +20,7 @@ public:
         TypeName,
 
         Literal,
-        StringLiteral,
+        ObjectLiteral,
         NumberLiteral,
 
         BoolLiteral,
@@ -64,7 +66,7 @@ public:
         case Token::Literal:
             os << "( Literal, ";
             break;
-        case Token::StringLiteral:
+        case Token::ObjectLiteral:
             os << "( StringLiteral, ";
             break;
         case Token::NumberLiteral:
@@ -93,6 +95,8 @@ public:
         return os;
     }
 };
+
+}
 
 #endif // TOKEN_HPP
 

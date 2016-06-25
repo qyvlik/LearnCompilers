@@ -5,8 +5,9 @@
 #include <string>
 #include <vector>
 
-#include "calleetracker.hpp"
+#include "../utility/calleetracker.hpp"
 
+namespace qyvlik {
 
 class Throwable
 {
@@ -65,5 +66,7 @@ private:
     std::string error;
     std::vector<StackFrame> callStack;
 };
+
+}
 
 #endif // THROWABLE_H

@@ -7,6 +7,8 @@
 #include <string>
 #include <memory>
 
+namespace qyvlik {
+
 struct StackFrame {
     StackFrame(const char* f, int l,const char* c):
         file(f),
@@ -79,11 +81,13 @@ private:
     std::shared_ptr< std::vector<StackFrame> > stackFrames;
 };
 
+}
+
 #define CALLEE_PUSH_TRACK_ \
-    CalleeTracker::DoDestory nil(__FILE__, __LINE__, __PRETTY_FUNCTION__); (void)nil;
+    qyvlik::CalleeTracker::DoDestory nil(__FILE__, __LINE__, __PRETTY_FUNCTION__); (void)nil;
 
 #define CALLEE_PRINT_TRACK \
-    CalleeTracker::threadSingleton().printTrack();
+    qyvlik::CalleeTracker::threadSingleton().printTrack();
 
 
 #endif // CALLEETRACKER_H
